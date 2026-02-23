@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EduCore Pro — Complete School ERP</title>
+<title>EduCore Pro — School ERP</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
   --navy: #0d1b36;
@@ -43,7 +44,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--te
 }
 .login-box {
   background:white; border-radius:20px;
-  padding:48px 40px; width:400px;
+  padding:48px 40px; width:420px;
   box-shadow:0 30px 80px rgba(0,0,0,0.3);
   animation: popIn .5s cubic-bezier(.34,1.56,.64,1);
 }
@@ -58,24 +59,43 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--te
 }
 .form-group { margin-bottom:18px; }
 .form-group label { display:block; font-size:13px; font-weight:600; color:var(--navy); margin-bottom:6px; }
-.form-group input, .form-group select {
-  width:100%; padding:11px 14px;
+.form-group input {
+  width:100%; padding:12px 14px;
   border:2px solid var(--border); border-radius:9px;
   font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text);
   transition:border-color .2s; outline:none;
 }
-.form-group input:focus, .form-group select:focus { border-color:var(--navy); }
+.form-group input:focus { border-color:var(--navy); }
 .login-btn {
   width:100%; padding:13px;
   background:var(--navy); color:white;
   border:none; border-radius:9px;
   font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600;
-  cursor:pointer; transition:background .2s, transform .1s;
+  cursor:pointer; transition:all .2s;
   margin-top:8px;
 }
 .login-btn:hover { background:var(--navy3); transform:translateY(-1px); }
+.login-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+.error-msg {
+  background:var(--red-bg); color:var(--red);
+  padding:10px 14px; border-radius:8px;
+  font-size:13px; margin-bottom:14px;
+  display:none;
+}
+.success-msg {
+  background:var(--green-bg); color:var(--green);
+  padding:10px 14px; border-radius:8px;
+  font-size:13px; margin-bottom:14px;
+  display:none;
+}
 .login-hint { text-align:center; color:var(--muted); font-size:12px; margin-top:14px; }
 .login-hint span { color:var(--gold); font-weight:600; }
+.security-note {
+  display:flex; align-items:center; gap:8px;
+  background:var(--green-bg); color:var(--green);
+  padding:8px 12px; border-radius:8px;
+  font-size:12px; margin-bottom:20px;
+}
 
 /* ===== MAIN APP ===== */
 #app { display:none; width:100%; }
@@ -98,7 +118,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--te
 }
 .sidebar-logo h2 { font-family:'Playfair Display',serif; color:white; font-size:17px; }
 .sidebar-logo span { color:rgba(255,255,255,.35); font-size:10px; display:block; letter-spacing:1px; }
-
 .nav-group { padding:12px 0; }
 .nav-group-title {
   color:rgba(255,255,255,.25); font-size:10px;
@@ -109,7 +128,7 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--te
   display:flex; align-items:center; gap:10px;
   padding:10px 20px; color:rgba(255,255,255,.55);
   cursor:pointer; transition:all .15s; font-size:13.5px; font-weight:500;
-  position:relative; border-radius:0;
+  position:relative;
 }
 .nav-item:hover { color:white; background:rgba(255,255,255,.06); }
 .nav-item.active { color:var(--gold); background:rgba(232,184,75,.12); }
@@ -123,7 +142,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--te
   color:white; font-size:10px; font-weight:700;
   padding:2px 7px; border-radius:20px;
 }
-
 .sidebar-user {
   margin-top:auto; padding:16px 20px;
   border-top:1px solid rgba(255,255,255,.08);
@@ -160,15 +178,14 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--te
   display:flex; align-items:center; gap:8px;
   background:var(--cream); border:1.5px solid var(--border);
   border-radius:9px; padding:8px 14px; font-size:13px; color:var(--muted);
-  cursor:text; min-width:200px;
+  min-width:200px;
 }
 .icon-btn {
   width:36px; height:36px; border-radius:9px;
   background:var(--cream); border:1.5px solid var(--border);
   display:flex; align-items:center; justify-content:center;
-  font-size:16px; cursor:pointer; transition:all .15s; position:relative;
+  font-size:16px; cursor:pointer; position:relative;
 }
-.icon-btn:hover { background:var(--border); }
 .dot { width:8px; height:8px; background:var(--red); border-radius:50%; position:absolute; top:4px; right:4px; border:2px solid white; }
 
 /* CONTENT */
@@ -176,7 +193,6 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--te
 .page.active { display:block; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-/* SECTION TITLE */
 .section-head {
   display:flex; align-items:center; justify-content:space-between;
   margin-bottom:20px;
@@ -190,17 +206,12 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--te
 .btn-primary { background:var(--navy); color:white; }
 .btn-primary:hover { background:var(--navy3); transform:translateY(-1px); }
 .btn-gold { background:var(--gold); color:var(--navy); }
-.btn-gold:hover { background:var(--gold2); }
 .btn-outline { background:white; color:var(--navy); border:2px solid var(--border); }
 .btn-outline:hover { border-color:var(--navy); }
 .btn-sm { padding:6px 12px; font-size:12px; }
 .btn-danger { background:var(--red-bg); color:var(--red); }
 
-/* CARDS */
-.card {
-  background:white; border-radius:var(--radius);
-  box-shadow:var(--shadow); overflow:hidden;
-}
+.card { background:white; border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
 .card-head {
   padding:16px 20px; border-bottom:1px solid var(--border);
   display:flex; align-items:center; justify-content:space-between;
@@ -208,10 +219,8 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--te
 .card-head h3 { font-family:'Playfair Display',serif; font-size:15px; color:var(--navy); }
 .card-body { padding:20px; }
 
-/* STATS GRID */
 .stats-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
 .stats-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
-.stats-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:24px; }
 .stat-card {
   background:white; border-radius:var(--radius);
   padding:20px; box-shadow:var(--shadow);
@@ -225,23 +234,18 @@ body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--te
 .tag-red { background:var(--red-bg); color:var(--red); }
 .tag-blue { background:var(--blue-bg); color:var(--blue); }
 .tag-orange { background:var(--orange-bg); color:var(--orange); }
-.tag-purple { background:var(--purple-bg); color:var(--purple); }
 .stat-num { font-family:'Playfair Display',serif; font-size:28px; color:var(--navy); line-height:1; }
 .stat-label { color:var(--muted); font-size:13px; margin-top:4px; }
 
-/* TABLE */
 .table-wrap { overflow-x:auto; }
 table { width:100%; border-collapse:collapse; }
 th {
   text-align:left; font-size:11px; letter-spacing:1px;
   text-transform:uppercase; color:var(--muted);
-  padding:10px 14px 10px; border-bottom:2px solid var(--border);
+  padding:10px 14px; border-bottom:2px solid var(--border);
   font-weight:600; white-space:nowrap;
 }
-td {
-  padding:12px 14px; font-size:13.5px;
-  border-bottom:1px solid var(--border); vertical-align:middle;
-}
+td { padding:12px 14px; font-size:13.5px; border-bottom:1px solid var(--border); vertical-align:middle; }
 tr:last-child td { border-bottom:none; }
 tr:hover td { background:#f9fafb; }
 .td-name { display:flex; align-items:center; gap:10px; }
@@ -250,10 +254,7 @@ tr:hover td { background:#f9fafb; }
   display:flex; align-items:center; justify-content:center;
   font-size:12px; font-weight:700; color:white; flex-shrink:0;
 }
-.status-badge {
-  font-size:11px; font-weight:600; padding:3px 10px;
-  border-radius:20px; display:inline-block; white-space:nowrap;
-}
+.status-badge { font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; display:inline-block; }
 .s-present { background:var(--green-bg); color:var(--green); }
 .s-absent  { background:var(--red-bg); color:var(--red); }
 .s-late    { background:var(--orange-bg); color:var(--orange); }
@@ -263,67 +264,28 @@ tr:hover td { background:#f9fafb; }
 .s-pass    { background:var(--green-bg); color:var(--green); }
 .s-fail    { background:var(--red-bg); color:var(--red); }
 
-/* FORM */
+.g2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; }
+.g-auto { display:grid; grid-template-columns:1.6fr 1fr; gap:20px; }
+
+.progress { background:#e2e8f0; border-radius:10px; height:7px; margin-top:6px; }
+.progress-bar { height:7px; border-radius:10px; }
+
 .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.form-grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
 .fg { margin-bottom:0; }
-.fg label { display:block; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:5px; letter-spacing:.3px; }
+.fg label { display:block; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:5px; }
 .fg input, .fg select, .fg textarea {
   width:100%; padding:10px 12px;
   border:1.5px solid var(--border); border-radius:8px;
   font-family:'DM Sans',sans-serif; font-size:13.5px; color:var(--text);
   transition:border-color .2s; outline:none; background:white;
 }
-.fg input:focus, .fg select:focus, .fg textarea:focus { border-color:var(--navy); }
-.fg textarea { resize:vertical; min-height:80px; }
+.fg input:focus, .fg select:focus { border-color:var(--navy); }
 .form-actions { display:flex; gap:10px; margin-top:20px; padding-top:16px; border-top:1px solid var(--border); }
 
-/* GRID LAYOUTS */
-.g2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-.g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; }
-.g-auto { display:grid; grid-template-columns:1.6fr 1fr; gap:20px; }
-
-/* PROGRESS BAR */
-.progress { background:#e2e8f0; border-radius:10px; height:7px; margin-top:6px; }
-.progress-bar { height:7px; border-radius:10px; transition:width 1s ease; }
-
-/* ATTENDANCE GRID */
-.att-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
-.att-day {
-  aspect-ratio:1; border-radius:6px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:12px; font-weight:600; cursor:pointer;
-  transition:transform .1s;
-}
-.att-day:hover { transform:scale(1.1); }
-.att-p { background:var(--green-bg); color:var(--green); }
-.att-a { background:var(--red-bg); color:var(--red); }
-.att-h { background:var(--border); color:var(--muted); }
-.att-l { background:var(--orange-bg); color:var(--orange); }
-
-/* TIMETABLE */
-.tt-grid { display:grid; grid-template-columns:80px repeat(6,1fr); gap:6px; }
-.tt-cell {
-  padding:8px; border-radius:8px;
-  font-size:12px; text-align:center; min-height:60px;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-}
-.tt-head { background:var(--navy); color:white; font-weight:600; font-size:12px; }
-.tt-time { background:var(--cream); color:var(--muted); font-size:11px; }
-.tt-subj { font-weight:600; }
-.tt-teacher { font-size:10px; opacity:.7; margin-top:2px; }
-
-/* CHARTS */
-.bar-chart { display:flex; align-items:flex-end; gap:8px; height:100px; }
-.bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
-.bar { width:100%; border-radius:5px 5px 0 0; transition:height .8s ease; min-width:20px; }
-.bar-label { font-size:10px; color:var(--muted); text-align:center; }
-.bar-val { font-size:10px; font-weight:600; color:var(--navy); }
-
-/* MODAL */
 .modal-overlay {
   position:fixed; inset:0; background:rgba(0,0,0,.5);
-  display:flex; align-items:center; justify-content:center;
+  align-items:center; justify-content:center;
   z-index:500; display:none;
 }
 .modal-overlay.open { display:flex; }
@@ -336,47 +298,39 @@ tr:hover td { background:#f9fafb; }
 .modal h3 { font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); margin-bottom:20px; }
 .modal-close { float:right; background:none; border:none; font-size:20px; cursor:pointer; color:var(--muted); }
 
-/* ALERT */
-.alert {
-  padding:12px 16px; border-radius:9px; font-size:13px;
-  margin-bottom:16px; display:flex; align-items:center; gap:8px;
-}
-.alert-success { background:var(--green-bg); color:var(--green); }
-.alert-warn { background:var(--orange-bg); color:var(--orange); }
-.alert-info { background:var(--blue-bg); color:var(--blue); }
-
-/* SECURITY BADGE */
-.security-row {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 14px; background:var(--green-bg);
-  border-radius:9px; margin-bottom:16px;
-  font-size:13px; color:var(--green); font-weight:500;
-}
-
-/* AI WIDGET */
-.ai-box {
-  background:linear-gradient(135deg,var(--navy),var(--navy3));
-  border-radius:var(--radius); padding:20px; color:white;
-}
+.ai-box { background:linear-gradient(135deg,var(--navy),var(--navy3)); border-radius:var(--radius); padding:20px; color:white; }
 .ai-box h4 { font-family:'Playfair Display',serif; font-size:15px; color:var(--gold); margin-bottom:6px; }
 .ai-box p { font-size:13px; opacity:.7; margin-bottom:14px; }
-.ai-suggestion {
-  background:rgba(255,255,255,.08); border-radius:9px;
-  padding:10px 14px; font-size:13px; margin-bottom:8px;
-  border-left:3px solid var(--gold);
-}
+.ai-suggestion { background:rgba(255,255,255,.08); border-radius:9px; padding:10px 14px; font-size:13px; margin-bottom:8px; border-left:3px solid var(--gold); }
 
-/* SCROLLBAR */
+.security-row { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--green-bg); border-radius:9px; margin-bottom:10px; font-size:13px; color:var(--green); font-weight:500; }
+
+.bar-chart { display:flex; align-items:flex-end; gap:8px; height:100px; }
+.bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.bar { width:100%; border-radius:5px 5px 0 0; min-width:20px; }
+.bar-label { font-size:10px; color:var(--muted); }
+.bar-val { font-size:10px; font-weight:600; color:var(--navy); }
+
+.att-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
+.att-day { aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; cursor:pointer; }
+.att-p { background:var(--green-bg); color:var(--green); }
+.att-a { background:var(--red-bg); color:var(--red); }
+.att-h { background:var(--border); color:var(--muted); }
+.att-l { background:var(--orange-bg); color:var(--orange); }
+
+.tt-grid { display:grid; grid-template-columns:80px repeat(6,1fr); gap:6px; }
+.tt-cell { padding:8px; border-radius:8px; font-size:12px; text-align:center; min-height:60px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.tt-head { background:var(--navy); color:white; font-weight:600; }
+.tt-time { background:var(--cream); color:var(--muted); font-size:11px; }
+.tt-subj { font-weight:600; }
+.tt-teacher { font-size:10px; opacity:.7; margin-top:2px; }
+
 ::-webkit-scrollbar { width:5px; height:5px; }
-::-webkit-scrollbar-track { background:transparent; }
 ::-webkit-scrollbar-thumb { background:#c5d0de; border-radius:10px; }
-
-/* RESPONSIVE HELPER */
 .mt16 { margin-top:16px; }
 .mt20 { margin-top:20px; }
-.gap16 { gap:16px; }
-.text-muted { color:var(--muted); font-size:13px; }
 .fw600 { font-weight:600; }
+.text-muted { color:var(--muted); font-size:13px; }
 .text-navy { color:var(--navy); font-weight:600; }
 </style>
 </head>
@@ -388,43 +342,32 @@ tr:hover td { background:#f9fafb; }
     <div class="login-logo">
       <div style="font-size:40px">🎓</div>
       <h1>EduCore Pro</h1>
-      <p>Complete School Management System</p>
-      <span class="badge">🔒 Secured & Encrypted</span>
+      <p>Podar School Management System</p>
+      <span class="badge">🔒 Supabase Secured</span>
     </div>
+    <div class="security-note">🛡️ SSL Encrypted — Your data is safe</div>
+    <div class="error-msg" id="errorMsg">❌ Email ya password galat hai!</div>
+    <div class="success-msg" id="successMsg">✅ Login ho rahe hain...</div>
     <div class="form-group">
-      <label>Login As</label>
-      <select id="loginRole">
-        <option value="admin">Admin / Principal</option>
-        <option value="teacher">Teacher</option>
-        <option value="accountant">Accountant</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Username</label>
-      <input type="text" placeholder="admin@school.edu" value="admin@school.edu">
+      <label>Email Address</label>
+      <input type="email" id="loginEmail" placeholder="admin@podarschool.com">
     </div>
     <div class="form-group">
       <label>Password</label>
-      <input type="password" placeholder="••••••••" value="password123">
+      <input type="password" id="loginPassword" placeholder="••••••••">
     </div>
-    <button class="login-btn" onclick="doLogin()">🔐 Secure Login</button>
-    <p class="login-hint">Demo: Use any credentials shown above &nbsp;|&nbsp; <span>SSL Encrypted</span></p>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">🔐 Secure Login</button>
+    <p class="login-hint">Powered by Supabase &nbsp;|&nbsp; <span>End-to-End Encrypted</span></p>
   </div>
 </div>
 
 <!-- ===== MAIN APP ===== -->
 <div id="app">
-
-<!-- SIDEBAR -->
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="icon">🎓</div>
-    <div>
-      <h2>EduCore</h2>
-      <span>School ERP Pro</span>
-    </div>
+    <div><h2>EduCore</h2><span>Podar School ERP</span></div>
   </div>
-
   <nav>
     <div class="nav-group">
       <div class="nav-group-title">Main</div>
@@ -451,60 +394,41 @@ tr:hover td { background:#f9fafb; }
       <div class="nav-item" onclick="showPage('settings',this)"><span class="ni">⚙️</span> Settings</div>
     </div>
   </nav>
-
   <div class="sidebar-user">
-    <div class="ava">AP</div>
+    <div class="ava">AD</div>
     <div class="info">
-      <div class="name">Admin Principal</div>
+      <div class="name" id="userEmail">Admin</div>
       <div class="role">Super Admin</div>
     </div>
     <button class="logout-btn" onclick="doLogout()" title="Logout">⏻</button>
   </div>
 </aside>
 
-<!-- MAIN -->
 <div class="main">
-
-  <!-- TOPBAR -->
   <div class="topbar">
     <div class="topbar-left">
       <h3 id="pageTitle">Dashboard</h3>
-      <p id="pageSubtitle">Welcome back! Here's what's happening today.</p>
+      <p id="pageSubtitle">Welcome back! Aaj school mein kya ho raha hai.</p>
     </div>
     <div class="topbar-right">
-      <div class="search">🔍 &nbsp; Search students, staff...</div>
-      <div class="icon-btn">🔔 <div class="dot"></div></div>
+      <div class="search">🔍 &nbsp; Search...</div>
+      <div class="icon-btn">🔔<div class="dot"></div></div>
       <div class="icon-btn">📧</div>
-      <div class="ava" style="width:36px;height:36px;font-size:13px;background:var(--gold);color:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;">AP</div>
     </div>
   </div>
 
-  <!-- ===== DASHBOARD ===== -->
+  <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
     <div class="stats-4">
-      <div class="stat-card">
-        <div class="stat-top"><div class="stat-icon" style="background:#dbeafe">👨‍🎓</div><span class="tag tag-green">▲ 3%</span></div>
-        <div class="stat-num">1,248</div><div class="stat-label">Total Students</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-top"><div class="stat-icon" style="background:#fef3c7">👩‍🏫</div><span class="tag tag-blue">Active</span></div>
-        <div class="stat-num">86</div><div class="stat-label">Total Teachers</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div><span class="tag tag-green">+12%</span></div>
-        <div class="stat-num">₹4.2L</div><div class="stat-label">Fee Collected</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⚠️</div><span class="tag tag-red">Due</span></div>
-        <div class="stat-num">₹68K</div><div class="stat-label">Fee Pending</div>
-      </div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">👨‍🎓</div><span class="tag tag-green">▲ 3%</span></div><div class="stat-num">1,248</div><div class="stat-label">Total Students</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">👩‍🏫</div><span class="tag tag-blue">Active</span></div><div class="stat-num">86</div><div class="stat-label">Total Teachers</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div><span class="tag tag-green">+12%</span></div><div class="stat-num">₹4.2L</div><div class="stat-label">Fee Collected</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⚠️</div><span class="tag tag-red">Due</span></div><div class="stat-num">₹68K</div><div class="stat-label">Fee Pending</div></div>
     </div>
-
     <div class="g-auto">
       <div style="display:flex;flex-direction:column;gap:20px;">
-        <!-- Attendance chart -->
         <div class="card">
-          <div class="card-head"><h3>Weekly Attendance Overview</h3><span class="tag tag-green">94.2% Avg</span></div>
+          <div class="card-head"><h3>Weekly Attendance</h3><span class="tag tag-green">94.2% Avg</span></div>
           <div class="card-body">
             <div class="bar-chart">
               <div class="bar-wrap"><div class="bar-val">96%</div><div class="bar" style="height:96px;background:var(--navy)"></div><div class="bar-label">Mon</div></div>
@@ -516,69 +440,46 @@ tr:hover td { background:#f9fafb; }
             </div>
           </div>
         </div>
-
-        <!-- Recent students -->
         <div class="card">
-          <div class="card-head"><h3>Recent Admissions</h3><button class="btn btn-sm btn-outline" onclick="showPage('students',null)">View All</button></div>
+          <div class="card-head"><h3>Recent Students</h3><button class="btn btn-sm btn-outline" onclick="showPage('students',null)">View All</button></div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Student</th><th>Class</th><th>Fee Status</th><th>Joined</th></tr></thead>
+              <thead><tr><th>Student</th><th>Class</th><th>Fee</th></tr></thead>
               <tbody>
-                <tr><td><div class="td-name"><div class="mini-ava" style="background:#2563eb">AK</div>Aarav Kumar</div></td><td>10 – A</td><td><span class="status-badge s-paid">Paid</span></td><td>Jan 2026</td></tr>
-                <tr><td><div class="td-name"><div class="mini-ava" style="background:#7c3aed">PS</div>Priya Sharma</div></td><td>9 – B</td><td><span class="status-badge s-pending">Pending</span></td><td>Jan 2026</td></tr>
-                <tr><td><div class="td-name"><div class="mini-ava" style="background:#16a34a">RV</div>Rohan Verma</div></td><td>8 – A</td><td><span class="status-badge s-paid">Paid</span></td><td>Feb 2026</td></tr>
-                <tr><td><div class="td-name"><div class="mini-ava" style="background:#d97706">NP</div>Neha Patil</div></td><td>7 – C</td><td><span class="status-badge s-overdue">Overdue</span></td><td>Feb 2026</td></tr>
+                <tr><td><div class="td-name"><div class="mini-ava" style="background:#2563eb">AK</div>Aarav Kumar</div></td><td>10–A</td><td><span class="status-badge s-paid">Paid</span></td></tr>
+                <tr><td><div class="td-name"><div class="mini-ava" style="background:#7c3aed">PS</div>Priya Sharma</div></td><td>9–B</td><td><span class="status-badge s-pending">Pending</span></td></tr>
+                <tr><td><div class="td-name"><div class="mini-ava" style="background:#16a34a">RV</div>Rohan Verma</div></td><td>8–A</td><td><span class="status-badge s-paid">Paid</span></td></tr>
+                <tr><td><div class="td-name"><div class="mini-ava" style="background:#d97706">NP</div>Neha Patil</div></td><td>7–C</td><td><span class="status-badge s-overdue">Overdue</span></td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-
-      <!-- Right column -->
       <div style="display:flex;flex-direction:column;gap:20px;">
-        <!-- AI Insights -->
         <div class="ai-box">
           <h4>🤖 AI Insights</h4>
-          <p>Smart suggestions based on school data</p>
-          <div class="ai-suggestion">📉 Class 8B attendance dropped 8% this week — consider follow-up</div>
-          <div class="ai-suggestion">💸 12 students have overdue fees — send automated reminders</div>
-          <div class="ai-suggestion">🏆 Class 10A has highest avg score (87%) — recognize them!</div>
+          <p>Smart suggestions</p>
+          <div class="ai-suggestion">📉 Class 8B attendance 8% kam — follow-up karo</div>
+          <div class="ai-suggestion">💸 12 students ke fees overdue hain</div>
+          <div class="ai-suggestion">🏆 Class 10A top performer — 87% avg!</div>
         </div>
-
-        <!-- Upcoming Events -->
-        <div class="card">
-          <div class="card-head"><h3>Upcoming Events</h3></div>
-          <div class="card-body" style="padding:12px 16px;">
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="display:flex;gap:12px;align-items:center;">
-                <div style="background:var(--navy);color:white;border-radius:8px;padding:6px 8px;text-align:center;min-width:44px;"><div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1">24</div><div style="font-size:9px;color:var(--gold);letter-spacing:1px">FEB</div></div>
-                <div><div class="fw600" style="font-size:13px">Math Exam — Class 9 & 10</div><div class="text-muted">9:00 AM · Hall A</div></div>
-              </div>
-              <div style="display:flex;gap:12px;align-items:center;">
-                <div style="background:var(--navy);color:white;border-radius:8px;padding:6px 8px;text-align:center;min-width:44px;"><div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1">28</div><div style="font-size:9px;color:var(--gold);letter-spacing:1px">FEB</div></div>
-                <div><div class="fw600" style="font-size:13px">Annual Sports Day</div><div class="text-muted">8:00 AM · Ground</div></div>
-              </div>
-              <div style="display:flex;gap:12px;align-items:center;">
-                <div style="background:var(--navy);color:white;border-radius:8px;padding:6px 8px;text-align:center;min-width:44px;"><div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1">05</div><div style="font-size:9px;color:var(--gold);letter-spacing:1px">MAR</div></div>
-                <div><div class="fw600" style="font-size:13px">Parent–Teacher Meeting</div><div class="text-muted">10:00 AM · All Classes</div></div>
-              </div>
-              <div style="display:flex;gap:12px;align-items:center;">
-                <div style="background:var(--navy);color:white;border-radius:8px;padding:6px 8px;text-align:center;min-width:44px;"><div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1">15</div><div style="font-size:9px;color:var(--gold);letter-spacing:1px">MAR</div></div>
-                <div><div class="fw600" style="font-size:13px">Science Exhibition</div><div class="text-muted">11:00 AM · Class 6–10</div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick stats -->
         <div class="card">
           <div class="card-head"><h3>Today's Summary</h3></div>
           <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:12px;">
               <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Attendance</span><span class="fw600">94.2%</span></div><div class="progress"><div class="progress-bar" style="width:94%;background:var(--green)"></div></div></div>
               <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Fee Collection</span><span class="fw600">78%</span></div><div class="progress"><div class="progress-bar" style="width:78%;background:var(--blue)"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Exam Results Filed</span><span class="fw600">65%</span></div><div class="progress"><div class="progress-bar" style="width:65%;background:var(--gold)"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Library Utilization</span><span class="fw600">52%</span></div><div class="progress"><div class="progress-bar" style="width:52%;background:var(--purple)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Exams Filed</span><span class="fw600">65%</span></div><div class="progress"><div class="progress-bar" style="width:65%;background:var(--gold)"></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h3>Upcoming Events</h3></div>
+          <div class="card-body" style="padding:12px 16px;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;gap:12px;align-items:center;"><div style="background:var(--navy);color:white;border-radius:8px;padding:6px 8px;text-align:center;min-width:44px;"><div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1">24</div><div style="font-size:9px;color:var(--gold)">FEB</div></div><div><div class="fw600" style="font-size:13px">Math Exam</div><div class="text-muted">9:00 AM · Hall A</div></div></div>
+              <div style="display:flex;gap:12px;align-items:center;"><div style="background:var(--navy);color:white;border-radius:8px;padding:6px 8px;text-align:center;min-width:44px;"><div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1">28</div><div style="font-size:9px;color:var(--gold)">FEB</div></div><div><div class="fw600" style="font-size:13px">Sports Day</div><div class="text-muted">8:00 AM · Ground</div></div></div>
+              <div style="display:flex;gap:12px;align-items:center;"><div style="background:var(--navy);color:white;border-radius:8px;padding:6px 8px;text-align:center;min-width:44px;"><div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1">05</div><div style="font-size:9px;color:var(--gold)">MAR</div></div><div><div class="fw600" style="font-size:13px">PTM</div><div class="text-muted">10:00 AM · All Classes</div></div></div>
             </div>
           </div>
         </div>
@@ -586,85 +487,67 @@ tr:hover td { background:#f9fafb; }
     </div>
   </div>
 
-  <!-- ===== STUDENTS ===== -->
+  <!-- STUDENTS -->
   <div class="page" id="page-students">
-    <div class="section-head">
-      <h2>Student Management</h2>
-      <div style="display:flex;gap:10px;">
-        <button class="btn btn-outline btn-sm">📥 Import CSV</button>
-        <button class="btn btn-primary" onclick="openModal('addStudent')">+ Add Student</button>
-      </div>
-    </div>
+    <div class="section-head"><h2>Student Management</h2><button class="btn btn-primary" onclick="openModal('addStudent')">+ Add Student</button></div>
     <div class="stats-4" style="margin-bottom:20px;">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">👨‍🎓</div><span class="tag tag-green">Total</span></div><div class="stat-num">1,248</div><div class="stat-label">All Students</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div><span class="tag tag-green">Active</span></div><div class="stat-num">1,201</div><div class="stat-label">Active Students</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">🆕</div><span class="tag tag-blue">New</span></div><div class="stat-num">47</div><div class="stat-label">New This Month</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#ede9fe">🎓</div></div><div class="stat-num">186</div><div class="stat-label">Graduating (Class 10)</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">👨‍🎓</div></div><div class="stat-num">1,248</div><div class="stat-label">Total Students</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num">1,201</div><div class="stat-label">Active</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">🆕</div></div><div class="stat-num">47</div><div class="stat-label">New This Month</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#ede9fe">🎓</div></div><div class="stat-num">186</div><div class="stat-label">Class 10</div></div>
     </div>
     <div class="card">
-      <div class="card-head">
-        <h3>All Students</h3>
-        <div style="display:flex;gap:8px;">
-          <select style="padding:6px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;">
-            <option>All Classes</option><option>Class 10</option><option>Class 9</option><option>Class 8</option>
-          </select>
-          <select style="padding:6px 10px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;">
-            <option>All Sections</option><option>Section A</option><option>Section B</option>
-          </select>
-        </div>
-      </div>
+      <div class="card-head"><h3>All Students</h3></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>#</th><th>Student Name</th><th>Class</th><th>Roll No</th><th>Parent</th><th>Phone</th><th>Fee Status</th><th>Actions</th></tr></thead>
+          <thead><tr><th>#</th><th>Student</th><th>Class</th><th>Roll</th><th>Parent</th><th>Phone</th><th>Fee</th><th>Action</th></tr></thead>
           <tbody id="studentTable">
-            <tr><td>1</td><td><div class="td-name"><div class="mini-ava" style="background:#2563eb">AK</div>Aarav Kumar</div></td><td>10 – A</td><td>01</td><td>Rajesh Kumar</td><td>98765-43210</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
-            <tr><td>2</td><td><div class="td-name"><div class="mini-ava" style="background:#7c3aed">PS</div>Priya Sharma</div></td><td>9 – B</td><td>12</td><td>Suresh Sharma</td><td>91234-56789</td><td><span class="status-badge s-pending">Pending</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
-            <tr><td>3</td><td><div class="td-name"><div class="mini-ava" style="background:#16a34a">RV</div>Rohan Verma</div></td><td>8 – A</td><td>05</td><td>Mohan Verma</td><td>87654-32109</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
-            <tr><td>4</td><td><div class="td-name"><div class="mini-ava" style="background:#d97706">NP</div>Neha Patil</div></td><td>7 – C</td><td>22</td><td>Vijay Patil</td><td>76543-21098</td><td><span class="status-badge s-overdue">Overdue</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
-            <tr><td>5</td><td><div class="td-name"><div class="mini-ava" style="background:#dc2626">SK</div>Siddharth Kaur</div></td><td>10 – B</td><td>08</td><td>Gurpreet Kaur</td><td>65432-10987</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
-            <tr><td>6</td><td><div class="td-name"><div class="mini-ava" style="background:#0891b2">AM</div>Ananya Mishra</div></td><td>6 – A</td><td>03</td><td>Prakash Mishra</td><td>54321-09876</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+            <tr><td>1</td><td><div class="td-name"><div class="mini-ava" style="background:#2563eb">AK</div>Aarav Kumar</div></td><td>10–A</td><td>01</td><td>Rajesh Kumar</td><td>98765-43210</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+            <tr><td>2</td><td><div class="td-name"><div class="mini-ava" style="background:#7c3aed">PS</div>Priya Sharma</div></td><td>9–B</td><td>12</td><td>Suresh Sharma</td><td>91234-56789</td><td><span class="status-badge s-pending">Pending</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+            <tr><td>3</td><td><div class="td-name"><div class="mini-ava" style="background:#16a34a">RV</div>Rohan Verma</div></td><td>8–A</td><td>05</td><td>Mohan Verma</td><td>87654-32109</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
+            <tr><td>4</td><td><div class="td-name"><div class="mini-ava" style="background:#d97706">NP</div>Neha Patil</div></td><td>7–C</td><td>22</td><td>Vijay Patil</td><td>76543-21098</td><td><span class="status-badge s-overdue">Overdue</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- ===== TEACHERS ===== -->
+  <!-- TEACHERS -->
   <div class="page" id="page-teachers">
-    <div class="section-head"><h2>Teacher & Staff Management</h2><button class="btn btn-primary" onclick="openModal('addTeacher')">+ Add Teacher</button></div>
+    <div class="section-head"><h2>Teachers & Staff</h2><button class="btn btn-primary" onclick="openModal('addTeacher')">+ Add Teacher</button></div>
     <div class="stats-3">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">👩‍🏫</div><span class="tag tag-green">Total</span></div><div class="stat-num">86</div><div class="stat-label">Teaching Staff</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">🧑‍💼</div><span class="tag tag-blue">Admin</span></div><div class="stat-num">14</div><div class="stat-label">Non-Teaching Staff</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">👩‍🏫</div></div><div class="stat-num">86</div><div class="stat-label">Teaching Staff</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">🧑‍💼</div></div><div class="stat-num">14</div><div class="stat-label">Non-Teaching</div></div>
       <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num">98</div><div class="stat-label">Present Today</div></div>
     </div>
     <div class="card">
       <div class="card-head"><h3>All Teachers</h3></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>#</th><th>Name</th><th>Subject</th><th>Class In-charge</th><th>Phone</th><th>Salary</th><th>Status</th></tr></thead>
+          <thead><tr><th>#</th><th>Name</th><th>Subject</th><th>Class</th><th>Phone</th><th>Salary</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>1</td><td><div class="td-name"><div class="mini-ava" style="background:#2563eb">SR</div>Sunita Rao</div></td><td>Mathematics</td><td>10 – A</td><td>99887-76655</td><td>₹42,000</td><td><span class="status-badge s-present">Active</span></td></tr>
-            <tr><td>2</td><td><div class="td-name"><div class="mini-ava" style="background:#7c3aed">MK</div>Manoj Kumar</div></td><td>Science</td><td>9 – B</td><td>88776-65544</td><td>₹38,500</td><td><span class="status-badge s-present">Active</span></td></tr>
-            <tr><td>3</td><td><div class="td-name"><div class="mini-ava" style="background:#16a34a">AP</div>Asha Patel</div></td><td>English</td><td>8 – A</td><td>77665-54433</td><td>₹35,000</td><td><span class="status-badge s-present">Active</span></td></tr>
-            <tr><td>4</td><td><div class="td-name"><div class="mini-ava" style="background:#d97706">RJ</div>Rajan Joshi</div></td><td>Social Studies</td><td>7 – C</td><td>66554-43322</td><td>₹32,000</td><td><span class="status-badge s-late">On Leave</span></td></tr>
+            <tr><td>1</td><td><div class="td-name"><div class="mini-ava" style="background:#2563eb">SR</div>Sunita Rao</div></td><td>Mathematics</td><td>10–A</td><td>99887-76655</td><td>₹42,000</td><td><span class="status-badge s-present">Active</span></td></tr>
+            <tr><td>2</td><td><div class="td-name"><div class="mini-ava" style="background:#7c3aed">MK</div>Manoj Kumar</div></td><td>Science</td><td>9–B</td><td>88776-65544</td><td>₹38,500</td><td><span class="status-badge s-present">Active</span></td></tr>
+            <tr><td>3</td><td><div class="td-name"><div class="mini-ava" style="background:#16a34a">AP</div>Asha Patel</div></td><td>English</td><td>8–A</td><td>77665-54433</td><td>₹35,000</td><td><span class="status-badge s-present">Active</span></td></tr>
+            <tr><td>4</td><td><div class="td-name"><div class="mini-ava" style="background:#d97706">RJ</div>Rajan Joshi</div></td><td>Social Studies</td><td>7–C</td><td>66554-43322</td><td>₹32,000</td><td><span class="status-badge s-late">On Leave</span></td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- ===== ATTENDANCE ===== -->
+  <!-- ATTENDANCE -->
   <div class="page" id="page-attendance">
-    <div class="section-head"><h2>Attendance Management</h2><button class="btn btn-primary">📋 Mark Today's Attendance</button></div>
+    <div class="section-head"><h2>Attendance</h2><button class="btn btn-primary">📋 Mark Attendance</button></div>
     <div class="stats-4">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div><span class="tag tag-green">Today</span></div><div class="stat-num">94.2%</div><div class="stat-label">Overall Attendance</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div><span class="tag tag-green">Today</span></div><div class="stat-num">94.2%</div><div class="stat-label">Overall</div></div>
       <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">👤</div></div><div class="stat-num">1,175</div><div class="stat-label">Present</div></div>
       <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">❌</div></div><div class="stat-num">58</div><div class="stat-label">Absent</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⏰</div></div><div class="stat-num">15</div><div class="stat-label">Late Comers</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⏰</div></div><div class="stat-num">15</div><div class="stat-label">Late</div></div>
     </div>
     <div class="g2">
       <div class="card">
-        <div class="card-head"><h3>Today's Attendance — Class 10A</h3></div>
+        <div class="card-head"><h3>Class 10A — Today</h3></div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>Roll</th><th>Student</th><th>Status</th><th>Time</th></tr></thead>
@@ -673,367 +556,243 @@ tr:hover td { background:#f9fafb; }
               <tr><td>02</td><td>Priya Sharma</td><td><span class="status-badge s-late">Late</span></td><td>8:47 AM</td></tr>
               <tr><td>03</td><td>Rohan Verma</td><td><span class="status-badge s-absent">Absent</span></td><td>—</td></tr>
               <tr><td>04</td><td>Neha Patil</td><td><span class="status-badge s-present">Present</span></td><td>7:58 AM</td></tr>
-              <tr><td>05</td><td>Siddharth Kaur</td><td><span class="status-badge s-present">Present</span></td><td>8:05 AM</td></tr>
-              <tr><td>06</td><td>Ananya Mishra</td><td><span class="status-badge s-present">Present</span></td><td>8:01 AM</td></tr>
             </tbody>
           </table>
         </div>
       </div>
       <div class="card">
-        <div class="card-head"><h3>February Attendance Calendar</h3></div>
+        <div class="card-head"><h3>February Calendar</h3></div>
         <div class="card-body">
           <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px;">
-            <div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">Sun</div>
-            <div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">Mon</div>
-            <div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">Tue</div>
-            <div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">Wed</div>
-            <div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">Thu</div>
-            <div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">Fri</div>
-            <div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">Sat</div>
+            <div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">S</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">M</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">T</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">W</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">T</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">F</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">S</div>
           </div>
           <div class="att-grid">
-            <div class="att-day att-h">—</div>
-            <div class="att-day att-h">—</div>
-            <div class="att-day att-h">—</div>
-            <div class="att-day att-h">—</div>
-            <div class="att-day att-h">—</div>
-            <div class="att-day att-h">—</div>
-            <div class="att-day att-h">1</div>
-            <div class="att-day att-h">2</div>
-            <div class="att-day att-p">3</div>
-            <div class="att-day att-p">4</div>
-            <div class="att-day att-p">5</div>
-            <div class="att-day att-p">6</div>
-            <div class="att-day att-p">7</div>
-            <div class="att-day att-h">8</div>
-            <div class="att-day att-h">9</div>
-            <div class="att-day att-p">10</div>
-            <div class="att-day att-p">11</div>
-            <div class="att-day att-a">12</div>
-            <div class="att-day att-p">13</div>
-            <div class="att-day att-p">14</div>
-            <div class="att-day att-h">15</div>
-            <div class="att-day att-h">16</div>
-            <div class="att-day att-p">17</div>
-            <div class="att-day att-p">18</div>
-            <div class="att-day att-l">19</div>
-            <div class="att-day att-p">20</div>
-            <div class="att-day att-p">21</div>
-          </div>
-          <div style="display:flex;gap:12px;margin-top:14px;flex-wrap:wrap;">
-            <div style="display:flex;align-items:center;gap:5px;font-size:12px;"><div style="width:12px;height:12px;border-radius:3px;background:var(--green-bg)"></div>Present</div>
-            <div style="display:flex;align-items:center;gap:5px;font-size:12px;"><div style="width:12px;height:12px;border-radius:3px;background:var(--red-bg)"></div>Absent</div>
-            <div style="display:flex;align-items:center;gap:5px;font-size:12px;"><div style="width:12px;height:12px;border-radius:3px;background:var(--orange-bg)"></div>Late</div>
-            <div style="display:flex;align-items:center;gap:5px;font-size:12px;"><div style="width:12px;height:12px;border-radius:3px;background:var(--border)"></div>Holiday</div>
+            <div class="att-day att-h">—</div><div class="att-day att-h">—</div><div class="att-day att-h">—</div><div class="att-day att-h">—</div><div class="att-day att-h">—</div><div class="att-day att-h">—</div><div class="att-day att-h">1</div>
+            <div class="att-day att-h">2</div><div class="att-day att-p">3</div><div class="att-day att-p">4</div><div class="att-day att-p">5</div><div class="att-day att-p">6</div><div class="att-day att-p">7</div><div class="att-day att-h">8</div>
+            <div class="att-day att-h">9</div><div class="att-day att-p">10</div><div class="att-day att-p">11</div><div class="att-day att-a">12</div><div class="att-day att-p">13</div><div class="att-day att-p">14</div><div class="att-day att-h">15</div>
+            <div class="att-day att-h">16</div><div class="att-day att-p">17</div><div class="att-day att-p">18</div><div class="att-day att-l">19</div><div class="att-day att-p">20</div><div class="att-day att-p">21</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== EXAMS ===== -->
+  <!-- EXAMS -->
   <div class="page" id="page-exams">
-    <div class="section-head"><h2>Exams & Result Management</h2><button class="btn btn-primary">+ Schedule Exam</button></div>
+    <div class="section-head"><h2>Exams & Results</h2><button class="btn btn-primary">+ Schedule Exam</button></div>
     <div class="stats-4">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📝</div></div><div class="stat-num">6</div><div class="stat-label">Exams This Month</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">🏆</div></div><div class="stat-num">87%</div><div class="stat-label">Avg Score (Class 10)</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">❌</div></div><div class="stat-num">23</div><div class="stat-label">Students Failed</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📝</div></div><div class="stat-num">6</div><div class="stat-label">This Month</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">🏆</div></div><div class="stat-num">87%</div><div class="stat-label">Avg Score</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">❌</div></div><div class="stat-num">23</div><div class="stat-label">Failed</div></div>
       <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⭐</div></div><div class="stat-num">156</div><div class="stat-label">Distinctions</div></div>
     </div>
-    <div class="g-auto">
-      <div class="card">
-        <div class="card-head"><h3>Result Sheet — Class 10A</h3><button class="btn btn-sm btn-gold">📄 Print Report Cards</button></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Student</th><th>Math</th><th>Science</th><th>English</th><th>Hindi</th><th>Total</th><th>Grade</th><th>Result</th></tr></thead>
-            <tbody>
-              <tr><td>Aarav Kumar</td><td>92</td><td>88</td><td>85</td><td>90</td><td>355/400</td><td>A+</td><td><span class="status-badge s-pass">Pass</span></td></tr>
-              <tr><td>Priya Sharma</td><td>78</td><td>82</td><td>91</td><td>75</td><td>326/400</td><td>A</td><td><span class="status-badge s-pass">Pass</span></td></tr>
-              <tr><td>Rohan Verma</td><td>45</td><td>52</td><td>60</td><td>55</td><td>212/400</td><td>C</td><td><span class="status-badge s-fail">Fail</span></td></tr>
-              <tr><td>Neha Patil</td><td>88</td><td>91</td><td>87</td><td>84</td><td>350/400</td><td>A+</td><td><span class="status-badge s-pass">Pass</span></td></tr>
-              <tr><td>Siddharth Kaur</td><td>72</td><td>68</td><td>74</td><td>70</td><td>284/400</td><td>B</td><td><span class="status-badge s-pass">Pass</span></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:16px;">
-        <div class="card">
-          <div class="card-head"><h3>Upcoming Exams</h3></div>
-          <div class="card-body" style="padding:12px 16px;">
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--cream);border-radius:8px;"><div><div class="fw600" style="font-size:13px">Mathematics</div><div class="text-muted">Class 9 & 10 · Feb 24</div></div><span class="tag tag-orange">Upcoming</span></div>
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--cream);border-radius:8px;"><div><div class="fw600" style="font-size:13px">Science</div><div class="text-muted">Class 8 & 9 · Mar 2</div></div><span class="tag tag-blue">Scheduled</span></div>
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--cream);border-radius:8px;"><div><div class="fw600" style="font-size:13px">English</div><div class="text-muted">All Classes · Mar 10</div></div><span class="tag tag-blue">Scheduled</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="ai-box">
-          <h4>🤖 AI Result Analysis</h4>
-          <p>Based on exam data</p>
-          <div class="ai-suggestion">📚 Rohan Verma needs extra attention in Math</div>
-          <div class="ai-suggestion">🌟 Class 10A top performer this term</div>
-        </div>
+    <div class="card">
+      <div class="card-head"><h3>Result Sheet — Class 10A</h3><button class="btn btn-sm btn-gold">📄 Print</button></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Student</th><th>Math</th><th>Science</th><th>English</th><th>Hindi</th><th>Total</th><th>Grade</th><th>Result</th></tr></thead>
+          <tbody>
+            <tr><td>Aarav Kumar</td><td>92</td><td>88</td><td>85</td><td>90</td><td>355/400</td><td>A+</td><td><span class="status-badge s-pass">Pass</span></td></tr>
+            <tr><td>Priya Sharma</td><td>78</td><td>82</td><td>91</td><td>75</td><td>326/400</td><td>A</td><td><span class="status-badge s-pass">Pass</span></td></tr>
+            <tr><td>Rohan Verma</td><td>45</td><td>52</td><td>60</td><td>55</td><td>212/400</td><td>C</td><td><span class="status-badge s-fail">Fail</span></td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
 
-  <!-- ===== TIMETABLE ===== -->
+  <!-- TIMETABLE -->
   <div class="page" id="page-timetable">
-    <div class="section-head"><h2>Class Timetable</h2>
-      <div style="display:flex;gap:8px;">
-        <select style="padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;"><option>Class 10 – A</option><option>Class 9 – B</option><option>Class 8 – A</option></select>
-        <button class="btn btn-primary">Edit Timetable</button>
-      </div>
-    </div>
+    <div class="section-head"><h2>Timetable</h2><button class="btn btn-primary">Edit</button></div>
     <div class="card">
-      <div class="card-head"><h3>Weekly Schedule — Class 10A</h3></div>
+      <div class="card-head"><h3>Class 10A — Weekly Schedule</h3></div>
       <div class="card-body">
         <div class="tt-grid">
-          <div class="tt-cell tt-head">Time</div>
-          <div class="tt-cell tt-head">Monday</div>
-          <div class="tt-cell tt-head">Tuesday</div>
-          <div class="tt-cell tt-head">Wednesday</div>
-          <div class="tt-cell tt-head">Thursday</div>
-          <div class="tt-cell tt-head">Friday</div>
-          <div class="tt-cell tt-head">Saturday</div>
-
+          <div class="tt-cell tt-head">Time</div><div class="tt-cell tt-head">Mon</div><div class="tt-cell tt-head">Tue</div><div class="tt-cell tt-head">Wed</div><div class="tt-cell tt-head">Thu</div><div class="tt-cell tt-head">Fri</div><div class="tt-cell tt-head">Sat</div>
           <div class="tt-cell tt-time">8–9 AM</div>
-          <div class="tt-cell" style="background:#dbeafe"><div class="tt-subj">Mathematics</div><div class="tt-teacher">Mrs. Sunita</div></div>
+          <div class="tt-cell" style="background:#dbeafe"><div class="tt-subj">Math</div><div class="tt-teacher">Mrs. Sunita</div></div>
           <div class="tt-cell" style="background:#dcfce7"><div class="tt-subj">Science</div><div class="tt-teacher">Mr. Manoj</div></div>
           <div class="tt-cell" style="background:#fef3c7"><div class="tt-subj">English</div><div class="tt-teacher">Mrs. Asha</div></div>
           <div class="tt-cell" style="background:#ede9fe"><div class="tt-subj">Hindi</div><div class="tt-teacher">Mr. Rajan</div></div>
-          <div class="tt-cell" style="background:#dbeafe"><div class="tt-subj">Mathematics</div><div class="tt-teacher">Mrs. Sunita</div></div>
+          <div class="tt-cell" style="background:#dbeafe"><div class="tt-subj">Math</div><div class="tt-teacher">Mrs. Sunita</div></div>
           <div class="tt-cell" style="background:#dcfce7"><div class="tt-subj">Science</div><div class="tt-teacher">Mr. Manoj</div></div>
-
           <div class="tt-cell tt-time">9–10 AM</div>
           <div class="tt-cell" style="background:#dcfce7"><div class="tt-subj">Science</div><div class="tt-teacher">Mr. Manoj</div></div>
-          <div class="tt-cell" style="background:#dbeafe"><div class="tt-subj">Mathematics</div><div class="tt-teacher">Mrs. Sunita</div></div>
-          <div class="tt-cell" style="background:#ede9fe"><div class="tt-subj">Social St.</div><div class="tt-teacher">Mr. Rajan</div></div>
+          <div class="tt-cell" style="background:#dbeafe"><div class="tt-subj">Math</div><div class="tt-teacher">Mrs. Sunita</div></div>
+          <div class="tt-cell" style="background:#ede9fe"><div class="tt-subj">Social</div><div class="tt-teacher">Mr. Rajan</div></div>
           <div class="tt-cell" style="background:#fef3c7"><div class="tt-subj">English</div><div class="tt-teacher">Mrs. Asha</div></div>
           <div class="tt-cell" style="background:#fee2e2"><div class="tt-subj">Sports</div><div class="tt-teacher">Mr. Vivek</div></div>
           <div class="tt-cell" style="background:#fef3c7"><div class="tt-subj">Hindi</div><div class="tt-teacher">Mr. Rajan</div></div>
-
-          <div class="tt-cell tt-time">10–10:30</div>
-          <div class="tt-cell" style="background:var(--cream);grid-column:span 6"><div class="tt-subj" style="color:var(--muted)">☕ Break Time</div></div>
-
-          <div class="tt-cell tt-time">10:30–11:30</div>
-          <div class="tt-cell" style="background:#fef3c7"><div class="tt-subj">English</div><div class="tt-teacher">Mrs. Asha</div></div>
-          <div class="tt-cell" style="background:#ede9fe"><div class="tt-subj">Hindi</div><div class="tt-teacher">Mr. Rajan</div></div>
-          <div class="tt-cell" style="background:#dbeafe"><div class="tt-subj">Mathematics</div><div class="tt-teacher">Mrs. Sunita</div></div>
-          <div class="tt-cell" style="background:#dcfce7"><div class="tt-subj">Science</div><div class="tt-teacher">Mr. Manoj</div></div>
-          <div class="tt-cell" style="background:#ede9fe"><div class="tt-subj">Social St.</div><div class="tt-teacher">Mr. Rajan</div></div>
-          <div class="tt-cell" style="background:var(--cream)"><div class="tt-subj" style="color:var(--muted)">Library</div></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== FEES ===== -->
+  <!-- FEES -->
   <div class="page" id="page-fees">
-    <div class="section-head"><h2>Fee Management</h2><button class="btn btn-primary">+ Generate Fee Challan</button></div>
+    <div class="section-head"><h2>Fee Management</h2><button class="btn btn-primary">+ Generate Challan</button></div>
     <div class="stats-4">
       <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div><span class="tag tag-green">Collected</span></div><div class="stat-num">₹4.2L</div><div class="stat-label">This Month</div></div>
       <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⏰</div><span class="tag tag-red">Pending</span></div><div class="stat-num">₹68K</div><div class="stat-label">Outstanding</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📊</div></div><div class="stat-num">1,156</div><div class="stat-label">Paid Students</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⚠️</div></div><div class="stat-num">92</div><div class="stat-label">Unpaid Students</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📊</div></div><div class="stat-num">1,156</div><div class="stat-label">Paid</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⚠️</div></div><div class="stat-num">92</div><div class="stat-label">Unpaid</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><h3>Fee Records</h3>
-        <div style="display:flex;gap:8px;"><button class="btn btn-sm btn-outline">📥 Export</button><button class="btn btn-sm btn-gold">📤 Send Reminders</button></div>
-      </div>
+      <div class="card-head"><h3>Fee Records</h3><button class="btn btn-sm btn-gold">📤 Send Reminders</button></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Student</th><th>Class</th><th>Fee Type</th><th>Amount</th><th>Due Date</th><th>Paid On</th><th>Status</th><th>Receipt</th></tr></thead>
+          <thead><tr><th>Student</th><th>Class</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
           <tbody>
-            <tr><td>Aarav Kumar</td><td>10–A</td><td>Tuition Fee</td><td>₹8,500</td><td>Jan 10</td><td>Jan 08</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">🖨 Print</button></td></tr>
-            <tr><td>Priya Sharma</td><td>9–B</td><td>Tuition Fee</td><td>₹8,000</td><td>Jan 10</td><td>—</td><td><span class="status-badge s-pending">Pending</span></td><td><button class="btn btn-sm btn-gold">Collect</button></td></tr>
-            <tr><td>Rohan Verma</td><td>8–A</td><td>Tuition + Bus</td><td>₹10,500</td><td>Jan 10</td><td>Jan 12</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">🖨 Print</button></td></tr>
-            <tr><td>Neha Patil</td><td>7–C</td><td>Tuition Fee</td><td>₹7,500</td><td>Dec 10</td><td>—</td><td><span class="status-badge s-overdue">Overdue</span></td><td><button class="btn btn-sm btn-danger">Send Notice</button></td></tr>
-            <tr><td>Siddharth Kaur</td><td>10–B</td><td>Tuition + Hostel</td><td>₹18,000</td><td>Jan 10</td><td>Jan 05</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">🖨 Print</button></td></tr>
+            <tr><td>Aarav Kumar</td><td>10–A</td><td>₹8,500</td><td>Jan 10</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">🖨 Print</button></td></tr>
+            <tr><td>Priya Sharma</td><td>9–B</td><td>₹8,000</td><td>Jan 10</td><td><span class="status-badge s-pending">Pending</span></td><td><button class="btn btn-sm btn-gold">Collect</button></td></tr>
+            <tr><td>Neha Patil</td><td>7–C</td><td>₹7,500</td><td>Dec 10</td><td><span class="status-badge s-overdue">Overdue</span></td><td><button class="btn btn-sm btn-danger">Notice</button></td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- ===== LIBRARY ===== -->
+  <!-- LIBRARY -->
   <div class="page" id="page-library">
-    <div class="section-head"><h2>Library Management</h2><button class="btn btn-primary">+ Add Book</button></div>
+    <div class="section-head"><h2>Library</h2><button class="btn btn-primary">+ Add Book</button></div>
     <div class="stats-4">
       <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📚</div></div><div class="stat-num">4,820</div><div class="stat-label">Total Books</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">📤</div></div><div class="stat-num">312</div><div class="stat-label">Issued Books</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⏰</div><span class="tag tag-red">Alert</span></div><div class="stat-num">28</div><div class="stat-label">Overdue Returns</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">📤</div></div><div class="stat-num">312</div><div class="stat-label">Issued</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⏰</div><span class="tag tag-red">Alert</span></div><div class="stat-num">28</div><div class="stat-label">Overdue</div></div>
       <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num">4,508</div><div class="stat-label">Available</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><h3>Recently Issued Books</h3></div>
+      <div class="card-head"><h3>Issued Books</h3></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Book Title</th><th>Author</th><th>Issued To</th><th>Class</th><th>Issue Date</th><th>Return Date</th><th>Status</th></tr></thead>
+          <thead><tr><th>Book</th><th>Issued To</th><th>Class</th><th>Issue Date</th><th>Return</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>Mathematics NCERT Class 10</td><td>NCERT</td><td>Aarav Kumar</td><td>10–A</td><td>Feb 10</td><td>Feb 24</td><td><span class="status-badge s-present">On Time</span></td></tr>
-            <tr><td>Wings of Fire</td><td>APJ Abdul Kalam</td><td>Priya Sharma</td><td>9–B</td><td>Jan 28</td><td>Feb 11</td><td><span class="status-badge s-overdue">Overdue</span></td></tr>
-            <tr><td>Science NCERT Class 8</td><td>NCERT</td><td>Rohan Verma</td><td>8–A</td><td>Feb 15</td><td>Mar 1</td><td><span class="status-badge s-present">On Time</span></td></tr>
-            <tr><td>Harry Potter — Sorcerer's Stone</td><td>J.K. Rowling</td><td>Neha Patil</td><td>7–C</td><td>Feb 5</td><td>Feb 19</td><td><span class="status-badge s-overdue">Overdue</span></td></tr>
+            <tr><td>Mathematics NCERT 10</td><td>Aarav Kumar</td><td>10–A</td><td>Feb 10</td><td>Feb 24</td><td><span class="status-badge s-present">On Time</span></td></tr>
+            <tr><td>Wings of Fire</td><td>Priya Sharma</td><td>9–B</td><td>Jan 28</td><td>Feb 11</td><td><span class="status-badge s-overdue">Overdue</span></td></tr>
+            <tr><td>Science NCERT 8</td><td>Rohan Verma</td><td>8–A</td><td>Feb 15</td><td>Mar 1</td><td><span class="status-badge s-present">On Time</span></td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- ===== PAYROLL ===== -->
+  <!-- PAYROLL -->
   <div class="page" id="page-payroll">
     <div class="section-head"><h2>Staff Payroll</h2><button class="btn btn-primary">💸 Process Payroll</button></div>
     <div class="stats-3">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div></div><div class="stat-num">₹28.4L</div><div class="stat-label">Monthly Payroll</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">✅</div><span class="tag tag-green">Done</span></div><div class="stat-num">82</div><div class="stat-label">Salaries Paid</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⏳</div><span class="tag tag-orange">Pending</span></div><div class="stat-num">4</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div></div><div class="stat-num">₹28.4L</div><div class="stat-label">Monthly Total</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">✅</div></div><div class="stat-num">82</div><div class="stat-label">Salaries Paid</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⏳</div></div><div class="stat-num">4</div><div class="stat-label">Pending</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><h3>February 2026 Payroll</h3></div>
+      <div class="card-head"><h3>February 2026</h3></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Staff</th><th>Role</th><th>Basic</th><th>HRA</th><th>Deductions</th><th>Net Salary</th><th>Status</th></tr></thead>
+          <thead><tr><th>Staff</th><th>Role</th><th>Basic</th><th>Net Salary</th><th>Status</th></tr></thead>
           <tbody>
-            <tr><td>Sunita Rao</td><td>Math Teacher</td><td>₹42,000</td><td>₹8,400</td><td>₹4,200</td><td>₹46,200</td><td><span class="status-badge s-paid">Paid</span></td></tr>
-            <tr><td>Manoj Kumar</td><td>Science Teacher</td><td>₹38,500</td><td>₹7,700</td><td>₹3,850</td><td>₹42,350</td><td><span class="status-badge s-paid">Paid</span></td></tr>
-            <tr><td>Asha Patel</td><td>English Teacher</td><td>₹35,000</td><td>₹7,000</td><td>₹3,500</td><td>₹38,500</td><td><span class="status-badge s-paid">Paid</span></td></tr>
-            <tr><td>Rajan Joshi</td><td>Social Studies</td><td>₹32,000</td><td>₹6,400</td><td>₹3,200</td><td>₹35,200</td><td><span class="status-badge s-pending">Pending</span></td></tr>
+            <tr><td>Sunita Rao</td><td>Math Teacher</td><td>₹42,000</td><td>₹46,200</td><td><span class="status-badge s-paid">Paid</span></td></tr>
+            <tr><td>Manoj Kumar</td><td>Science Teacher</td><td>₹38,500</td><td>₹42,350</td><td><span class="status-badge s-paid">Paid</span></td></tr>
+            <tr><td>Rajan Joshi</td><td>Social Studies</td><td>₹32,000</td><td>₹35,200</td><td><span class="status-badge s-pending">Pending</span></td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- ===== REPORTS ===== -->
+  <!-- REPORTS -->
   <div class="page" id="page-reports">
-    <div class="section-head"><h2>Reports & Analytics</h2><button class="btn btn-gold">📥 Export All Reports</button></div>
+    <div class="section-head"><h2>Reports</h2><button class="btn btn-gold">📥 Export All</button></div>
     <div class="g3 mt16">
-      <div class="card" style="cursor:pointer" onclick="alert('Report generating...')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📊</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Attendance Report</div><div class="text-muted" style="margin-top:4px">Monthly & yearly</div></div></div>
-      <div class="card" style="cursor:pointer" onclick="alert('Report generating...')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">💰</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Fee Collection Report</div><div class="text-muted" style="margin-top:4px">Paid / pending / overdue</div></div></div>
-      <div class="card" style="cursor:pointer" onclick="alert('Report generating...')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📝</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Exam Results Report</div><div class="text-muted" style="margin-top:4px">Class-wise analysis</div></div></div>
-      <div class="card" style="cursor:pointer" onclick="alert('Report generating...')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">👨‍🎓</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Student Report Card</div><div class="text-muted" style="margin-top:4px">Individual & class</div></div></div>
-      <div class="card" style="cursor:pointer" onclick="alert('Report generating...')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">💼</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Payroll Report</div><div class="text-muted" style="margin-top:4px">Staff salary records</div></div></div>
-      <div class="card" style="cursor:pointer" onclick="alert('Report generating...')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📚</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Library Report</div><div class="text-muted" style="margin-top:4px">Books & overdue</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📊</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Attendance Report</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">💰</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Fee Report</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📝</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Exam Results</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">👨‍🎓</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Report Cards</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">💼</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Payroll Report</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📚</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Library Report</div></div></div>
     </div>
   </div>
 
-  <!-- ===== SECURITY ===== -->
+  <!-- SECURITY -->
   <div class="page" id="page-security">
-    <div class="section-head"><h2>Security & Access Control</h2></div>
-    <div class="alert alert-success">🔒 All systems secure — Last audit: Today 6:00 AM — SSL Active — Data Encrypted</div>
+    <div class="section-head"><h2>Security & Access</h2></div>
+    <div style="background:var(--green-bg);color:var(--green);padding:12px 16px;border-radius:9px;font-size:13px;margin-bottom:20px;">🔒 System Secure — Supabase Auth Active — SSL Enabled — Last Login: Today</div>
     <div class="g2">
       <div class="card">
         <div class="card-head"><h3>🛡️ Security Features</h3></div>
         <div class="card-body">
-          <div style="display:flex;flex-direction:column;gap:12px;">
-            <div class="security-row">✅ SSL/TLS Encryption — All data in transit encrypted</div>
-            <div class="security-row">✅ AES-256 Database Encryption — Data at rest secured</div>
-            <div class="security-row">✅ Role-Based Access Control (RBAC) — Active</div>
-            <div class="security-row">✅ Two-Factor Authentication — Enabled for Admins</div>
-            <div class="security-row">✅ Automatic Daily Backups — Last: Today 2:00 AM</div>
-            <div class="security-row">✅ Audit Logs — All actions recorded</div>
-            <div class="security-row">✅ Session Timeout — 30 min auto-logout</div>
-            <div class="security-row">✅ IP Whitelisting — School network only</div>
-          </div>
+          <div class="security-row">✅ Supabase Authentication — Active</div>
+          <div class="security-row">✅ SSL/TLS Encryption — Active</div>
+          <div class="security-row">✅ JWT Token Security — Active</div>
+          <div class="security-row">✅ Role-Based Access Control — Active</div>
+          <div class="security-row">✅ Auto Session Logout — 1 hour</div>
+          <div class="security-row">✅ Password Hashing — bcrypt</div>
+          <div class="security-row">✅ Daily Backups — Supabase Cloud</div>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:16px;">
-        <div class="card">
-          <div class="card-head"><h3>👥 User Roles</h3></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Role</th><th>Access Level</th><th>Users</th></tr></thead>
-              <tbody>
-                <tr><td>Super Admin</td><td><span class="status-badge s-paid">Full Access</span></td><td>2</td></tr>
-                <tr><td>Principal</td><td><span class="status-badge s-paid">Full Access</span></td><td>1</td></tr>
-                <tr><td>Teacher</td><td><span class="status-badge s-late">Limited</span></td><td>86</td></tr>
-                <tr><td>Accountant</td><td><span class="status-badge s-late">Finance Only</span></td><td>3</td></tr>
-                <tr><td>Librarian</td><td><span class="status-badge s-late">Library Only</span></td><td>2</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-head"><h3>📋 Recent Activity Log</h3></div>
-          <div class="card-body" style="padding:12px 16px;">
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <div style="font-size:12px;padding:8px;background:var(--cream);border-radius:7px;"><span class="fw600">Admin</span> logged in · 8:00 AM</div>
-              <div style="font-size:12px;padding:8px;background:var(--cream);border-radius:7px;"><span class="fw600">Mrs. Sunita</span> marked attendance 10A · 8:15 AM</div>
-              <div style="font-size:12px;padding:8px;background:var(--cream);border-radius:7px;"><span class="fw600">Accountant</span> generated fee report · 9:00 AM</div>
-              <div style="font-size:12px;padding:8px;background:var(--cream);border-radius:7px;"><span class="fw600">Admin</span> added new student · 10:30 AM</div>
-            </div>
-          </div>
+      <div class="card">
+        <div class="card-head"><h3>👥 User Roles</h3></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Role</th><th>Access</th><th>Users</th></tr></thead>
+            <tbody>
+              <tr><td>Super Admin</td><td><span class="status-badge s-paid">Full</span></td><td>2</td></tr>
+              <tr><td>Teacher</td><td><span class="status-badge s-late">Limited</span></td><td>86</td></tr>
+              <tr><td>Accountant</td><td><span class="status-badge s-late">Finance</span></td><td>3</td></tr>
+              <tr><td>Librarian</td><td><span class="status-badge s-late">Library</span></td><td>2</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ===== SETTINGS ===== -->
+  <!-- SETTINGS -->
   <div class="page" id="page-settings">
-    <div class="section-head"><h2>School Settings</h2><button class="btn btn-primary">💾 Save Changes</button></div>
+    <div class="section-head"><h2>Settings</h2><button class="btn btn-primary">💾 Save</button></div>
     <div class="g2">
       <div class="card">
-        <div class="card-head"><h3>🏫 School Information</h3></div>
+        <div class="card-head"><h3>🏫 School Info</h3></div>
         <div class="card-body">
           <div class="form-grid" style="gap:14px;">
-            <div class="fg"><label>School Name</label><input type="text" value="Sunrise Public School"></div>
-            <div class="fg"><label>Established Year</label><input type="text" value="1998"></div>
-            <div class="fg"><label>Principal Name</label><input type="text" value="Dr. Ramesh Gupta"></div>
-            <div class="fg"><label>Phone Number</label><input type="text" value="+91 98765-43210"></div>
-            <div class="fg" style="grid-column:span 2"><label>Address</label><input type="text" value="123 Education Nagar, Nashik, Maharashtra - 422001"></div>
-            <div class="fg"><label>Academic Year</label><select><option>2025–2026</option><option>2026–2027</option></select></div>
+            <div class="fg"><label>School Name</label><input type="text" value="Podar School"></div>
+            <div class="fg"><label>Principal</label><input type="text" value="Dr. Ramesh Gupta"></div>
+            <div class="fg"><label>Phone</label><input type="text" value="+91 98765-43210"></div>
             <div class="fg"><label>Board</label><select><option>CBSE</option><option>ICSE</option><option>State Board</option></select></div>
+            <div class="fg" style="grid-column:span 2"><label>Address</label><input type="text" value="Nashik, Maharashtra"></div>
           </div>
         </div>
       </div>
       <div class="card">
-        <div class="card-head"><h3>⚙️ System Preferences</h3></div>
+        <div class="card-head"><h3>⚙️ Preferences</h3></div>
         <div class="card-body">
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--cream);border-radius:9px;">
-              <div><div class="fw600" style="font-size:13px">SMS Alerts to Parents</div><div class="text-muted">Auto-send on absence</div></div>
-              <div style="width:44px;height:24px;background:var(--green);border-radius:20px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;right:3px;top:3px;"></div></div>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--cream);border-radius:9px;">
-              <div><div class="fw600" style="font-size:13px">Auto Fee Reminders</div><div class="text-muted">3 days before due date</div></div>
-              <div style="width:44px;height:24px;background:var(--green);border-radius:20px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;right:3px;top:3px;"></div></div>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--cream);border-radius:9px;">
-              <div><div class="fw600" style="font-size:13px">AI Insights</div><div class="text-muted">Smart suggestions</div></div>
-              <div style="width:44px;height:24px;background:var(--green);border-radius:20px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;right:3px;top:3px;"></div></div>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--cream);border-radius:9px;">
-              <div><div class="fw600" style="font-size:13px">Dark Mode</div><div class="text-muted">Switch theme</div></div>
-              <div style="width:44px;height:24px;background:var(--border);border-radius:20px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;left:3px;top:3px;"></div></div>
-            </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--cream);border-radius:9px;"><div><div class="fw600" style="font-size:13px">SMS to Parents</div><div class="text-muted">Auto on absence</div></div><div style="width:44px;height:24px;background:var(--green);border-radius:20px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;right:3px;top:3px;"></div></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--cream);border-radius:9px;"><div><div class="fw600" style="font-size:13px">Fee Reminders</div><div class="text-muted">3 days before due</div></div><div style="width:44px;height:24px;background:var(--green);border-radius:20px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;right:3px;top:3px;"></div></div></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--cream);border-radius:9px;"><div><div class="fw600" style="font-size:13px">AI Insights</div><div class="text-muted">Smart suggestions</div></div><div style="width:44px;height:24px;background:var(--green);border-radius:20px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;right:3px;top:3px;"></div></div></div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-</div><!-- end main -->
-</div><!-- end app -->
+</div>
+</div>
 
-<!-- ===== MODALS ===== -->
+<!-- MODALS -->
 <div class="modal-overlay" id="modal-addStudent">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('addStudent')">✕</button>
-    <h3>➕ Add New Student</h3>
+    <h3>➕ Add Student</h3>
     <div class="form-grid">
       <div class="fg"><label>First Name</label><input type="text" placeholder="Aarav"></div>
       <div class="fg"><label>Last Name</label><input type="text" placeholder="Kumar"></div>
-      <div class="fg"><label>Date of Birth</label><input type="date"></div>
-      <div class="fg"><label>Gender</label><select><option>Male</option><option>Female</option><option>Other</option></select></div>
-      <div class="fg"><label>Class</label><select><option>Class 10</option><option>Class 9</option><option>Class 8</option><option>Class 7</option><option>Class 6</option></select></div>
+      <div class="fg"><label>Class</label><select><option>10</option><option>9</option><option>8</option><option>7</option><option>6</option></select></div>
       <div class="fg"><label>Section</label><select><option>A</option><option>B</option><option>C</option></select></div>
       <div class="fg"><label>Parent Name</label><input type="text" placeholder="Rajesh Kumar"></div>
-      <div class="fg"><label>Parent Phone</label><input type="tel" placeholder="98765-43210"></div>
-      <div class="fg" style="grid-column:span 2"><label>Address</label><input type="text" placeholder="House No, Street, City"></div>
+      <div class="fg"><label>Phone</label><input type="tel" placeholder="98765-43210"></div>
     </div>
     <div class="form-actions">
-      <button class="btn btn-primary" onclick="addStudent()">✅ Save Student</button>
+      <button class="btn btn-primary" onclick="addStudent()">✅ Save</button>
       <button class="btn btn-outline" onclick="closeModal('addStudent')">Cancel</button>
     </div>
   </div>
@@ -1042,82 +801,137 @@ tr:hover td { background:#f9fafb; }
 <div class="modal-overlay" id="modal-addTeacher">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('addTeacher')">✕</button>
-    <h3>➕ Add New Teacher</h3>
+    <h3>➕ Add Teacher</h3>
     <div class="form-grid">
-      <div class="fg"><label>Full Name</label><input type="text" placeholder="Sunita Rao"></div>
+      <div class="fg"><label>Name</label><input type="text" placeholder="Sunita Rao"></div>
       <div class="fg"><label>Subject</label><input type="text" placeholder="Mathematics"></div>
       <div class="fg"><label>Phone</label><input type="tel" placeholder="99887-76655"></div>
-      <div class="fg"><label>Email</label><input type="email" placeholder="sunita@school.edu"></div>
-      <div class="fg"><label>Class In-charge</label><select><option>None</option><option>10–A</option><option>10–B</option><option>9–A</option></select></div>
-      <div class="fg"><label>Salary (₹)</label><input type="number" placeholder="42000"></div>
+      <div class="fg"><label>Salary</label><input type="number" placeholder="42000"></div>
     </div>
     <div class="form-actions">
-      <button class="btn btn-primary" onclick="closeModal('addTeacher');alert('Teacher added successfully!')">✅ Save Teacher</button>
+      <button class="btn btn-primary" onclick="closeModal('addTeacher');showToast('Teacher added!')">✅ Save</button>
       <button class="btn btn-outline" onclick="closeModal('addTeacher')">Cancel</button>
     </div>
   </div>
 </div>
 
 <script>
-const pages = {
-  dashboard:  { title:'Dashboard', sub:'Welcome back! Here\'s what\'s happening today.' },
-  students:   { title:'Student Management', sub:'Manage all student records and admissions.' },
-  teachers:   { title:'Teacher & Staff', sub:'View and manage all teaching staff.' },
-  attendance: { title:'Attendance', sub:'Track daily student and staff attendance.' },
-  exams:      { title:'Exams & Results', sub:'Schedule exams and manage result sheets.' },
-  timetable:  { title:'Timetable', sub:'View and edit class timetables.' },
-  library:    { title:'Library', sub:'Manage books, issues and returns.' },
-  fees:       { title:'Fee Management', sub:'Collect fees and track payments.' },
-  payroll:    { title:'Staff Payroll', sub:'Manage monthly salary and deductions.' },
-  reports:    { title:'Reports & Analytics', sub:'Generate and export detailed reports.' },
-  security:   { title:'Security & Access', sub:'Manage roles, permissions and audit logs.' },
-  settings:   { title:'Settings', sub:'Configure school information and preferences.' },
-};
+// ===== SUPABASE CONFIG =====
+// YAHAN APNI SUPABASE URL AUR KEY DAALO
+const SUPABASE_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_RymExtvkOR20oPbHgdTf4w_-nADxz40';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-function doLogin() {
-  document.getElementById('loginPage').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-}
+// ===== LOGIN =====
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  const errorMsg = document.getElementById('errorMsg');
+  const successMsg = document.getElementById('successMsg');
 
-function doLogout() {
-  if(confirm('Logout karna chahte hain?')) {
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('loginPage').style.display = 'flex';
+  if(!email || !password) {
+    errorMsg.style.display = 'flex';
+    errorMsg.innerHTML = '❌ Email aur password daalna zaroori hai!';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Login ho raha hai...';
+  errorMsg.style.display = 'none';
+
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if(error) {
+    errorMsg.style.display = 'flex';
+    errorMsg.innerHTML = '❌ Email ya password galat hai!';
+    btn.disabled = false;
+    btn.innerHTML = '🔐 Secure Login';
+  } else {
+    successMsg.style.display = 'flex';
+    successMsg.innerHTML = '✅ Login successful!';
+    document.getElementById('userEmail').textContent = email.split('@')[0];
+    setTimeout(() => {
+      document.getElementById('loginPage').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+    }, 800);
   }
 }
+
+// Enter key se login
+document.addEventListener('keypress', function(e) {
+  if(e.key === 'Enter') doLogin();
+});
+
+// ===== LOGOUT =====
+async function doLogout() {
+  if(confirm('Logout karna chahte hain?')) {
+    await supabase.auth.signOut();
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPassword').value = '';
+  }
+}
+
+// ===== AUTO LOGIN CHECK =====
+async function checkSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if(session) {
+    document.getElementById('userEmail').textContent = session.user.email.split('@')[0];
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+  }
+}
+checkSession();
+
+// ===== NAVIGATION =====
+const pageInfo = {
+  dashboard:  { title:'Dashboard', sub:'Welcome back! Aaj school mein kya ho raha hai.' },
+  students:   { title:'Student Management', sub:'Sab students ke records yahan hain.' },
+  teachers:   { title:'Teachers & Staff', sub:'Teaching aur non-teaching staff.' },
+  attendance: { title:'Attendance', sub:'Roz ki attendance track karo.' },
+  exams:      { title:'Exams & Results', sub:'Exams schedule karo, results daalo.' },
+  timetable:  { title:'Timetable', sub:'Class-wise weekly schedule.' },
+  library:    { title:'Library', sub:'Books issue aur return manage karo.' },
+  fees:       { title:'Fee Management', sub:'Fee collect karo, track karo.' },
+  payroll:    { title:'Staff Payroll', sub:'Monthly salary manage karo.' },
+  reports:    { title:'Reports', sub:'Detailed reports generate karo.' },
+  security:   { title:'Security', sub:'Access aur security settings.' },
+  settings:   { title:'Settings', sub:'School ki information update karo.' },
+};
 
 function showPage(id, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
+  const page = document.getElementById('page-'+id);
+  if(page) page.classList.add('active');
   if(el) el.classList.add('active');
-  if(pages[id]) {
-    document.getElementById('pageTitle').textContent = pages[id].title;
-    document.getElementById('pageSubtitle').textContent = pages[id].sub;
+  if(pageInfo[id]) {
+    document.getElementById('pageTitle').textContent = pageInfo[id].title;
+    document.getElementById('pageSubtitle').textContent = pageInfo[id].sub;
   }
 }
 
 function openModal(id) { document.getElementById('modal-'+id).classList.add('open'); }
 function closeModal(id) { document.getElementById('modal-'+id).classList.remove('open'); }
 
-function addStudent() {
-  const tbody = document.getElementById('studentTable');
-  const newRow = tbody.insertRow(0);
-  const colors = ['#2563eb','#7c3aed','#16a34a','#d97706','#dc2626'];
-  const c = colors[Math.floor(Math.random()*colors.length)];
-  newRow.innerHTML = `<td>${tbody.rows.length}</td><td><div class="td-name"><div class="mini-ava" style="background:${c}">NS</div>New Student</div></td><td>10–A</td><td>00</td><td>Parent Name</td><td>90000-00000</td><td><span class="status-badge s-pending">Pending</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td>`;
-  closeModal('addStudent');
-  const alert = document.createElement('div');
-  alert.className = 'alert alert-success';
-  alert.innerHTML = '✅ Student added successfully!';
-  alert.style.cssText = 'position:fixed;top:20px;right:20px;z-index:999;min-width:260px;animation:fadeIn .3s ease;';
-  document.body.appendChild(alert);
-  setTimeout(() => alert.remove(), 3000);
-}
-
 document.querySelectorAll('.modal-overlay').forEach(o => {
   o.addEventListener('click', e => { if(e.target === o) o.classList.remove('open'); });
 });
+
+function addStudent() {
+  showToast('✅ Student add ho gaya!');
+  closeModal('addStudent');
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;background:var(--green-bg);color:var(--green);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.1);animation:fadeIn .3s ease;';
+  t.innerHTML = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
 </script>
 </body>
 </html>
