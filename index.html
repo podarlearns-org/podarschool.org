@@ -819,8 +819,8 @@ tr:hover td { background:#f9fafb; }
 // ===== SUPABASE CONFIG =====
 // YAHAN APNI SUPABASE URL AUR KEY DAALO
 const SUPABASE_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_RymExtvkOR20oPbHgdTf4w_-nADxz40';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ===== LOGIN =====
 async function doLogin() {
@@ -840,7 +840,7 @@ async function doLogin() {
   btn.innerHTML = '⏳ Login ho raha hai...';
   errorMsg.style.display = 'none';
 
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
   if(error) {
     errorMsg.style.display = 'flex';
@@ -866,7 +866,7 @@ document.addEventListener('keypress', function(e) {
 // ===== LOGOUT =====
 async function doLogout() {
   if(confirm('Logout karna chahte hain?')) {
-    await supabase.auth.signOut();
+    await supabaseClient.auth.signOut();
     document.getElementById('app').style.display = 'none';
     document.getElementById('loginPage').style.display = 'flex';
     document.getElementById('loginEmail').value = '';
@@ -876,7 +876,7 @@ async function doLogout() {
 
 // ===== AUTO LOGIN CHECK =====
 async function checkSession() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if(session) {
     document.getElementById('userEmail').textContent = session.user.email.split('@')[0];
     document.getElementById('loginPage').style.display = 'none';
