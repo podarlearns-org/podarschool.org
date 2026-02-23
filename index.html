@@ -3,340 +3,138 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EduCore Pro — School ERP</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<title>EduCore Pro — Podar School ERP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root {
-  --navy: #0d1b36;
-  --navy2: #162444;
-  --navy3: #1e3460;
-  --gold: #e8b84b;
-  --gold2: #f5d07a;
-  --cream: #f8f5ef;
-  --white: #ffffff;
-  --text: #1a2a3a;
-  --muted: #6b7f96;
-  --border: #e2e8f0;
-  --green: #16a34a;
-  --green-bg: #dcfce7;
-  --red: #dc2626;
-  --red-bg: #fee2e2;
-  --orange: #d97706;
-  --orange-bg: #fef3c7;
-  --blue: #2563eb;
-  --blue-bg: #dbeafe;
-  --purple: #7c3aed;
-  --purple-bg: #ede9fe;
-  --sidebar: 250px;
-  --radius: 12px;
-  --shadow: 0 4px 20px rgba(0,0,0,0.07);
-}
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--text); display:flex; min-height:100vh; }
-
-/* ===== LOGIN PAGE ===== */
-#loginPage {
-  position:fixed; inset:0;
-  background: linear-gradient(135deg, var(--navy) 0%, var(--navy3) 100%);
-  display:flex; align-items:center; justify-content:center;
-  z-index:1000;
-}
-.login-box {
-  background:white; border-radius:20px;
-  padding:48px 40px; width:420px;
-  box-shadow:0 30px 80px rgba(0,0,0,0.3);
-  animation: popIn .5s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes popIn { from{opacity:0;transform:scale(.8)} to{opacity:1;transform:scale(1)} }
-.login-logo { text-align:center; margin-bottom:32px; }
-.login-logo h1 { font-family:'Playfair Display',serif; font-size:28px; color:var(--navy); }
-.login-logo p { color:var(--muted); font-size:13px; margin-top:4px; }
-.login-logo .badge {
-  display:inline-block; background:var(--gold); color:var(--navy);
-  font-size:10px; font-weight:700; padding:2px 10px; border-radius:20px;
-  letter-spacing:1px; text-transform:uppercase; margin-top:8px;
-}
-.form-group { margin-bottom:18px; }
-.form-group label { display:block; font-size:13px; font-weight:600; color:var(--navy); margin-bottom:6px; }
-.form-group input {
-  width:100%; padding:12px 14px;
-  border:2px solid var(--border); border-radius:9px;
-  font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text);
-  transition:border-color .2s; outline:none;
-}
-.form-group input:focus { border-color:var(--navy); }
-.login-btn {
-  width:100%; padding:13px;
-  background:var(--navy); color:white;
-  border:none; border-radius:9px;
-  font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600;
-  cursor:pointer; transition:all .2s;
-  margin-top:8px;
-}
-.login-btn:hover { background:var(--navy3); transform:translateY(-1px); }
-.login-btn:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
-.error-msg {
-  background:var(--red-bg); color:var(--red);
-  padding:10px 14px; border-radius:8px;
-  font-size:13px; margin-bottom:14px;
-  display:none;
-}
-.success-msg {
-  background:var(--green-bg); color:var(--green);
-  padding:10px 14px; border-radius:8px;
-  font-size:13px; margin-bottom:14px;
-  display:none;
-}
-.login-hint { text-align:center; color:var(--muted); font-size:12px; margin-top:14px; }
-.login-hint span { color:var(--gold); font-weight:600; }
-.security-note {
-  display:flex; align-items:center; gap:8px;
-  background:var(--green-bg); color:var(--green);
-  padding:8px 12px; border-radius:8px;
-  font-size:12px; margin-bottom:20px;
-}
-
-/* ===== MAIN APP ===== */
-#app { display:none; width:100%; }
-
-/* SIDEBAR */
-.sidebar {
-  width:var(--sidebar); min-height:100vh;
-  background:var(--navy); position:fixed; left:0; top:0;
-  display:flex; flex-direction:column; z-index:200;
-  overflow-y:auto;
-}
-.sidebar-logo {
-  padding:24px 20px; border-bottom:1px solid rgba(255,255,255,.08);
-  display:flex; align-items:center; gap:10px;
-}
-.sidebar-logo .icon {
-  width:38px; height:38px; background:var(--gold);
-  border-radius:9px; display:flex; align-items:center; justify-content:center;
-  font-size:18px; flex-shrink:0;
-}
-.sidebar-logo h2 { font-family:'Playfair Display',serif; color:white; font-size:17px; }
-.sidebar-logo span { color:rgba(255,255,255,.35); font-size:10px; display:block; letter-spacing:1px; }
-.nav-group { padding:12px 0; }
-.nav-group-title {
-  color:rgba(255,255,255,.25); font-size:10px;
-  letter-spacing:2px; text-transform:uppercase;
-  padding:6px 20px; margin-bottom:2px;
-}
-.nav-item {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 20px; color:rgba(255,255,255,.55);
-  cursor:pointer; transition:all .15s; font-size:13.5px; font-weight:500;
-  position:relative;
-}
-.nav-item:hover { color:white; background:rgba(255,255,255,.06); }
-.nav-item.active { color:var(--gold); background:rgba(232,184,75,.12); }
-.nav-item.active::before {
-  content:''; position:absolute; left:0; top:20%; bottom:20%;
-  width:3px; background:var(--gold); border-radius:0 3px 3px 0;
-}
-.nav-item .ni { font-size:16px; width:20px; text-align:center; }
-.nav-badge {
-  margin-left:auto; background:var(--red);
-  color:white; font-size:10px; font-weight:700;
-  padding:2px 7px; border-radius:20px;
-}
-.sidebar-user {
-  margin-top:auto; padding:16px 20px;
-  border-top:1px solid rgba(255,255,255,.08);
-  display:flex; align-items:center; gap:10px;
-}
-.sidebar-user .ava {
-  width:34px; height:34px; background:var(--gold);
-  border-radius:50%; display:flex; align-items:center; justify-content:center;
-  font-weight:700; font-size:13px; color:var(--navy); flex-shrink:0;
-}
-.sidebar-user .info .name { color:white; font-size:13px; font-weight:600; }
-.sidebar-user .info .role { color:rgba(255,255,255,.35); font-size:11px; }
-.logout-btn {
-  margin-left:auto; background:none; border:none;
-  color:rgba(255,255,255,.3); cursor:pointer; font-size:17px;
-  transition:color .2s;
-}
-.logout-btn:hover { color:var(--red); }
-
-/* MAIN */
-.main { margin-left:var(--sidebar); flex:1; display:flex; flex-direction:column; min-height:100vh; }
-
-/* TOPBAR */
-.topbar {
-  background:white; padding:14px 28px;
-  display:flex; align-items:center; justify-content:space-between;
-  border-bottom:1px solid var(--border);
-  position:sticky; top:0; z-index:100;
-}
-.topbar-left h3 { font-family:'Playfair Display',serif; font-size:19px; color:var(--navy); }
-.topbar-left p { color:var(--muted); font-size:12px; margin-top:1px; }
-.topbar-right { display:flex; align-items:center; gap:12px; }
-.search {
-  display:flex; align-items:center; gap:8px;
-  background:var(--cream); border:1.5px solid var(--border);
-  border-radius:9px; padding:8px 14px; font-size:13px; color:var(--muted);
-  min-width:200px;
-}
-.icon-btn {
-  width:36px; height:36px; border-radius:9px;
-  background:var(--cream); border:1.5px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  font-size:16px; cursor:pointer; position:relative;
-}
-.dot { width:8px; height:8px; background:var(--red); border-radius:50%; position:absolute; top:4px; right:4px; border:2px solid white; }
-
-/* CONTENT */
-.page { display:none; padding:24px 28px; animation:fadeIn .3s ease; }
-.page.active { display:block; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
-
-.section-head {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:20px;
-}
-.section-head h2 { font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); }
-.btn {
-  padding:9px 18px; border-radius:8px;
-  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600;
-  cursor:pointer; transition:all .15s; border:none;
-}
-.btn-primary { background:var(--navy); color:white; }
-.btn-primary:hover { background:var(--navy3); transform:translateY(-1px); }
-.btn-gold { background:var(--gold); color:var(--navy); }
-.btn-outline { background:white; color:var(--navy); border:2px solid var(--border); }
-.btn-outline:hover { border-color:var(--navy); }
-.btn-sm { padding:6px 12px; font-size:12px; }
-.btn-danger { background:var(--red-bg); color:var(--red); }
-
-.card { background:white; border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; }
-.card-head {
-  padding:16px 20px; border-bottom:1px solid var(--border);
-  display:flex; align-items:center; justify-content:space-between;
-}
-.card-head h3 { font-family:'Playfair Display',serif; font-size:15px; color:var(--navy); }
-.card-body { padding:20px; }
-
-.stats-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
-.stats-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px; }
-.stat-card {
-  background:white; border-radius:var(--radius);
-  padding:20px; box-shadow:var(--shadow);
-  transition:transform .2s, box-shadow .2s;
-}
-.stat-card:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(0,0,0,.1); }
-.stat-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-.stat-icon { width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:22px; }
-.tag { font-size:11px; font-weight:600; padding:3px 8px; border-radius:20px; }
-.tag-green { background:var(--green-bg); color:var(--green); }
-.tag-red { background:var(--red-bg); color:var(--red); }
-.tag-blue { background:var(--blue-bg); color:var(--blue); }
-.tag-orange { background:var(--orange-bg); color:var(--orange); }
-.stat-num { font-family:'Playfair Display',serif; font-size:28px; color:var(--navy); line-height:1; }
-.stat-label { color:var(--muted); font-size:13px; margin-top:4px; }
-
-.table-wrap { overflow-x:auto; }
-table { width:100%; border-collapse:collapse; }
-th {
-  text-align:left; font-size:11px; letter-spacing:1px;
-  text-transform:uppercase; color:var(--muted);
-  padding:10px 14px; border-bottom:2px solid var(--border);
-  font-weight:600; white-space:nowrap;
-}
-td { padding:12px 14px; font-size:13.5px; border-bottom:1px solid var(--border); vertical-align:middle; }
-tr:last-child td { border-bottom:none; }
-tr:hover td { background:#f9fafb; }
-.td-name { display:flex; align-items:center; gap:10px; }
-.mini-ava {
-  width:32px; height:32px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:12px; font-weight:700; color:white; flex-shrink:0;
-}
-.status-badge { font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; display:inline-block; }
-.s-present { background:var(--green-bg); color:var(--green); }
-.s-absent  { background:var(--red-bg); color:var(--red); }
-.s-late    { background:var(--orange-bg); color:var(--orange); }
-.s-paid    { background:var(--green-bg); color:var(--green); }
-.s-pending { background:var(--orange-bg); color:var(--orange); }
-.s-overdue { background:var(--red-bg); color:var(--red); }
-.s-pass    { background:var(--green-bg); color:var(--green); }
-.s-fail    { background:var(--red-bg); color:var(--red); }
-
-.g2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
-.g3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; }
-.g-auto { display:grid; grid-template-columns:1.6fr 1fr; gap:20px; }
-
-.progress { background:#e2e8f0; border-radius:10px; height:7px; margin-top:6px; }
-.progress-bar { height:7px; border-radius:10px; }
-
-.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-.fg { margin-bottom:0; }
-.fg label { display:block; font-size:12px; font-weight:600; color:var(--navy); margin-bottom:5px; }
-.fg input, .fg select, .fg textarea {
-  width:100%; padding:10px 12px;
-  border:1.5px solid var(--border); border-radius:8px;
-  font-family:'DM Sans',sans-serif; font-size:13.5px; color:var(--text);
-  transition:border-color .2s; outline:none; background:white;
-}
-.fg input:focus, .fg select:focus { border-color:var(--navy); }
-.form-actions { display:flex; gap:10px; margin-top:20px; padding-top:16px; border-top:1px solid var(--border); }
-
-.modal-overlay {
-  position:fixed; inset:0; background:rgba(0,0,0,.5);
-  align-items:center; justify-content:center;
-  z-index:500; display:none;
-}
-.modal-overlay.open { display:flex; }
-.modal {
-  background:white; border-radius:16px;
-  padding:28px; width:560px; max-width:90vw;
-  max-height:85vh; overflow-y:auto;
-  animation:popIn .25s ease;
-}
-.modal h3 { font-family:'Playfair Display',serif; font-size:18px; color:var(--navy); margin-bottom:20px; }
-.modal-close { float:right; background:none; border:none; font-size:20px; cursor:pointer; color:var(--muted); }
-
-.ai-box { background:linear-gradient(135deg,var(--navy),var(--navy3)); border-radius:var(--radius); padding:20px; color:white; }
-.ai-box h4 { font-family:'Playfair Display',serif; font-size:15px; color:var(--gold); margin-bottom:6px; }
-.ai-box p { font-size:13px; opacity:.7; margin-bottom:14px; }
-.ai-suggestion { background:rgba(255,255,255,.08); border-radius:9px; padding:10px 14px; font-size:13px; margin-bottom:8px; border-left:3px solid var(--gold); }
-
-.security-row { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--green-bg); border-radius:9px; margin-bottom:10px; font-size:13px; color:var(--green); font-weight:500; }
-
-.bar-chart { display:flex; align-items:flex-end; gap:8px; height:100px; }
-.bar-wrap { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
-.bar { width:100%; border-radius:5px 5px 0 0; min-width:20px; }
-.bar-label { font-size:10px; color:var(--muted); }
-.bar-val { font-size:10px; font-weight:600; color:var(--navy); }
-
-.att-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; }
-.att-day { aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; cursor:pointer; }
-.att-p { background:var(--green-bg); color:var(--green); }
-.att-a { background:var(--red-bg); color:var(--red); }
-.att-h { background:var(--border); color:var(--muted); }
-.att-l { background:var(--orange-bg); color:var(--orange); }
-
-.tt-grid { display:grid; grid-template-columns:80px repeat(6,1fr); gap:6px; }
-.tt-cell { padding:8px; border-radius:8px; font-size:12px; text-align:center; min-height:60px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-.tt-head { background:var(--navy); color:white; font-weight:600; }
-.tt-time { background:var(--cream); color:var(--muted); font-size:11px; }
-.tt-subj { font-weight:600; }
-.tt-teacher { font-size:10px; opacity:.7; margin-top:2px; }
-
-::-webkit-scrollbar { width:5px; height:5px; }
-::-webkit-scrollbar-thumb { background:#c5d0de; border-radius:10px; }
-.mt16 { margin-top:16px; }
-.mt20 { margin-top:20px; }
-.fw600 { font-weight:600; }
-.text-muted { color:var(--muted); font-size:13px; }
-.text-navy { color:var(--navy); font-weight:600; }
+:root{--navy:#0d1b36;--navy3:#1e3460;--gold:#e8b84b;--cream:#f8f5ef;--text:#1a2a3a;--muted:#6b7f96;--border:#e2e8f0;--green:#16a34a;--green-bg:#dcfce7;--red:#dc2626;--red-bg:#fee2e2;--orange:#d97706;--orange-bg:#fef3c7;--blue:#2563eb;--blue-bg:#dbeafe;--purple:#7c3aed;--purple-bg:#ede9fe;--sidebar:250px;--radius:12px;--shadow:0 4px 20px rgba(0,0,0,0.07);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);display:flex;min-height:100vh;}
+#loading{position:fixed;inset:0;background:var(--navy);display:flex;align-items:center;justify-content:center;z-index:2000;flex-direction:column;gap:16px;}
+.spinner{width:40px;height:40px;border:4px solid rgba(255,255,255,.2);border-top:4px solid var(--gold);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading p{color:white;font-size:14px;opacity:.7;}
+#loginPage{position:fixed;inset:0;background:linear-gradient(135deg,var(--navy),var(--navy3));display:flex;align-items:center;justify-content:center;z-index:1000;display:none;}
+.login-box{background:white;border-radius:20px;padding:48px 40px;width:420px;box-shadow:0 30px 80px rgba(0,0,0,0.3);animation:popIn .5s cubic-bezier(.34,1.56,.64,1);}
+@keyframes popIn{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo h1{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);}
+.login-logo p{color:var(--muted);font-size:13px;margin-top:4px;}
+.badge{display:inline-block;background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;padding:2px 10px;border-radius:20px;letter-spacing:1px;text-transform:uppercase;margin-top:8px;}
+.fg{margin-bottom:16px;}
+.fg label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px;}
+.fg input,.fg select,.fg textarea{width:100%;padding:11px 14px;border:2px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);transition:border-color .2s;outline:none;background:white;}
+.fg input:focus,.fg select:focus{border-color:var(--navy);}
+.login-btn{width:100%;padding:13px;background:var(--navy);color:white;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:8px;}
+.login-btn:hover{background:var(--navy3);}
+.login-btn:disabled{opacity:.6;cursor:not-allowed;}
+.error-msg{background:var(--red-bg);color:var(--red);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;}
+.success-msg{background:var(--green-bg);color:var(--green);padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;}
+.sec-note{display:flex;align-items:center;gap:8px;background:var(--green-bg);color:var(--green);padding:8px 12px;border-radius:8px;font-size:12px;margin-bottom:20px;}
+#app{display:none;width:100%;}
+.sidebar{width:var(--sidebar);min-height:100vh;background:var(--navy);position:fixed;left:0;top:0;display:flex;flex-direction:column;z-index:200;overflow-y:auto;}
+.sidebar-logo{padding:24px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;}
+.sidebar-logo .icon{width:38px;height:38px;background:var(--gold);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.sidebar-logo h2{font-family:'Playfair Display',serif;color:white;font-size:17px;}
+.sidebar-logo span{color:rgba(255,255,255,.35);font-size:10px;display:block;letter-spacing:1px;}
+.nav-group{padding:12px 0;}
+.nav-group-title{color:rgba(255,255,255,.25);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:6px 20px;margin-bottom:2px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;font-size:13.5px;font-weight:500;position:relative;}
+.nav-item:hover{color:white;background:rgba(255,255,255,.06);}
+.nav-item.active{color:var(--gold);background:rgba(232,184,75,.12);}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:var(--gold);border-radius:0 3px 3px 0;}
+.nav-item .ni{font-size:16px;width:20px;text-align:center;}
+.sidebar-user{margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;}
+.ava{width:34px;height:34px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:var(--navy);flex-shrink:0;}
+.sidebar-user .info .name{color:white;font-size:13px;font-weight:600;}
+.sidebar-user .info .role{color:rgba(255,255,255,.35);font-size:11px;}
+.logout-btn{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:17px;transition:color .2s;}
+.logout-btn:hover{color:var(--red);}
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;}
+.topbar{background:white;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.topbar-left h3{font-family:'Playfair Display',serif;font-size:19px;color:var(--navy);}
+.topbar-left p{color:var(--muted);font-size:12px;margin-top:1px;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--cream);border:1.5px solid var(--border);border-radius:9px;padding:8px 14px;font-size:13px;color:var(--muted);min-width:200px;}
+.icon-btn{width:36px;height:36px;border-radius:9px;background:var(--cream);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;position:relative;}
+.dot{width:8px;height:8px;background:var(--red);border-radius:50%;position:absolute;top:4px;right:4px;border:2px solid white;}
+.page{display:none;padding:24px 28px;animation:fadeIn .3s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.section-head h2{font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);}
+.btn{padding:9px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none;}
+.btn-primary{background:var(--navy);color:white;}
+.btn-primary:hover{background:var(--navy3);}
+.btn-gold{background:var(--gold);color:var(--navy);}
+.btn-outline{background:white;color:var(--navy);border:2px solid var(--border);}
+.btn-outline:hover{border-color:var(--navy);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.btn-danger{background:var(--red-bg);color:var(--red);border:none;}
+.card{background:white;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.card-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.card-head h3{font-family:'Playfair Display',serif;font-size:15px;color:var(--navy);}
+.card-body{padding:20px;}
+.stats-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stats-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:white;border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);transition:transform .2s;}
+.stat-card:hover{transform:translateY(-2px);}
+.stat-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.tag{font-size:11px;font-weight:600;padding:3px 8px;border-radius:20px;}
+.tag-green{background:var(--green-bg);color:var(--green);}
+.tag-red{background:var(--red-bg);color:var(--red);}
+.tag-blue{background:var(--blue-bg);color:var(--blue);}
+.tag-orange{background:var(--orange-bg);color:var(--orange);}
+.stat-num{font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);line-height:1;}
+.stat-label{color:var(--muted);font-size:13px;margin-top:4px;}
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:10px 14px;border-bottom:2px solid var(--border);font-weight:600;white-space:nowrap;}
+td{padding:12px 14px;font-size:13.5px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#f9fafb;}
+.td-name{display:flex;align-items:center;gap:10px;}
+.mini-ava{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;}
+.status-badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;display:inline-block;text-transform:capitalize;}
+.s-present,.s-paid,.s-pass,.s-active{background:var(--green-bg);color:var(--green);}
+.s-absent,.s-overdue,.s-fail{background:var(--red-bg);color:var(--red);}
+.s-late,.s-pending,.s-on_leave{background:var(--orange-bg);color:var(--orange);}
+.s-available{background:var(--blue-bg);color:var(--blue);}
+.s-issued{background:var(--purple-bg);color:var(--purple);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+.g-auto{display:grid;grid-template-columns:1.6fr 1fr;gap:20px;}
+.progress{background:#e2e8f0;border-radius:10px;height:7px;margin-top:6px;}
+.progress-bar{height:7px;border-radius:10px;}
+.ai-box{background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:var(--radius);padding:20px;color:white;}
+.ai-box h4{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);margin-bottom:6px;}
+.ai-box p{font-size:13px;opacity:.7;margin-bottom:14px;}
+.ai-suggestion{background:rgba(255,255,255,.08);border-radius:9px;padding:10px 14px;font-size:13px;margin-bottom:8px;border-left:3px solid var(--gold);}
+.security-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--green-bg);border-radius:9px;margin-bottom:10px;font-size:13px;color:var(--green);font-weight:500;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-actions{display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);align-items:center;justify-content:center;z-index:500;display:none;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:16px;padding:28px;width:560px;max-width:90vw;max-height:85vh;overflow-y:auto;animation:popIn .25s ease;}
+.modal h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin-bottom:20px;}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);}
+.bar-chart{display:flex;align-items:flex-end;gap:8px;height:100px;}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.bar{width:100%;border-radius:5px 5px 0 0;min-width:20px;}
+.bar-label{font-size:10px;color:var(--muted);}
+.bar-val{font-size:10px;font-weight:600;color:var(--navy);}
+.mt16{margin-top:16px;}
+.fw600{font-weight:600;}
+.text-muted{color:var(--muted);font-size:13px;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-thumb{background:#c5d0de;border-radius:10px;}
 </style>
 </head>
 <body>
 
-<!-- ===== LOGIN ===== -->
+<div id="loading"><div class="spinner"></div><p>EduCore Pro load ho raha hai...</p></div>
+
 <div id="loginPage">
   <div class="login-box">
     <div class="login-logo">
@@ -345,23 +143,16 @@ tr:hover td { background:#f9fafb; }
       <p>Podar School Management System</p>
       <span class="badge">🔒 Supabase Secured</span>
     </div>
-    <div class="security-note">🛡️ SSL Encrypted — Your data is safe</div>
+    <div class="sec-note">🛡️ SSL Encrypted — Tumhara data safe hai</div>
     <div class="error-msg" id="errorMsg">❌ Email ya password galat hai!</div>
     <div class="success-msg" id="successMsg">✅ Login ho rahe hain...</div>
-    <div class="form-group">
-      <label>Email Address</label>
-      <input type="email" id="loginEmail" placeholder="admin@podarschool.com">
-    </div>
-    <div class="form-group">
-      <label>Password</label>
-      <input type="password" id="loginPassword" placeholder="••••••••">
-    </div>
+    <div class="fg"><label>Email</label><input type="email" id="loginEmail" placeholder="admin@podarschool.com"></div>
+    <div class="fg"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
     <button class="login-btn" id="loginBtn" onclick="doLogin()">🔐 Secure Login</button>
-    <p class="login-hint">Powered by Supabase &nbsp;|&nbsp; <span>End-to-End Encrypted</span></p>
+    <p style="text-align:center;color:var(--muted);font-size:12px;margin-top:14px;">Powered by Supabase | <span style="color:var(--gold);font-weight:600;">End-to-End Encrypted</span></p>
   </div>
 </div>
 
-<!-- ===== MAIN APP ===== -->
 <div id="app">
 <aside class="sidebar">
   <div class="sidebar-logo">
@@ -372,19 +163,18 @@ tr:hover td { background:#f9fafb; }
     <div class="nav-group">
       <div class="nav-group-title">Main</div>
       <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="ni">📊</span> Dashboard</div>
-      <div class="nav-item" onclick="showPage('students',this)"><span class="ni">👨‍🎓</span> Students <span class="nav-badge">1248</span></div>
+      <div class="nav-item" onclick="showPage('students',this)"><span class="ni">👨‍🎓</span> Students</div>
       <div class="nav-item" onclick="showPage('teachers',this)"><span class="ni">👩‍🏫</span> Teachers</div>
     </div>
     <div class="nav-group">
       <div class="nav-group-title">Academics</div>
       <div class="nav-item" onclick="showPage('attendance',this)"><span class="ni">✅</span> Attendance</div>
       <div class="nav-item" onclick="showPage('exams',this)"><span class="ni">📝</span> Exams & Marks</div>
-      <div class="nav-item" onclick="showPage('timetable',this)"><span class="ni">📅</span> Timetable</div>
       <div class="nav-item" onclick="showPage('library',this)"><span class="ni">📚</span> Library</div>
     </div>
     <div class="nav-group">
       <div class="nav-group-title">Finance</div>
-      <div class="nav-item" onclick="showPage('fees',this)"><span class="ni">💰</span> Fee Management <span class="nav-badge">12</span></div>
+      <div class="nav-item" onclick="showPage('fees',this)"><span class="ni">💰</span> Fee Management</div>
       <div class="nav-item" onclick="showPage('payroll',this)"><span class="ni">💼</span> Staff Payroll</div>
       <div class="nav-item" onclick="showPage('reports',this)"><span class="ni">📈</span> Reports</div>
     </div>
@@ -396,22 +186,16 @@ tr:hover td { background:#f9fafb; }
   </nav>
   <div class="sidebar-user">
     <div class="ava">AD</div>
-    <div class="info">
-      <div class="name" id="userEmail">Admin</div>
-      <div class="role">Super Admin</div>
-    </div>
-    <button class="logout-btn" onclick="doLogout()" title="Logout">⏻</button>
+    <div class="info"><div class="name" id="userEmailDisplay">Admin</div><div class="role">Super Admin</div></div>
+    <button class="logout-btn" onclick="doLogout()">⏻</button>
   </div>
 </aside>
 
 <div class="main">
   <div class="topbar">
-    <div class="topbar-left">
-      <h3 id="pageTitle">Dashboard</h3>
-      <p id="pageSubtitle">Welcome back! Aaj school mein kya ho raha hai.</p>
-    </div>
+    <div class="topbar-left"><h3 id="pageTitle">Dashboard</h3><p id="pageSubtitle">Welcome back!</p></div>
     <div class="topbar-right">
-      <div class="search">🔍 &nbsp; Search...</div>
+      <div class="search-box">🔍 Search...</div>
       <div class="icon-btn">🔔<div class="dot"></div></div>
       <div class="icon-btn">📧</div>
     </div>
@@ -420,15 +204,15 @@ tr:hover td { background:#f9fafb; }
   <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
     <div class="stats-4">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">👨‍🎓</div><span class="tag tag-green">▲ 3%</span></div><div class="stat-num">1,248</div><div class="stat-label">Total Students</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">👩‍🏫</div><span class="tag tag-blue">Active</span></div><div class="stat-num">86</div><div class="stat-label">Total Teachers</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div><span class="tag tag-green">+12%</span></div><div class="stat-num">₹4.2L</div><div class="stat-label">Fee Collected</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⚠️</div><span class="tag tag-red">Due</span></div><div class="stat-num">₹68K</div><div class="stat-label">Fee Pending</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">👨‍🎓</div><span class="tag tag-green" id="d-s-tag">—</span></div><div class="stat-num" id="d-s-num">—</div><div class="stat-label">Total Students</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">👩‍🏫</div><span class="tag tag-blue" id="d-t-tag">—</span></div><div class="stat-num" id="d-t-num">—</div><div class="stat-label">Total Teachers</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div><span class="tag tag-green">Paid</span></div><div class="stat-num" id="d-f-paid">—</div><div class="stat-label">Fee Paid</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⚠️</div><span class="tag tag-red">Due</span></div><div class="stat-num" id="d-f-due">—</div><div class="stat-label">Fee Pending</div></div>
     </div>
     <div class="g-auto">
       <div style="display:flex;flex-direction:column;gap:20px;">
         <div class="card">
-          <div class="card-head"><h3>Weekly Attendance</h3><span class="tag tag-green">94.2% Avg</span></div>
+          <div class="card-head"><h3>Weekly Attendance</h3><span class="tag tag-green">94% Avg</span></div>
           <div class="card-body">
             <div class="bar-chart">
               <div class="bar-wrap"><div class="bar-val">96%</div><div class="bar" style="height:96px;background:var(--navy)"></div><div class="bar-label">Mon</div></div>
@@ -442,44 +226,25 @@ tr:hover td { background:#f9fafb; }
         </div>
         <div class="card">
           <div class="card-head"><h3>Recent Students</h3><button class="btn btn-sm btn-outline" onclick="showPage('students',null)">View All</button></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Student</th><th>Class</th><th>Fee</th></tr></thead>
-              <tbody>
-                <tr><td><div class="td-name"><div class="mini-ava" style="background:#2563eb">AK</div>Aarav Kumar</div></td><td>10–A</td><td><span class="status-badge s-paid">Paid</span></td></tr>
-                <tr><td><div class="td-name"><div class="mini-ava" style="background:#7c3aed">PS</div>Priya Sharma</div></td><td>9–B</td><td><span class="status-badge s-pending">Pending</span></td></tr>
-                <tr><td><div class="td-name"><div class="mini-ava" style="background:#16a34a">RV</div>Rohan Verma</div></td><td>8–A</td><td><span class="status-badge s-paid">Paid</span></td></tr>
-                <tr><td><div class="td-name"><div class="mini-ava" style="background:#d97706">NP</div>Neha Patil</div></td><td>7–C</td><td><span class="status-badge s-overdue">Overdue</span></td></tr>
-              </tbody>
-            </table>
-          </div>
+          <div class="table-wrap"><table><thead><tr><th>Student</th><th>Class</th><th>Fee</th></tr></thead><tbody id="d-students">
+            <tr><td colspan="3" style="text-align:center;padding:20px;color:var(--muted)">Loading...</td></tr>
+          </tbody></table></div>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:20px;">
         <div class="ai-box">
-          <h4>🤖 AI Insights</h4>
-          <p>Smart suggestions</p>
-          <div class="ai-suggestion">📉 Class 8B attendance 8% kam — follow-up karo</div>
-          <div class="ai-suggestion">💸 12 students ke fees overdue hain</div>
-          <div class="ai-suggestion">🏆 Class 10A top performer — 87% avg!</div>
+          <h4>🤖 AI Insights</h4><p>Live database se</p>
+          <div class="ai-suggestion" id="ai1">📊 Data load ho raha hai...</div>
+          <div class="ai-suggestion" id="ai2">💡 Analyzing...</div>
+          <div class="ai-suggestion" id="ai3">🔄 Please wait...</div>
         </div>
         <div class="card">
-          <div class="card-head"><h3>Today's Summary</h3></div>
+          <div class="card-head"><h3>Summary</h3></div>
           <div class="card-body">
             <div style="display:flex;flex-direction:column;gap:12px;">
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Attendance</span><span class="fw600">94.2%</span></div><div class="progress"><div class="progress-bar" style="width:94%;background:var(--green)"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Fee Collection</span><span class="fw600">78%</span></div><div class="progress"><div class="progress-bar" style="width:78%;background:var(--blue)"></div></div></div>
-              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Exams Filed</span><span class="fw600">65%</span></div><div class="progress"><div class="progress-bar" style="width:65%;background:var(--gold)"></div></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-head"><h3>Upcoming Events</h3></div>
-          <div class="card-body" style="padding:12px 16px;">
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div style="display:flex;gap:12px;align-items:center;"><div style="background:var(--navy);color:white;border-radius:8px;padding:6px 8px;text-align:center;min-width:44px;"><div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1">24</div><div style="font-size:9px;color:var(--gold)">FEB</div></div><div><div class="fw600" style="font-size:13px">Math Exam</div><div class="text-muted">9:00 AM · Hall A</div></div></div>
-              <div style="display:flex;gap:12px;align-items:center;"><div style="background:var(--navy);color:white;border-radius:8px;padding:6px 8px;text-align:center;min-width:44px;"><div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1">28</div><div style="font-size:9px;color:var(--gold)">FEB</div></div><div><div class="fw600" style="font-size:13px">Sports Day</div><div class="text-muted">8:00 AM · Ground</div></div></div>
-              <div style="display:flex;gap:12px;align-items:center;"><div style="background:var(--navy);color:white;border-radius:8px;padding:6px 8px;text-align:center;min-width:44px;"><div style="font-family:'Playfair Display',serif;font-size:18px;line-height:1">05</div><div style="font-size:9px;color:var(--gold)">MAR</div></div><div><div class="fw600" style="font-size:13px">PTM</div><div class="text-muted">10:00 AM · All Classes</div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Students</span><span class="fw600" id="p-s">—</span></div><div class="progress"><div class="progress-bar" id="p-s-bar" style="width:0%;background:var(--green)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Fee Paid</span><span class="fw600" id="p-f">—</span></div><div class="progress"><div class="progress-bar" id="p-f-bar" style="width:0%;background:var(--blue)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Teachers Active</span><span class="fw600" id="p-t">—</span></div><div class="progress"><div class="progress-bar" id="p-t-bar" style="width:0%;background:var(--gold)"></div></div></div>
             </div>
           </div>
         </div>
@@ -491,24 +256,14 @@ tr:hover td { background:#f9fafb; }
   <div class="page" id="page-students">
     <div class="section-head"><h2>Student Management</h2><button class="btn btn-primary" onclick="openModal('addStudent')">+ Add Student</button></div>
     <div class="stats-4" style="margin-bottom:20px;">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">👨‍🎓</div></div><div class="stat-num">1,248</div><div class="stat-label">Total Students</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num">1,201</div><div class="stat-label">Active</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">🆕</div></div><div class="stat-num">47</div><div class="stat-label">New This Month</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#ede9fe">🎓</div></div><div class="stat-num">186</div><div class="stat-label">Class 10</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">👨‍🎓</div></div><div class="stat-num" id="s-total">—</div><div class="stat-label">Total</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num" id="s-paid">—</div><div class="stat-label">Fee Paid</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⏰</div></div><div class="stat-num" id="s-pending">—</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">🚨</div></div><div class="stat-num" id="s-overdue">—</div><div class="stat-label">Overdue</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><h3>All Students</h3></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>#</th><th>Student</th><th>Class</th><th>Roll</th><th>Parent</th><th>Phone</th><th>Fee</th><th>Action</th></tr></thead>
-          <tbody id="studentTable">
-            <tr><td>1</td><td><div class="td-name"><div class="mini-ava" style="background:#2563eb">AK</div>Aarav Kumar</div></td><td>10–A</td><td>01</td><td>Rajesh Kumar</td><td>98765-43210</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
-            <tr><td>2</td><td><div class="td-name"><div class="mini-ava" style="background:#7c3aed">PS</div>Priya Sharma</div></td><td>9–B</td><td>12</td><td>Suresh Sharma</td><td>91234-56789</td><td><span class="status-badge s-pending">Pending</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
-            <tr><td>3</td><td><div class="td-name"><div class="mini-ava" style="background:#16a34a">RV</div>Rohan Verma</div></td><td>8–A</td><td>05</td><td>Mohan Verma</td><td>87654-32109</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
-            <tr><td>4</td><td><div class="td-name"><div class="mini-ava" style="background:#d97706">NP</div>Neha Patil</div></td><td>7–C</td><td>22</td><td>Vijay Patil</td><td>76543-21098</td><td><span class="status-badge s-overdue">Overdue</span></td><td><button class="btn btn-sm btn-outline">Edit</button></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="card-head"><h3>All Students</h3><button class="btn btn-sm btn-outline" onclick="loadStudents()">🔄 Refresh</button></div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Student</th><th>Class</th><th>Section</th><th>Parent</th><th>Phone</th><th>Fee Status</th><th>Action</th></tr></thead><tbody id="studentsTable"><tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">Loading...</td></tr></tbody></table></div>
     </div>
   </div>
 
@@ -516,263 +271,130 @@ tr:hover td { background:#f9fafb; }
   <div class="page" id="page-teachers">
     <div class="section-head"><h2>Teachers & Staff</h2><button class="btn btn-primary" onclick="openModal('addTeacher')">+ Add Teacher</button></div>
     <div class="stats-3">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">👩‍🏫</div></div><div class="stat-num">86</div><div class="stat-label">Teaching Staff</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">🧑‍💼</div></div><div class="stat-num">14</div><div class="stat-label">Non-Teaching</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num">98</div><div class="stat-label">Present Today</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">👩‍🏫</div></div><div class="stat-num" id="t-total">—</div><div class="stat-label">Total</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num" id="t-active">—</div><div class="stat-label">Active</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">💰</div></div><div class="stat-num" id="t-payroll">—</div><div class="stat-label">Monthly Payroll</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><h3>All Teachers</h3></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>#</th><th>Name</th><th>Subject</th><th>Class</th><th>Phone</th><th>Salary</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>1</td><td><div class="td-name"><div class="mini-ava" style="background:#2563eb">SR</div>Sunita Rao</div></td><td>Mathematics</td><td>10–A</td><td>99887-76655</td><td>₹42,000</td><td><span class="status-badge s-present">Active</span></td></tr>
-            <tr><td>2</td><td><div class="td-name"><div class="mini-ava" style="background:#7c3aed">MK</div>Manoj Kumar</div></td><td>Science</td><td>9–B</td><td>88776-65544</td><td>₹38,500</td><td><span class="status-badge s-present">Active</span></td></tr>
-            <tr><td>3</td><td><div class="td-name"><div class="mini-ava" style="background:#16a34a">AP</div>Asha Patel</div></td><td>English</td><td>8–A</td><td>77665-54433</td><td>₹35,000</td><td><span class="status-badge s-present">Active</span></td></tr>
-            <tr><td>4</td><td><div class="td-name"><div class="mini-ava" style="background:#d97706">RJ</div>Rajan Joshi</div></td><td>Social Studies</td><td>7–C</td><td>66554-43322</td><td>₹32,000</td><td><span class="status-badge s-late">On Leave</span></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="card-head"><h3>All Teachers</h3><button class="btn btn-sm btn-outline" onclick="loadTeachers()">🔄 Refresh</button></div>
+      <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>Subject</th><th>Class</th><th>Phone</th><th>Net Salary</th><th>Status</th></tr></thead><tbody id="teachersTable"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">Loading...</td></tr></tbody></table></div>
     </div>
   </div>
 
   <!-- ATTENDANCE -->
   <div class="page" id="page-attendance">
-    <div class="section-head"><h2>Attendance</h2><button class="btn btn-primary">📋 Mark Attendance</button></div>
+    <div class="section-head"><h2>Attendance</h2></div>
     <div class="stats-4">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div><span class="tag tag-green">Today</span></div><div class="stat-num">94.2%</div><div class="stat-label">Overall</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">👤</div></div><div class="stat-num">1,175</div><div class="stat-label">Present</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">❌</div></div><div class="stat-num">58</div><div class="stat-label">Absent</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⏰</div></div><div class="stat-num">15</div><div class="stat-label">Late</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num" id="att-present">—</div><div class="stat-label">Present</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">❌</div></div><div class="stat-num" id="att-absent">—</div><div class="stat-label">Absent</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⏰</div></div><div class="stat-num" id="att-late">—</div><div class="stat-label">Late</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📊</div></div><div class="stat-num" id="att-total">—</div><div class="stat-label">Total Records</div></div>
     </div>
-    <div class="g2">
-      <div class="card">
-        <div class="card-head"><h3>Class 10A — Today</h3></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Roll</th><th>Student</th><th>Status</th><th>Time</th></tr></thead>
-            <tbody>
-              <tr><td>01</td><td>Aarav Kumar</td><td><span class="status-badge s-present">Present</span></td><td>8:02 AM</td></tr>
-              <tr><td>02</td><td>Priya Sharma</td><td><span class="status-badge s-late">Late</span></td><td>8:47 AM</td></tr>
-              <tr><td>03</td><td>Rohan Verma</td><td><span class="status-badge s-absent">Absent</span></td><td>—</td></tr>
-              <tr><td>04</td><td>Neha Patil</td><td><span class="status-badge s-present">Present</span></td><td>7:58 AM</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-head"><h3>February Calendar</h3></div>
-        <div class="card-body">
-          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px;">
-            <div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">S</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">M</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">T</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">W</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">T</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">F</div><div style="text-align:center;font-size:11px;font-weight:600;color:var(--muted)">S</div>
-          </div>
-          <div class="att-grid">
-            <div class="att-day att-h">—</div><div class="att-day att-h">—</div><div class="att-day att-h">—</div><div class="att-day att-h">—</div><div class="att-day att-h">—</div><div class="att-day att-h">—</div><div class="att-day att-h">1</div>
-            <div class="att-day att-h">2</div><div class="att-day att-p">3</div><div class="att-day att-p">4</div><div class="att-day att-p">5</div><div class="att-day att-p">6</div><div class="att-day att-p">7</div><div class="att-day att-h">8</div>
-            <div class="att-day att-h">9</div><div class="att-day att-p">10</div><div class="att-day att-p">11</div><div class="att-day att-a">12</div><div class="att-day att-p">13</div><div class="att-day att-p">14</div><div class="att-day att-h">15</div>
-            <div class="att-day att-h">16</div><div class="att-day att-p">17</div><div class="att-day att-p">18</div><div class="att-day att-l">19</div><div class="att-day att-p">20</div><div class="att-day att-p">21</div>
-          </div>
-        </div>
-      </div>
+    <div class="card">
+      <div class="card-head"><h3>Attendance Records</h3><button class="btn btn-sm btn-outline" onclick="loadAttendance()">🔄 Refresh</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Student</th><th>Class</th><th>Date</th><th>Status</th><th>Time In</th></tr></thead><tbody id="attendanceTable"><tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted)">Loading...</td></tr></tbody></table></div>
     </div>
   </div>
 
   <!-- EXAMS -->
   <div class="page" id="page-exams">
-    <div class="section-head"><h2>Exams & Results</h2><button class="btn btn-primary">+ Schedule Exam</button></div>
+    <div class="section-head"><h2>Exams & Results</h2></div>
     <div class="stats-4">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📝</div></div><div class="stat-num">6</div><div class="stat-label">This Month</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">🏆</div></div><div class="stat-num">87%</div><div class="stat-label">Avg Score</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">❌</div></div><div class="stat-num">23</div><div class="stat-label">Failed</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⭐</div></div><div class="stat-num">156</div><div class="stat-label">Distinctions</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num" id="ex-pass">—</div><div class="stat-label">Passed</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">❌</div></div><div class="stat-num" id="ex-fail">—</div><div class="stat-label">Failed</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📊</div></div><div class="stat-num" id="ex-avg">—</div><div class="stat-label">Avg %</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⭐</div></div><div class="stat-num" id="ex-total">—</div><div class="stat-label">Total</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><h3>Result Sheet — Class 10A</h3><button class="btn btn-sm btn-gold">📄 Print</button></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Student</th><th>Math</th><th>Science</th><th>English</th><th>Hindi</th><th>Total</th><th>Grade</th><th>Result</th></tr></thead>
-          <tbody>
-            <tr><td>Aarav Kumar</td><td>92</td><td>88</td><td>85</td><td>90</td><td>355/400</td><td>A+</td><td><span class="status-badge s-pass">Pass</span></td></tr>
-            <tr><td>Priya Sharma</td><td>78</td><td>82</td><td>91</td><td>75</td><td>326/400</td><td>A</td><td><span class="status-badge s-pass">Pass</span></td></tr>
-            <tr><td>Rohan Verma</td><td>45</td><td>52</td><td>60</td><td>55</td><td>212/400</td><td>C</td><td><span class="status-badge s-fail">Fail</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- TIMETABLE -->
-  <div class="page" id="page-timetable">
-    <div class="section-head"><h2>Timetable</h2><button class="btn btn-primary">Edit</button></div>
-    <div class="card">
-      <div class="card-head"><h3>Class 10A — Weekly Schedule</h3></div>
-      <div class="card-body">
-        <div class="tt-grid">
-          <div class="tt-cell tt-head">Time</div><div class="tt-cell tt-head">Mon</div><div class="tt-cell tt-head">Tue</div><div class="tt-cell tt-head">Wed</div><div class="tt-cell tt-head">Thu</div><div class="tt-cell tt-head">Fri</div><div class="tt-cell tt-head">Sat</div>
-          <div class="tt-cell tt-time">8–9 AM</div>
-          <div class="tt-cell" style="background:#dbeafe"><div class="tt-subj">Math</div><div class="tt-teacher">Mrs. Sunita</div></div>
-          <div class="tt-cell" style="background:#dcfce7"><div class="tt-subj">Science</div><div class="tt-teacher">Mr. Manoj</div></div>
-          <div class="tt-cell" style="background:#fef3c7"><div class="tt-subj">English</div><div class="tt-teacher">Mrs. Asha</div></div>
-          <div class="tt-cell" style="background:#ede9fe"><div class="tt-subj">Hindi</div><div class="tt-teacher">Mr. Rajan</div></div>
-          <div class="tt-cell" style="background:#dbeafe"><div class="tt-subj">Math</div><div class="tt-teacher">Mrs. Sunita</div></div>
-          <div class="tt-cell" style="background:#dcfce7"><div class="tt-subj">Science</div><div class="tt-teacher">Mr. Manoj</div></div>
-          <div class="tt-cell tt-time">9–10 AM</div>
-          <div class="tt-cell" style="background:#dcfce7"><div class="tt-subj">Science</div><div class="tt-teacher">Mr. Manoj</div></div>
-          <div class="tt-cell" style="background:#dbeafe"><div class="tt-subj">Math</div><div class="tt-teacher">Mrs. Sunita</div></div>
-          <div class="tt-cell" style="background:#ede9fe"><div class="tt-subj">Social</div><div class="tt-teacher">Mr. Rajan</div></div>
-          <div class="tt-cell" style="background:#fef3c7"><div class="tt-subj">English</div><div class="tt-teacher">Mrs. Asha</div></div>
-          <div class="tt-cell" style="background:#fee2e2"><div class="tt-subj">Sports</div><div class="tt-teacher">Mr. Vivek</div></div>
-          <div class="tt-cell" style="background:#fef3c7"><div class="tt-subj">Hindi</div><div class="tt-teacher">Mr. Rajan</div></div>
-        </div>
-      </div>
+      <div class="card-head"><h3>Results</h3><button class="btn btn-sm btn-outline" onclick="loadExams()">🔄 Refresh</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Student</th><th>Class</th><th>Exam</th><th>Total</th><th>%</th><th>Grade</th><th>Result</th></tr></thead><tbody id="examsTable"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">Loading...</td></tr></tbody></table></div>
     </div>
   </div>
 
   <!-- FEES -->
   <div class="page" id="page-fees">
-    <div class="section-head"><h2>Fee Management</h2><button class="btn btn-primary">+ Generate Challan</button></div>
+    <div class="section-head"><h2>Fee Management</h2></div>
     <div class="stats-4">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div><span class="tag tag-green">Collected</span></div><div class="stat-num">₹4.2L</div><div class="stat-label">This Month</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⏰</div><span class="tag tag-red">Pending</span></div><div class="stat-num">₹68K</div><div class="stat-label">Outstanding</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📊</div></div><div class="stat-num">1,156</div><div class="stat-label">Paid</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⚠️</div></div><div class="stat-num">92</div><div class="stat-label">Unpaid</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div></div><div class="stat-num" id="f-paid">—</div><div class="stat-label">Paid</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fef3c7">⏰</div></div><div class="stat-num" id="f-pending">—</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">🚨</div></div><div class="stat-num" id="f-overdue">—</div><div class="stat-label">Overdue</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">💵</div></div><div class="stat-num" id="f-amount">—</div><div class="stat-label">Total Amount</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><h3>Fee Records</h3><button class="btn btn-sm btn-gold">📤 Send Reminders</button></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Student</th><th>Class</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
-          <tbody>
-            <tr><td>Aarav Kumar</td><td>10–A</td><td>₹8,500</td><td>Jan 10</td><td><span class="status-badge s-paid">Paid</span></td><td><button class="btn btn-sm btn-outline">🖨 Print</button></td></tr>
-            <tr><td>Priya Sharma</td><td>9–B</td><td>₹8,000</td><td>Jan 10</td><td><span class="status-badge s-pending">Pending</span></td><td><button class="btn btn-sm btn-gold">Collect</button></td></tr>
-            <tr><td>Neha Patil</td><td>7–C</td><td>₹7,500</td><td>Dec 10</td><td><span class="status-badge s-overdue">Overdue</span></td><td><button class="btn btn-sm btn-danger">Notice</button></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="card-head"><h3>Fee Records</h3><button class="btn btn-sm btn-outline" onclick="loadFees()">🔄 Refresh</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Student</th><th>Class</th><th>Type</th><th>Amount</th><th>Due Date</th><th>Status</th></tr></thead><tbody id="feesTable"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Loading...</td></tr></tbody></table></div>
     </div>
   </div>
 
   <!-- LIBRARY -->
   <div class="page" id="page-library">
-    <div class="section-head"><h2>Library</h2><button class="btn btn-primary">+ Add Book</button></div>
+    <div class="section-head"><h2>Library</h2></div>
     <div class="stats-4">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📚</div></div><div class="stat-num">4,820</div><div class="stat-label">Total Books</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">📤</div></div><div class="stat-num">312</div><div class="stat-label">Issued</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⏰</div><span class="tag tag-red">Alert</span></div><div class="stat-num">28</div><div class="stat-label">Overdue</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num">4,508</div><div class="stat-label">Available</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">📚</div></div><div class="stat-num" id="lib-total">—</div><div class="stat-label">Total Books</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">✅</div></div><div class="stat-num" id="lib-avail">—</div><div class="stat-label">Available</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#ede9fe">📤</div></div><div class="stat-num" id="lib-issued">—</div><div class="stat-label">Issued</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⏰</div></div><div class="stat-num" id="lib-overdue">—</div><div class="stat-label">Overdue</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><h3>Issued Books</h3></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Book</th><th>Issued To</th><th>Class</th><th>Issue Date</th><th>Return</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>Mathematics NCERT 10</td><td>Aarav Kumar</td><td>10–A</td><td>Feb 10</td><td>Feb 24</td><td><span class="status-badge s-present">On Time</span></td></tr>
-            <tr><td>Wings of Fire</td><td>Priya Sharma</td><td>9–B</td><td>Jan 28</td><td>Feb 11</td><td><span class="status-badge s-overdue">Overdue</span></td></tr>
-            <tr><td>Science NCERT 8</td><td>Rohan Verma</td><td>8–A</td><td>Feb 15</td><td>Mar 1</td><td><span class="status-badge s-present">On Time</span></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="card-head"><h3>All Books</h3><button class="btn btn-sm btn-outline" onclick="loadLibrary()">🔄 Refresh</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Total</th><th>Available</th><th>Status</th></tr></thead><tbody id="libraryTable"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Loading...</td></tr></tbody></table></div>
     </div>
   </div>
 
   <!-- PAYROLL -->
   <div class="page" id="page-payroll">
-    <div class="section-head"><h2>Staff Payroll</h2><button class="btn btn-primary">💸 Process Payroll</button></div>
+    <div class="section-head"><h2>Staff Payroll</h2></div>
     <div class="stats-3">
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div></div><div class="stat-num">₹28.4L</div><div class="stat-label">Monthly Total</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">✅</div></div><div class="stat-num">82</div><div class="stat-label">Salaries Paid</div></div>
-      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⏳</div></div><div class="stat-num">4</div><div class="stat-label">Pending</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dcfce7">💰</div></div><div class="stat-num" id="pay-total">—</div><div class="stat-label">Total Payroll</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#dbeafe">✅</div></div><div class="stat-num" id="pay-paid">—</div><div class="stat-label">Paid</div></div>
+      <div class="stat-card"><div class="stat-top"><div class="stat-icon" style="background:#fee2e2">⏳</div></div><div class="stat-num" id="pay-pending">—</div><div class="stat-label">Pending</div></div>
     </div>
     <div class="card">
-      <div class="card-head"><h3>February 2026</h3></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Staff</th><th>Role</th><th>Basic</th><th>Net Salary</th><th>Status</th></tr></thead>
-          <tbody>
-            <tr><td>Sunita Rao</td><td>Math Teacher</td><td>₹42,000</td><td>₹46,200</td><td><span class="status-badge s-paid">Paid</span></td></tr>
-            <tr><td>Manoj Kumar</td><td>Science Teacher</td><td>₹38,500</td><td>₹42,350</td><td><span class="status-badge s-paid">Paid</span></td></tr>
-            <tr><td>Rajan Joshi</td><td>Social Studies</td><td>₹32,000</td><td>₹35,200</td><td><span class="status-badge s-pending">Pending</span></td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="card-head"><h3>Payroll Records</h3><button class="btn btn-sm btn-outline" onclick="loadPayroll()">🔄 Refresh</button></div>
+      <div class="table-wrap"><table><thead><tr><th>Staff</th><th>Role</th><th>Basic</th><th>Gross</th><th>Deductions</th><th>Net</th><th>Status</th></tr></thead><tbody id="payrollTable"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">Loading...</td></tr></tbody></table></div>
     </div>
   </div>
 
   <!-- REPORTS -->
   <div class="page" id="page-reports">
-    <div class="section-head"><h2>Reports</h2><button class="btn btn-gold">📥 Export All</button></div>
+    <div class="section-head"><h2>Reports</h2></div>
     <div class="g3 mt16">
-      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📊</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Attendance Report</div></div></div>
-      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">💰</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Fee Report</div></div></div>
-      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📝</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Exam Results</div></div></div>
-      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">👨‍🎓</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Report Cards</div></div></div>
-      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">💼</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Payroll Report</div></div></div>
-      <div class="card" style="cursor:pointer" onclick="alert('Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📚</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Library Report</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="showToast('📊 Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📊</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Attendance</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="showToast('💰 Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">💰</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Fee Report</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="showToast('📝 Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📝</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Exam Results</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="showToast('👨‍🎓 Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">👨‍🎓</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Report Cards</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="showToast('💼 Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">💼</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Payroll</div></div></div>
+      <div class="card" style="cursor:pointer" onclick="showToast('📚 Report ready!')"><div class="card-body" style="text-align:center;padding:28px"><div style="font-size:36px">📚</div><div class="fw600" style="margin-top:10px;color:var(--navy)">Library</div></div></div>
     </div>
   </div>
 
   <!-- SECURITY -->
   <div class="page" id="page-security">
-    <div class="section-head"><h2>Security & Access</h2></div>
-    <div style="background:var(--green-bg);color:var(--green);padding:12px 16px;border-radius:9px;font-size:13px;margin-bottom:20px;">🔒 System Secure — Supabase Auth Active — SSL Enabled — Last Login: Today</div>
-    <div class="g2">
-      <div class="card">
-        <div class="card-head"><h3>🛡️ Security Features</h3></div>
-        <div class="card-body">
-          <div class="security-row">✅ Supabase Authentication — Active</div>
-          <div class="security-row">✅ SSL/TLS Encryption — Active</div>
-          <div class="security-row">✅ JWT Token Security — Active</div>
-          <div class="security-row">✅ Role-Based Access Control — Active</div>
-          <div class="security-row">✅ Auto Session Logout — 1 hour</div>
-          <div class="security-row">✅ Password Hashing — bcrypt</div>
-          <div class="security-row">✅ Daily Backups — Supabase Cloud</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-head"><h3>👥 User Roles</h3></div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Role</th><th>Access</th><th>Users</th></tr></thead>
-            <tbody>
-              <tr><td>Super Admin</td><td><span class="status-badge s-paid">Full</span></td><td>2</td></tr>
-              <tr><td>Teacher</td><td><span class="status-badge s-late">Limited</span></td><td>86</td></tr>
-              <tr><td>Accountant</td><td><span class="status-badge s-late">Finance</span></td><td>3</td></tr>
-              <tr><td>Librarian</td><td><span class="status-badge s-late">Library</span></td><td>2</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+    <div class="section-head"><h2>Security</h2></div>
+    <div style="background:var(--green-bg);color:var(--green);padding:12px 16px;border-radius:9px;font-size:13px;margin-bottom:20px;">🔒 System Secure — Supabase Auth Active — SSL Enabled</div>
+    <div class="card"><div class="card-head"><h3>🛡️ Security Features</h3></div><div class="card-body">
+      <div class="security-row">✅ Supabase Authentication — Active</div>
+      <div class="security-row">✅ SSL/TLS Encryption — Active</div>
+      <div class="security-row">✅ JWT Token Security — Active</div>
+      <div class="security-row">✅ Row Level Security (RLS) — Active</div>
+      <div class="security-row">✅ Auto Session Logout — 1 hour</div>
+      <div class="security-row">✅ Password Hashing — bcrypt</div>
+      <div class="security-row">✅ Daily Backups — Supabase Cloud</div>
+    </div></div>
   </div>
 
   <!-- SETTINGS -->
   <div class="page" id="page-settings">
     <div class="section-head"><h2>Settings</h2><button class="btn btn-primary">💾 Save</button></div>
-    <div class="g2">
-      <div class="card">
-        <div class="card-head"><h3>🏫 School Info</h3></div>
-        <div class="card-body">
-          <div class="form-grid" style="gap:14px;">
-            <div class="fg"><label>School Name</label><input type="text" value="Podar School"></div>
-            <div class="fg"><label>Principal</label><input type="text" value="Dr. Ramesh Gupta"></div>
-            <div class="fg"><label>Phone</label><input type="text" value="+91 98765-43210"></div>
-            <div class="fg"><label>Board</label><select><option>CBSE</option><option>ICSE</option><option>State Board</option></select></div>
-            <div class="fg" style="grid-column:span 2"><label>Address</label><input type="text" value="Nashik, Maharashtra"></div>
-          </div>
-        </div>
+    <div class="card"><div class="card-head"><h3>🏫 School Info</h3></div><div class="card-body">
+      <div class="form-grid" style="gap:14px;">
+        <div class="fg"><label>School Name</label><input type="text" value="Podar School"></div>
+        <div class="fg"><label>Principal</label><input type="text" value="Dr. Ramesh Gupta"></div>
+        <div class="fg"><label>Phone</label><input type="text" value="+91 98765-43210"></div>
+        <div class="fg"><label>Board</label><select><option>CBSE</option><option>ICSE</option><option>State Board</option></select></div>
+        <div class="fg" style="grid-column:span 2"><label>Address</label><input type="text" value="Nashik, Maharashtra"></div>
       </div>
-      <div class="card">
-        <div class="card-head"><h3>⚙️ Preferences</h3></div>
-        <div class="card-body">
-          <div style="display:flex;flex-direction:column;gap:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--cream);border-radius:9px;"><div><div class="fw600" style="font-size:13px">SMS to Parents</div><div class="text-muted">Auto on absence</div></div><div style="width:44px;height:24px;background:var(--green);border-radius:20px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;right:3px;top:3px;"></div></div></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--cream);border-radius:9px;"><div><div class="fw600" style="font-size:13px">Fee Reminders</div><div class="text-muted">3 days before due</div></div><div style="width:44px;height:24px;background:var(--green);border-radius:20px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;right:3px;top:3px;"></div></div></div>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--cream);border-radius:9px;"><div><div class="fw600" style="font-size:13px">AI Insights</div><div class="text-muted">Smart suggestions</div></div><div style="width:44px;height:24px;background:var(--green);border-radius:20px;position:relative;cursor:pointer;"><div style="width:18px;height:18px;background:white;border-radius:50%;position:absolute;right:3px;top:3px;"></div></div></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </div></div>
   </div>
 
 </div>
@@ -784,12 +406,14 @@ tr:hover td { background:#f9fafb; }
     <button class="modal-close" onclick="closeModal('addStudent')">✕</button>
     <h3>➕ Add Student</h3>
     <div class="form-grid">
-      <div class="fg"><label>First Name</label><input type="text" placeholder="Aarav"></div>
-      <div class="fg"><label>Last Name</label><input type="text" placeholder="Kumar"></div>
-      <div class="fg"><label>Class</label><select><option>10</option><option>9</option><option>8</option><option>7</option><option>6</option></select></div>
-      <div class="fg"><label>Section</label><select><option>A</option><option>B</option><option>C</option></select></div>
-      <div class="fg"><label>Parent Name</label><input type="text" placeholder="Rajesh Kumar"></div>
-      <div class="fg"><label>Phone</label><input type="tel" placeholder="98765-43210"></div>
+      <div class="fg"><label>Name</label><input type="text" id="ns-name" placeholder="Aarav Kumar"></div>
+      <div class="fg"><label>Class</label><input type="text" id="ns-class" placeholder="10"></div>
+      <div class="fg"><label>Section</label><input type="text" id="ns-section" placeholder="A"></div>
+      <div class="fg"><label>Roll No</label><input type="text" id="ns-roll" placeholder="01"></div>
+      <div class="fg"><label>Parent Name</label><input type="text" id="ns-parent" placeholder="Rajesh Kumar"></div>
+      <div class="fg"><label>Phone</label><input type="tel" id="ns-phone" placeholder="98765-43210"></div>
+      <div class="fg"><label>Fee Status</label><select id="ns-fee"><option value="pending">Pending</option><option value="paid">Paid</option><option value="overdue">Overdue</option></select></div>
+      <div class="fg"><label>Address</label><input type="text" id="ns-address" placeholder="Nashik"></div>
     </div>
     <div class="form-actions">
       <button class="btn btn-primary" onclick="addStudent()">✅ Save</button>
@@ -803,134 +427,283 @@ tr:hover td { background:#f9fafb; }
     <button class="modal-close" onclick="closeModal('addTeacher')">✕</button>
     <h3>➕ Add Teacher</h3>
     <div class="form-grid">
-      <div class="fg"><label>Name</label><input type="text" placeholder="Sunita Rao"></div>
-      <div class="fg"><label>Subject</label><input type="text" placeholder="Mathematics"></div>
-      <div class="fg"><label>Phone</label><input type="tel" placeholder="99887-76655"></div>
-      <div class="fg"><label>Salary</label><input type="number" placeholder="42000"></div>
+      <div class="fg"><label>Name</label><input type="text" id="nt-name" placeholder="Sunita Rao"></div>
+      <div class="fg"><label>Subject</label><input type="text" id="nt-subject" placeholder="Mathematics"></div>
+      <div class="fg"><label>Phone</label><input type="tel" id="nt-phone" placeholder="99887-76655"></div>
+      <div class="fg"><label>Basic Salary</label><input type="number" id="nt-salary" placeholder="42000"></div>
+      <div class="fg"><label>Class Incharge</label><input type="text" id="nt-class" placeholder="10"></div>
+      <div class="fg"><label>Status</label><select id="nt-status"><option value="active">Active</option><option value="on_leave">On Leave</option></select></div>
     </div>
     <div class="form-actions">
-      <button class="btn btn-primary" onclick="closeModal('addTeacher');showToast('Teacher added!')">✅ Save</button>
+      <button class="btn btn-primary" onclick="addTeacher()">✅ Save</button>
       <button class="btn btn-outline" onclick="closeModal('addTeacher')">Cancel</button>
     </div>
   </div>
 </div>
 
 <script>
-// ===== SUPABASE CONFIG =====
-// YAHAN APNI SUPABASE URL AUR KEY DAALO
-const SUPABASE_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SURL='https://zaukdakfcsmckbzvknaf.supabase.co';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
+const sb=window.supabase.createClient(SURL,SKEY);
+const CLR=['#2563eb','#7c3aed','#16a34a','#d97706','#dc2626','#0891b2','#be185d'];
+const gc=i=>CLR[i%CLR.length];
+const ini=n=>n?n.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2):'??';
+const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+const qs=(sel,html)=>{const e=document.querySelector(sel);if(e)e.innerHTML=html;};
 
-// ===== LOGIN =====
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
-  const btn = document.getElementById('loginBtn');
-  const errorMsg = document.getElementById('errorMsg');
-  const successMsg = document.getElementById('successMsg');
-
-  if(!email || !password) {
-    errorMsg.style.display = 'flex';
-    errorMsg.innerHTML = '❌ Email aur password daalna zaroori hai!';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.innerHTML = '⏳ Login ho raha hai...';
-  errorMsg.style.display = 'none';
-
-  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-  if(error) {
-    errorMsg.style.display = 'flex';
-    errorMsg.innerHTML = '❌ Email ya password galat hai!';
-    btn.disabled = false;
-    btn.innerHTML = '🔐 Secure Login';
+async function init(){
+  const{data:{session}}=await sb.auth.getSession();
+  document.getElementById('loading').style.display='none';
+  if(session){
+    set('userEmailDisplay',session.user.email.split('@')[0]);
+    document.getElementById('app').style.display='flex';
+    loadDashboard();
   } else {
-    successMsg.style.display = 'flex';
-    successMsg.innerHTML = '✅ Login successful!';
-    document.getElementById('userEmail').textContent = email.split('@')[0];
-    setTimeout(() => {
-      document.getElementById('loginPage').style.display = 'none';
-      document.getElementById('app').style.display = 'flex';
-    }, 800);
+    document.getElementById('loginPage').style.display='flex';
+  }
+}
+init();
+
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value;
+  const pass=document.getElementById('loginPassword').value;
+  const btn=document.getElementById('loginBtn');
+  const err=document.getElementById('errorMsg');
+  const suc=document.getElementById('successMsg');
+  if(!email||!pass){err.style.display='block';err.innerHTML='❌ Email aur password zaroori hai!';return;}
+  btn.disabled=true;btn.innerHTML='⏳ Login...';err.style.display='none';
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
+  if(error){err.style.display='block';err.innerHTML='❌ Email ya password galat hai!';btn.disabled=false;btn.innerHTML='🔐 Secure Login';}
+  else{
+    suc.style.display='block';suc.innerHTML='✅ Login successful!';
+    set('userEmailDisplay',email.split('@')[0]);
+    setTimeout(()=>{document.getElementById('loginPage').style.display='none';document.getElementById('app').style.display='flex';loadDashboard();},800);
+  }
+}
+document.addEventListener('keypress',e=>{if(e.key==='Enter')doLogin();});
+
+async function doLogout(){
+  if(confirm('Logout karna chahte hain?')){
+    await sb.auth.signOut();
+    document.getElementById('app').style.display='none';
+    document.getElementById('loginPage').style.display='flex';
   }
 }
 
-// Enter key se login
-document.addEventListener('keypress', function(e) {
-  if(e.key === 'Enter') doLogin();
-});
-
-// ===== LOGOUT =====
-async function doLogout() {
-  if(confirm('Logout karna chahte hain?')) {
-    await supabaseClient.auth.signOut();
-    document.getElementById('app').style.display = 'none';
-    document.getElementById('loginPage').style.display = 'flex';
-    document.getElementById('loginEmail').value = '';
-    document.getElementById('loginPassword').value = '';
-  }
-}
-
-// ===== AUTO LOGIN CHECK =====
-async function checkSession() {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if(session) {
-    document.getElementById('userEmail').textContent = session.user.email.split('@')[0];
-    document.getElementById('loginPage').style.display = 'none';
-    document.getElementById('app').style.display = 'flex';
-  }
-}
-checkSession();
-
-// ===== NAVIGATION =====
-const pageInfo = {
-  dashboard:  { title:'Dashboard', sub:'Welcome back! Aaj school mein kya ho raha hai.' },
-  students:   { title:'Student Management', sub:'Sab students ke records yahan hain.' },
-  teachers:   { title:'Teachers & Staff', sub:'Teaching aur non-teaching staff.' },
-  attendance: { title:'Attendance', sub:'Roz ki attendance track karo.' },
-  exams:      { title:'Exams & Results', sub:'Exams schedule karo, results daalo.' },
-  timetable:  { title:'Timetable', sub:'Class-wise weekly schedule.' },
-  library:    { title:'Library', sub:'Books issue aur return manage karo.' },
-  fees:       { title:'Fee Management', sub:'Fee collect karo, track karo.' },
-  payroll:    { title:'Staff Payroll', sub:'Monthly salary manage karo.' },
-  reports:    { title:'Reports', sub:'Detailed reports generate karo.' },
-  security:   { title:'Security', sub:'Access aur security settings.' },
-  settings:   { title:'Settings', sub:'School ki information update karo.' },
+const pageInfo={
+  dashboard:{title:'Dashboard',sub:'Welcome back! Aaj school mein kya ho raha hai.'},
+  students:{title:'Students',sub:'Sab students ke records.'},
+  teachers:{title:'Teachers',sub:'Teaching staff.'},
+  attendance:{title:'Attendance',sub:'Daily attendance.'},
+  exams:{title:'Exams & Results',sub:'Results manage karo.'},
+  library:{title:'Library',sub:'Books manage karo.'},
+  fees:{title:'Fee Management',sub:'Fee track karo.'},
+  payroll:{title:'Payroll',sub:'Salary manage karo.'},
+  reports:{title:'Reports',sub:'Reports generate karo.'},
+  security:{title:'Security',sub:'Security settings.'},
+  settings:{title:'Settings',sub:'School info update karo.'},
 };
 
-function showPage(id, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  const page = document.getElementById('page-'+id);
-  if(page) page.classList.add('active');
-  if(el) el.classList.add('active');
-  if(pageInfo[id]) {
-    document.getElementById('pageTitle').textContent = pageInfo[id].title;
-    document.getElementById('pageSubtitle').textContent = pageInfo[id].sub;
-  }
+function showPage(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const pg=document.getElementById('page-'+id);
+  if(pg)pg.classList.add('active');
+  if(el)el.classList.add('active');
+  if(pageInfo[id]){set('pageTitle',pageInfo[id].title);set('pageSubtitle',pageInfo[id].sub);}
+  if(id==='students')loadStudents();
+  if(id==='teachers')loadTeachers();
+  if(id==='attendance')loadAttendance();
+  if(id==='exams')loadExams();
+  if(id==='fees')loadFees();
+  if(id==='library')loadLibrary();
+  if(id==='payroll')loadPayroll();
 }
 
-function openModal(id) { document.getElementById('modal-'+id).classList.add('open'); }
-function closeModal(id) { document.getElementById('modal-'+id).classList.remove('open'); }
-
-document.querySelectorAll('.modal-overlay').forEach(o => {
-  o.addEventListener('click', e => { if(e.target === o) o.classList.remove('open'); });
-});
-
-function addStudent() {
-  showToast('✅ Student add ho gaya!');
-  closeModal('addStudent');
+async function loadDashboard(){
+  const[s,t,f,a]=await Promise.all([
+    sb.from('students').select('*'),
+    sb.from('teachers table').select('*'),
+    sb.from('fees').select('*'),
+    sb.from('Attendance').select('*')
+  ]);
+  const sd=s.data||[],td=t.data||[],fd=f.data||[],ad=a.data||[];
+  set('d-s-num',sd.length);set('d-s-tag',sd.length+' Total');
+  set('d-t-num',td.length);set('d-t-tag',td.length+' Active');
+  const paid=fd.filter(x=>x.status==='paid').length;
+  const due=fd.filter(x=>x.status!=='paid').length;
+  set('d-f-paid',paid+' Students');set('d-f-due',due+' Students');
+  set('p-s',sd.length);document.getElementById('p-s-bar').style.width=Math.min(sd.length/20*100,100)+'%';
+  const fp=fd.length?Math.round(paid/fd.length*100):0;
+  set('p-f',fp+'%');document.getElementById('p-f-bar').style.width=fp+'%';
+  const at=td.filter(x=>x.status==='active').length;
+  set('p-t',at+'/'+td.length);document.getElementById('p-t-bar').style.width=(td.length?Math.round(at/td.length*100):0)+'%';
+  const tbody=document.getElementById('d-students');
+  tbody.innerHTML=sd.slice(0,4).map((s,i)=>`<tr><td><div class="td-name"><div class="mini-ava" style="background:${gc(i)}">${ini(s.name)}</div>${s.name||'—'}</div></td><td>${s.class||'—'}</td><td><span class="status-badge s-${s.fee_status||'pending'}">${s.fee_status||'pending'}</span></td></tr>`).join('')||'<tr><td colspan="3" style="text-align:center;color:var(--muted)">Koi data nahi</td></tr>';
+  const ov=fd.filter(x=>x.status==='overdue').length;
+  const ab=ad.filter(x=>x.status==='absent').length;
+  set('ai1','👨‍🎓 Total '+sd.length+' students registered hain');
+  set('ai2','💸 '+ov+' students ke fees overdue hain!');
+  set('ai3','📊 '+ab+' absent records aaj hain');
 }
 
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;background:var(--green-bg);color:var(--green);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,0.1);animation:fadeIn .3s ease;';
-  t.innerHTML = msg;
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 3000);
+async function loadStudents(){
+  const{data}=await sb.from('students').select('*');
+  const d=data||[];
+  set('s-total',d.length);
+  set('s-paid',d.filter(x=>x.fee_status==='paid').length);
+  set('s-pending',d.filter(x=>x.fee_status==='pending').length);
+  set('s-overdue',d.filter(x=>x.fee_status==='overdue').length);
+  document.getElementById('studentsTable').innerHTML=d.map((s,i)=>`
+    <tr><td>${i+1}</td>
+    <td><div class="td-name"><div class="mini-ava" style="background:${gc(i)}">${ini(s.name)}</div>${s.name||'—'}</div></td>
+    <td>${s.class||'—'}</td><td>${s.section||'—'}</td>
+    <td>${s.parent_name||'—'}</td><td>${s.phone||'—'}</td>
+    <td><span class="status-badge s-${s.fee_status||'pending'}">${s.fee_status||'pending'}</span></td>
+    <td><button class="btn btn-sm btn-danger" onclick="deleteStudent(${s.id})">🗑️</button></td></tr>
+  `).join('')||'<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">Koi student nahi</td></tr>';
+}
+
+async function addStudent(){
+  const name=document.getElementById('ns-name').value;
+  if(!name){showToast('❌ Name zaroori hai!');return;}
+  const{error}=await sb.from('students').insert([{
+    name,class:document.getElementById('ns-class').value,
+    section:document.getElementById('ns-section').value,
+    roll_no:document.getElementById('ns-roll').value,
+    parent_name:document.getElementById('ns-parent').value,
+    phone:document.getElementById('ns-phone').value,
+    fee_status:document.getElementById('ns-fee').value,
+    address:document.getElementById('ns-address').value
+  }]);
+  if(error){showToast('❌ Error: '+error.message);return;}
+  showToast('✅ Student add ho gaya!');closeModal('addStudent');loadStudents();
+}
+
+async function deleteStudent(id){
+  if(!confirm('Delete karna chahte hain?'))return;
+  await sb.from('students').delete().eq('id',id);
+  showToast('🗑️ Deleted!');loadStudents();
+}
+
+async function loadTeachers(){
+  const{data}=await sb.from('teachers table').select('*');
+  const d=data||[];
+  set('t-total',d.length);
+  set('t-active',d.filter(x=>x.status==='active').length);
+  const tp=d.reduce((s,x)=>s+(parseInt(x.net_salary)||0),0);
+  set('t-payroll','₹'+Math.round(tp/1000)+'K');
+  document.getElementById('teachersTable').innerHTML=d.map((t,i)=>`
+    <tr><td>${i+1}</td>
+    <td><div class="td-name"><div class="mini-ava" style="background:${gc(i)}">${ini(t.name)}</div>${t.name||'—'}</div></td>
+    <td>${t.subject||'—'}</td><td>${t.class_incharge||'—'}</td>
+    <td>${t.phone||'—'}</td><td>₹${t.net_salary||'—'}</td>
+    <td><span class="status-badge s-${t.status||'active'}">${t.status||'active'}</span></td></tr>
+  `).join('')||'<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">Koi teacher nahi</td></tr>';
+}
+
+async function addTeacher(){
+  const name=document.getElementById('nt-name').value;
+  if(!name){showToast('❌ Name zaroori hai!');return;}
+  const basic=parseInt(document.getElementById('nt-salary').value)||0;
+  const{error}=await sb.from('teachers table').insert([{
+    name,subject:document.getElementById('nt-subject').value,
+    phone:document.getElementById('nt-phone').value,
+    basic_salary:basic,net_salary:Math.round(basic*1.15),
+    class_incharge:document.getElementById('nt-class').value,
+    status:document.getElementById('nt-status').value
+  }]);
+  if(error){showToast('❌ Error: '+error.message);return;}
+  showToast('✅ Teacher add ho gaya!');closeModal('addTeacher');loadTeachers();
+}
+
+async function loadAttendance(){
+  const{data}=await sb.from('Attendance').select('*');
+  const d=data||[];
+  set('att-present',d.filter(x=>x.status==='present').length);
+  set('att-absent',d.filter(x=>x.status==='absent').length);
+  set('att-late',d.filter(x=>x.status==='late').length);
+  set('att-total',d.length);
+  document.getElementById('attendanceTable').innerHTML=d.map(a=>`
+    <tr><td>${a.student_name||'—'}</td><td>${a.class||'—'}</td>
+    <td>${a.date||'—'}</td>
+    <td><span class="status-badge s-${a.status||'present'}">${a.status||'—'}</span></td>
+    <td>${a.time_in||'—'}</td></tr>
+  `).join('')||'<tr><td colspan="5" style="text-align:center;padding:30px;color:var(--muted)">Koi record nahi</td></tr>';
+}
+
+async function loadExams(){
+  const{data}=await sb.from('exams').select('*');
+  const d=data||[];
+  set('ex-pass',d.filter(x=>x.result==='pass').length);
+  set('ex-fail',d.filter(x=>x.result==='fail').length);
+  set('ex-total',d.length);
+  const avg=d.length?Math.round(d.reduce((s,x)=>s+(parseFloat(x.percentage)||0),0)/d.length):0;
+  set('ex-avg',avg+'%');
+  document.getElementById('examsTable').innerHTML=d.map(e=>`
+    <tr><td>${e.student_name||'—'}</td><td>${e.class||'—'}</td>
+    <td>${e.exam_name||'—'}</td><td>${e.total||'—'}</td>
+    <td>${e.percentage||'—'}%</td><td>${e.grade||'—'}</td>
+    <td><span class="status-badge s-${e.result||'pass'}">${e.result||'—'}</span></td></tr>
+  `).join('')||'<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">Koi result nahi</td></tr>';
+}
+
+async function loadFees(){
+  const{data}=await sb.from('fees').select('*');
+  const d=data||[];
+  set('f-paid',d.filter(x=>x.status==='paid').length);
+  set('f-pending',d.filter(x=>x.status==='pending').length);
+  set('f-overdue',d.filter(x=>x.status==='overdue').length);
+  set('f-amount','₹'+d.reduce((s,x)=>s+(parseInt(x.amount)||0),0).toLocaleString());
+  document.getElementById('feesTable').innerHTML=d.map(f=>`
+    <tr><td>${f.student_name||'—'}</td><td>${f.class||'—'}</td>
+    <td>${f.fee_type||'—'}</td><td>₹${f.amount||'—'}</td>
+    <td>${f.due_date||'—'}</td>
+    <td><span class="status-badge s-${f.status||'pending'}">${f.status||'—'}</span></td></tr>
+  `).join('')||'<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Koi fee nahi</td></tr>';
+}
+
+async function loadLibrary(){
+  const{data}=await sb.from('library').select('*');
+  const d=data||[];
+  set('lib-total',d.length);
+  set('lib-avail',d.filter(x=>x.status==='available').length);
+  set('lib-issued',d.filter(x=>x.status==='issued').length);
+  set('lib-overdue',d.filter(x=>x.status==='overdue').length);
+  document.getElementById('libraryTable').innerHTML=d.map(b=>`
+    <tr><td>${b.book_title||'—'}</td><td>${b.author||'—'}</td>
+    <td>${b.category||'—'}</td><td>${b.total_copies||'—'}</td>
+    <td>${b.available_copies||'—'}</td>
+    <td><span class="status-badge s-${b.status||'available'}">${b.status||'—'}</span></td></tr>
+  `).join('')||'<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Koi book nahi</td></tr>';
+}
+
+async function loadPayroll(){
+  const{data}=await sb.from('Payroll').select('*');
+  const d=data||[];
+  const total=d.reduce((s,x)=>s+(parseInt(x.net_salary)||0),0);
+  set('pay-total','₹'+Math.round(total/1000)+'K');
+  set('pay-paid',d.filter(x=>x.status==='paid').length);
+  set('pay-pending',d.filter(x=>x.status==='pending').length);
+  document.getElementById('payrollTable').innerHTML=d.map((p,i)=>`
+    <tr>
+    <td><div class="td-name"><div class="mini-ava" style="background:${gc(i)}">${ini(p.staff_name)}</div>${p.staff_name||'—'}</div></td>
+    <td>${p.role||'—'}</td><td>₹${p.basic_salary||'—'}</td>
+    <td>₹${p.gross_salary||'—'}</td>
+    <td>₹${(parseInt(p.pf_deduction||0)+parseInt(p.tax_deduction||0))}</td>
+    <td>₹${p.net_salary||'—'}</td>
+    <td><span class="status-badge s-${p.status||'pending'}">${p.status||'—'}</span></td></tr>
+  `).join('')||'<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">Koi payroll nahi</td></tr>';
+}
+
+function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+function showToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;top:20px;right:20px;z-index:9999;background:var(--green-bg);color:var(--green);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.1);';
+  t.innerHTML=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),3000);
 }
 </script>
 </body>
