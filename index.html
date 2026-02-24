@@ -712,7 +712,7 @@ async function loadFees(){
     <tr><td>${f.student_name||'—'}</td><td>${f.class||'—'}</td>
     <td>${f.fee_type||'—'}</td><td>₹${f.amount||'—'}</td>
     <td>${f.due_date||'—'}</td>
-    <td><span class="status-badge s-${f.status||'pending'}">${f.status||'—'}</span></td></tr>
+    <td><span class="status-badge s-${f.status||'pending'}">${f.status||'—'}</span></td><td><button class="btn btn-sm btn-gold" onclick="openReceipt('${f.student_name}','${f.class}','${f.amount}','${f.status}')">🖨️ Receipt</button></td></tr>
   `).join('')||'<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Koi fee nahi</td></tr>';
 }
 
@@ -757,7 +757,12 @@ function toggleSidebar(){
   document.getElementById('mainSidebar').classList.toggle('open');
   document.getElementById('sidebarOverlay').classList.toggle('open');
 }
+function openReceipt(name, cls, amount, status){
+  const url = 'fee_slip.html?name='+encodeURIComponent(name)+'&class='+encodeURIComponent(cls)+'&amount='+encodeURIComponent(amount)+'&status='+encodeURIComponent(status);
+  window.open(url, '_blank');
+}
 
+function showToast(msg){   ← yeh wali line pehle se hai
 function showToast(msg){
   const t=document.createElement('div');
   t.style.cssText='position:fixed;top:20px;right:20px;z-index:9999;background:var(--green-bg);color:var(--green);padding:12px 20px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 4px 20px rgba(0,0,0,.1);';
