@@ -712,9 +712,8 @@ async function loadFees(){
     <tr><td>${f.student_name||'—'}</td><td>${f.class||'—'}</td>
     <td>${f.fee_type||'—'}</td><td>₹${f.amount||'—'}</td>
     <td>${f.due_date||'—'}</td>
-    <td><span class="status-badge s-${f.status||'pending'}">${f.status||'—'}</span></td></tr>
-  `).join('')||'<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Koi fee nahi</td></tr>';
-}
+    <<td><span class="status-badge s-${f.status||'pending'}">${f.status||'—'}</span></td>
+<td><button class="btn btn-sm btn-gold" onclick="printReceipt('${f.student_name}','${f.class}','${f.amount}','${f.status}')">🖨️ Receipt</button></td></tr>
 
 async function loadLibrary(){
   const{data}=await sb.from('library').select('*');
