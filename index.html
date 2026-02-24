@@ -129,6 +129,32 @@ tr:hover td{background:#f9fafb;}
 .text-muted{color:var(--muted);font-size:13px;}
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-thumb{background:#c5d0de;border-radius:10px;}
+
+/* ===== MOBILE RESPONSIVE ===== */
+.hamburger{display:none;position:fixed;top:16px;left:16px;z-index:300;background:var(--navy);border:none;border-radius:8px;padding:8px 10px;cursor:pointer;font-size:18px;}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;}
+
+@media(max-width:768px){
+  .hamburger{display:block;}
+  .sidebar{transform:translateX(-100%);transition:transform .3s ease;}
+  .sidebar.open{transform:translateX(0);}
+  .sidebar-overlay.open{display:block;}
+  .main{margin-left:0;}
+  .topbar{padding:14px 16px 14px 60px;}
+  .topbar-left h3{font-size:16px;}
+  .page{padding:16px;}
+  .stats-4{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .stats-3{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .g2,.g3,.g-auto{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .search-box{display:none;}
+  .stat-num{font-size:22px;}
+  .topbar-right{gap:8px;}
+  .login-box{width:95vw;padding:32px 24px;}
+  table{font-size:12px;}
+  th,td{padding:8px 10px;}
+  .modal{width:95vw;padding:20px;}
+}
 </style>
 </head>
 <body>
@@ -154,7 +180,9 @@ tr:hover td{background:#f9fafb;}
 </div>
 
 <div id="app">
-<aside class="sidebar">
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<aside class="sidebar" id="mainSidebar">
   <div class="sidebar-logo">
     <div class="icon">🎓</div>
     <div><h2>EduCore</h2><span>Podar School ERP</span></div>
@@ -699,6 +727,11 @@ async function loadPayroll(){
 function openModal(id){document.getElementById('modal-'+id).classList.add('open');}
 function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
 document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+
+function toggleSidebar(){
+  document.getElementById('mainSidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
 
 function showToast(msg){
   const t=document.createElement('div');
