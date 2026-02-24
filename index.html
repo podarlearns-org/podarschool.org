@@ -479,13 +479,38 @@ const ini=n=>n?n.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2):'??';
 const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
 const qs=(sel,html)=>{const e=document.querySelector(sel);if(e)e.innerHTML=html;};
 
+let currentRole='admin';
+
+async function loadUserRole(email){
+  const{data}=await sb.from('user_roles').select('*').eq('email',email).single();
+  if(data) currentRole=data.role;
+  else currentRole='admin';
+  const roleNames={admin:'👨‍💼 Super Admin',accountant:'💰 Accountant',teacher:'👩‍🏫 Teacher'};
+  const roleEl=document.querySelector('.sidebar-user .info .role');
+  if(roleEl) roleEl.textContent=roleNames[currentRole]||currentRole;
+}
+
+function applyRoleAccess(){
+  if(currentRole==='accountant'){
+    // Accountant sirf fees dekh sakta hai
+    ['students','teachers','attendance','exams','library','payroll','reports','security','settings'].forEach(p=>{
+      const el=document.querySelector(`[onclick="showPage('${p}',this)"]`);
+      if(el) el.style.display='none';
+    });
+    showPage('fees',document.querySelector(`[onclick="showPage('fees',this)"]`));
+    showToast('💰 Accountant Login — Sirf Fee Management visible hai');
+  }
+}
+
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
   document.getElementById('loading').style.display='none';
   if(session){
     set('userEmailDisplay',session.user.email.split('@')[0]);
+    await loadUserRole(session.user.email);
     document.getElementById('app').style.display='flex';
-    loadDashboard();
+    applyRoleAccess();
+    if(currentRole==='admin') loadDashboard();
   } else {
     document.getElementById('loginPage').style.display='flex';
   }
