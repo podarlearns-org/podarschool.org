@@ -503,8 +503,23 @@ function applyRoleAccess(){
 }
 
 async function init(){
-  const{data:{session}}=await sb.auth.getSession();
-  document.getElementById('loading').style.display='none';
+  try {
+    const{data:{session}}=await sb.auth.getSession();
+    document.getElementById('loading').style.display='none';
+    if(session){
+      set('userEmailDisplay',session.user.email.split('@')[0]);
+      await loadUserRole(session.user.email);
+      document.getElementById('app').style.display='flex';
+      applyRoleAccess();
+      if(currentRole==='admin') loadDashboard();
+    } else {
+      document.getElementById('loginPage').style.display='flex';
+    }
+  } catch(e) {
+    document.getElementById('loading').style.display='none';
+    document.getElementById('loginPage').style.display='flex';
+  }
+}
   if(session){
     set('userEmailDisplay',session.user.email.split('@')[0]);
     await loadUserRole(session.user.email);
