@@ -350,7 +350,7 @@ tr:hover td{background:#f9fafb;}
     </div>
     <div class="card">
       <div class="card-head"><h3>Fee Records</h3><button class="btn btn-sm btn-outline" onclick="loadFees()">🔄 Refresh</button></div>
-      <div class="table-wrap"><table><thead><tr><th>Student</th><th>Class</th><th>Type</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Receipt</th></tr></thead><tbody id="feesTable"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Loading...</td></tr></tbody></table></div>
+      <div class="table-wrap"><table><thead><tr><th>Student</th><th>Class</th><th>Type</th><th>Amount</th><th>Due Date</th><th>Status</th></tr></thead><tbody id="feesTable"><tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Loading...</td></tr></tbody></table></div>
     </div>
   </div>
 
@@ -712,8 +712,9 @@ async function loadFees(){
     <tr><td>${f.student_name||'—'}</td><td>${f.class||'—'}</td>
     <td>${f.fee_type||'—'}</td><td>₹${f.amount||'—'}</td>
     <td>${f.due_date||'—'}</td>
-    <<td><span class="status-badge s-${f.status||'pending'}">${f.status||'—'}</span></td>
-<td><button class="btn btn-sm btn-gold" onclick="printReceipt('${f.student_name}','${f.class}','${f.amount}','${f.status}')">🖨️ Receipt</button></td></tr>
+    <td><span class="status-badge s-${f.status||'pending'}">${f.status||'—'}</span></td></tr>
+  `).join('')||'<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted)">Koi fee nahi</td></tr>';
+}
 
 async function loadLibrary(){
   const{data}=await sb.from('library').select('*');
