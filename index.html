@@ -1,2 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podar Learn School - ERP System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb; /* Bright Blue */
+            --primary-dark: #1e3a8a;
+            --secondary: #f59e0b; /* Amber */
+            --bg-light: #f0f2f5;
+            --white: #ffffff;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --success: #10b981;
+            --danger: #ef4444;
+            --sidebar-width: 260px;
+        }
 
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css" data-precedence="next_static/chunks/[root-of-the-server]__0f0ba101._.css"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js"/><script src="/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_client_17643121._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_f3530cac._.js" async=""></script><script src="/_next/static/chunks/node_modules_%40swc_helpers_cjs_d80fb378._.js" async=""></script><script src="/_next/static/chunks/_a0ff3932._.js" async=""></script><script src="/_next/static/chunks/turbopack-_23a915ee._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_be32b49c._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js" async=""></script><script src="/_next/static/chunks/node_modules_394613a2._.js" async=""></script><script src="/_next/static/chunks/src_2bc135c0._.js" async=""></script><script src="/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js" async=""></script><script src="/_next/static/chunks/src_52428cab._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_499cd0e9._.js" async=""></script><script src="/_next/static/chunks/node_modules_lodash_0ce7be08._.js" async=""></script><script src="/_next/static/chunks/node_modules_recharts_es6_68c6b850._.js" async=""></script><script src="/_next/static/chunks/node_modules_%40radix-ui_3df63156._.js" async=""></script><script src="/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js" async=""></script><script src="/_next/static/chunks/node_modules_6cad0b18._.js" async=""></script><script src="/_next/static/chunks/src_app_page_tsx_fd8e7853._.js" async=""></script><meta name="next-size-adjust" content=""/><title>Delhi Public School - ERP System</title><meta name="description" content="Complete School ERP Software for managing students, fees, and reports. Professional school management system."/><meta name="author" content="Delhi Public School"/><meta name="keywords" content="School ERP,Education Management,Fee Collection,Student Management,School Software"/><meta property="og:title" content="Delhi Public School - ERP System"/><meta property="og:description" content="Complete School ERP Software for managing students, fees, and reports"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="Delhi Public School - ERP System"/><meta name="twitter:description" content="Complete School ERP Software for managing students, fees, and reports"/><link rel="icon" href="/logo.svg"/><script src="/_next/static/chunks/node_modules_next_dist_build_polyfills_polyfill-nomodule.js" noModule=""></script></head><body class="geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__variable antialiased bg-background text-foreground"><div hidden=""><!--$--><!--/$--></div><div class="min-h-screen bg-gray-50 flex"><div class="fixed inset-y-0 left-0 z-50 lg:hidden transform transition-transform duration-300 -translate-x-full"><div class="w-64 h-full bg-gradient-to-b from-[#1e3a8a] via-[#1e40af] to-[#1e3a8a] text-white transition-all duration-300 flex flex-col"><div class="p-4 border-b border-white/10"><div class="flex items-center gap-3"><div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg overflow-hidden"><img alt="Podar Logo" loading="lazy" width="48" height="48" decoding="async" data-nimg="1" class="w-full h-full object-contain" style="color:transparent" srcSet="/_next/image?url=%2Fpodar-logo.png&amp;w=48&amp;q=75 1x, /_next/image?url=%2Fpodar-logo.png&amp;w=96&amp;q=75 2x" src="/_next/image?url=%2Fpodar-logo.png&amp;w=96&amp;q=75"/></div><div class="overflow-hidden"><h1 class="font-bold text-sm leading-tight text-white">Podar Learn School</h1><p class="text-xs text-amber-300 font-medium">Niphad</p></div></div></div><nav class="flex-1 p-3 overflow-y-auto"><ul class="space-y-1"><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all bg-gradient-to-r from-amber-500/30 to-amber-600/20 text-amber-300 border-l-4 border-amber-500 shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg><span class="text-sm font-medium">Dashboard</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg><span class="text-sm font-medium">Students</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-indian-rupee w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M6 3h12"></path><path d="M6 8h12"></path><path d="m6 13 8.5 8"></path><path d="M6 13h3"></path><path d="M9 13c6.667 0 6.667-10 0-10"></path></svg><span class="text-sm font-medium">Fee Collection</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-chart-column-increasing w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M8 18v-2"></path><path d="M12 18v-4"></path><path d="M16 18v-6"></path></svg><span class="text-sm font-medium">Reports</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scan w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg><span class="text-sm font-medium">QR Lookup</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span class="text-sm font-medium">AI Assistant</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><span class="text-sm font-medium">Settings</span></button></li></ul></nav><div class="p-3 border-t border-white/10 bg-white/5"><div class="flex items-center gap-3"><span data-slot="avatar" class="relative flex size-8 shrink-0 overflow-hidden rounded-full w-9 h-9 flex-shrink-0 border-2 border-amber-500"><span data-slot="avatar-fallback" class="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-amber-600 text-white text-sm font-bold">AC</span></span><div class="overflow-hidden"><p class="font-medium text-sm truncate">Accountant</p><p class="text-xs text-blue-200 truncate">accountant@podarlearnNiphad.edu.in</p></div></div></div></div></div><div class="hidden lg:block"><div class="w-64 h-full bg-gradient-to-b from-[#1e3a8a] via-[#1e40af] to-[#1e3a8a] text-white transition-all duration-300 flex flex-col"><div class="p-4 border-b border-white/10"><div class="flex items-center gap-3"><div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg overflow-hidden"><img alt="Podar Logo" loading="lazy" width="48" height="48" decoding="async" data-nimg="1" class="w-full h-full object-contain" style="color:transparent" srcSet="/_next/image?url=%2Fpodar-logo.png&amp;w=48&amp;q=75 1x, /_next/image?url=%2Fpodar-logo.png&amp;w=96&amp;q=75 2x" src="/_next/image?url=%2Fpodar-logo.png&amp;w=96&amp;q=75"/></div><div class="overflow-hidden"><h1 class="font-bold text-sm leading-tight text-white">Podar Learn School</h1><p class="text-xs text-amber-300 font-medium">Niphad</p></div></div></div><nav class="flex-1 p-3 overflow-y-auto"><ul class="space-y-1"><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all bg-gradient-to-r from-amber-500/30 to-amber-600/20 text-amber-300 border-l-4 border-amber-500 shadow-lg"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg><span class="text-sm font-medium">Dashboard</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg><span class="text-sm font-medium">Students</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-indian-rupee w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M6 3h12"></path><path d="M6 8h12"></path><path d="m6 13 8.5 8"></path><path d="M6 13h3"></path><path d="M9 13c6.667 0 6.667-10 0-10"></path></svg><span class="text-sm font-medium">Fee Collection</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-chart-column-increasing w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M8 18v-2"></path><path d="M12 18v-4"></path><path d="M16 18v-6"></path></svg><span class="text-sm font-medium">Reports</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scan w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg><span class="text-sm font-medium">QR Lookup</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span class="text-sm font-medium">AI Assistant</span></button></li><li><button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-blue-100 hover:bg-white/10"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings w-5 h-5 flex-shrink-0" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><span class="text-sm font-medium">Settings</span></button></li></ul></nav><div class="p-3 border-t border-white/10 bg-white/5"><div class="flex items-center gap-3"><span data-slot="avatar" class="relative flex size-8 shrink-0 overflow-hidden rounded-full w-9 h-9 flex-shrink-0 border-2 border-amber-500"><span data-slot="avatar-fallback" class="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-amber-500 to-amber-600 text-white text-sm font-bold">AC</span></span><div class="overflow-hidden"><p class="font-medium text-sm truncate">Accountant</p><p class="text-xs text-blue-200 truncate">accountant@podarlearnNiphad.edu.in</p></div></div></div></div></div><div class="flex-1 flex flex-col min-w-0"><header class="h-14 bg-white border-b flex items-center justify-between px-4 lg:px-6 shadow-sm"><div class="flex items-center gap-4"><button data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9 lg:hidden"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu w-5 h-5" aria-hidden="true"><path d="M4 12h16"></path><path d="M4 18h16"></path><path d="M4 6h16"></path></svg></button><button data-slot="button" class="items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9 hidden lg:flex"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left w-5 h-5" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><div class="hidden sm:flex items-center gap-2 text-sm"><span class="text-muted-foreground">Home</span><span class="text-muted-foreground">/</span><span class="font-medium text-[#1e3a8a]">Dashboard</span></div></div><div class="flex items-center gap-2"><button data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon w-5 h-5" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></button><button data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50 size-9 relative"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell w-5 h-5" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg><span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span></button><div class="hidden md:flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg border border-amber-200"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar w-4 h-4 text-amber-600" aria-hidden="true"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></svg><span class="text-sm font-medium text-amber-800">Wed, 25 Feb, 2026</span></div></div></header><main class="flex-1 p-4 lg:p-6 overflow-auto"><div class="space-y-6"><div data-slot="card" class="flex flex-col gap-6 rounded-xl border py-6 shadow-sm bg-gradient-to-br from-[#1e3a8a] via-[#1e40af] to-[#1e3a8a] text-white overflow-hidden relative"><div class="absolute inset-0"><div class="absolute top-0 right-0 w-96 h-96 bg-amber-500/20 rounded-full blur-3xl -translate-y-32 translate-x-32"></div><div class="absolute bottom-0 left-0 w-64 h-64 bg-blue-300/10 rounded-full blur-2xl translate-y-20 -translate-x-20"></div><div class="absolute top-1/2 left-1/2 w-32 h-32 bg-amber-400/10 rounded-full blur-xl"></div></div><div data-slot="card-content" class="p-8 relative"><div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6"><div class="space-y-2"><div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-5 h-5 text-amber-400" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg><span class="text-amber-300 text-sm font-medium">Welcome Back</span></div><h2 class="text-3xl font-bold bg-gradient-to-r from-white via-blue-100 to-amber-200 bg-clip-text text-transparent">Good Morning, Accountant! 👨‍💼</h2><p class="text-blue-200 text-lg">Here&#x27;s your school&#x27;s financial overview for today.</p><div class="flex items-center gap-4 mt-4"><div class="flex items-center gap-2 text-sm text-blue-200"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-building2 lucide-building-2 w-4 h-4" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path><path d="M10 6h4"></path><path d="M10 10h4"></path><path d="M10 14h4"></path><path d="M10 18h4"></path></svg><span>Podar Learn School Niphad</span></div><div class="flex items-center gap-2 text-sm text-blue-200"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-book-open w-4 h-4" aria-hidden="true"><path d="M12 7v14"></path><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"></path></svg><span>Academic Year 2026-27</span></div></div></div><div class="flex gap-3"><button data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive hover:bg-primary/90 h-9 px-4 py-2 has-[&gt;svg]:px-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg shadow-amber-500/25"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus w-4 h-4 mr-2" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" x2="19" y1="8" y2="14"></line><line x1="22" x2="16" y1="11" y2="11"></line></svg> New Admission</button><button data-slot="button" class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*=&#x27;size-&#x27;])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-9 px-4 py-2 has-[&gt;svg]:px-3 text-white border-white/30 hover:bg-white/10 backdrop-blur-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-indian-rupee w-4 h-4 mr-2" aria-hidden="true"><path d="M6 3h12"></path><path d="M6 8h12"></path><path d="m6 13 8.5 8"></path><path d="M6 13h3"></path><path d="M9 13c6.667 0 6.667-10 0-10"></path></svg> Collect Fee</button></div></div></div></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"><div data-slot="card" class="flex flex-col gap-6 rounded-xl py-6 shadow-sm group relative overflow-hidden border-0 bg-gradient-to-br from-[#1e3a8a] to-[#2563eb] text-white hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-300 hover:-translate-y-1"><div class="absolute inset-0 bg-[url(&#x27;data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMtOS45NDEgMC0xOCA4LjA1OS0xOCAxOHM4LjA1OSAxOCAxOCAxOCAxOC04LjA1OSAxOC0xOC04LjA1OS0xOC0xOC0xOHptMCAzMmMtNy43MzIgMC0xNC02LjI2OC0xNC0xNHM2LjI2OC0xNCAxNC0xNCAxNCA2LjI2OCAxNCAxNC02LjI2OCAxNC0xNCAxNHoiIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iLjA1Ii8+PC9nPjwvc3ZnPg==&#x27;)] opacity-30"></div><div data-slot="card-content" class="p-5 relative"><div class="flex items-center justify-between"><div><p class="text-blue-200 text-sm font-medium">Total Students</p><p class="text-4xl font-bold mt-1">4817</p><div class="flex items-center gap-1 mt-2 text-green-300 text-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up w-4 h-4" aria-hidden="true"><path d="M16 7h6v6"></path><path d="m22 7-8.5 8.5-5-5L2 17"></path></svg><span>All Active</span></div></div><div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users w-7 h-7 text-white" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg></div></div></div></div><div data-slot="card" class="flex flex-col gap-6 rounded-xl py-6 shadow-sm group relative overflow-hidden border-0 bg-gradient-to-br from-green-500 to-emerald-600 text-white hover:shadow-xl hover:shadow-green-500/20 transition-all duration-300 hover:-translate-y-1"><div class="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -translate-y-10 translate-x-10"></div><div data-slot="card-content" class="p-5 relative"><div class="flex items-center justify-between"><div><p class="text-green-100 text-sm font-medium">Fees Collected</p><p class="text-3xl font-bold mt-1">₹11,05,61,750</p><div class="flex items-center gap-2 mt-2"><div class="w-16 h-1.5 bg-white/30 rounded-full overflow-hidden"><div class="h-full bg-white rounded-full" style="width:48.1%"></div></div><span class="text-sm text-green-100">48.1<!-- -->%</span></div></div><div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-wallet w-7 h-7 text-white" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg></div></div></div></div><div data-slot="card" class="flex flex-col gap-6 rounded-xl py-6 shadow-sm group relative overflow-hidden border-0 bg-gradient-to-br from-amber-500 to-orange-500 text-white hover:shadow-xl hover:shadow-amber-500/20 transition-all duration-300 hover:-translate-y-1"><div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div><div data-slot="card-content" class="p-5 relative"><div class="flex items-center justify-between"><div><p class="text-amber-100 text-sm font-medium">Pending Fees</p><p class="text-3xl font-bold mt-1">₹11,92,78,250</p><div class="flex items-center gap-1 mt-2 text-red-200 text-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert w-4 h-4" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" x2="12" y1="8" y2="12"></line><line x1="12" x2="12.01" y1="16" y2="16"></line></svg><span>3106<!-- --> Defaulters</span></div></div><div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock w-7 h-7 text-white" aria-hidden="true"><path d="M12 6v6l4 2"></path><circle cx="12" cy="12" r="10"></circle></svg></div></div></div></div><div data-slot="card" class="flex flex-col gap-6 rounded-xl py-6 shadow-sm group relative overflow-hidden border-0 bg-gradient-to-br from-purple-500 to-violet-600 text-white hover:shadow-xl hover:shadow-purple-500/20 transition-all duration-300 hover:-translate-y-1"><div class="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.1)_25%,rgba(255,255,255,0.1)_50%,transparent_50%,transparent_75%,rgba(255,255,255,0.1)_75%)] bg-[length:20px_20px]"></div><div data-slot="card-content" class="p-5 relative"><div class="flex items-center justify-between"><div><p class="text-purple-100 text-sm font-medium">Today&#x27;s Collection</p><p class="text-3xl font-bold mt-1">₹5,94,000</p><div class="flex items-center gap-1 mt-2 text-purple-200 text-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt w-4 h-4" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 17.5v-11"></path></svg><span>32<!-- --> Receipts Today</span></div></div><div class="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up w-7 h-7 text-white" aria-hidden="true"><path d="M16 7h6v6"></path><path d="m22 7-8.5 8.5-5-5L2 17"></path></svg></div></div></div></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl py-6 shadow-sm border-2 border-dashed border-muted-foreground/20"><div data-slot="card-header" class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 pb-3"><div data-slot="card-title" class="font-semibold text-lg text-[#1e3a8a] flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-5 h-5 text-amber-500" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Quick Actions</div></div><div data-slot="card-content" class="px-6"><div class="grid grid-cols-2 md:grid-cols-4 gap-3"><button class="flex flex-col items-center gap-2 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-all hover:scale-105 group"><div class="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus w-6 h-6" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" x2="19" y1="8" y2="14"></line><line x1="22" x2="16" y1="11" y2="11"></line></svg></div><span class="text-sm font-medium">New Student</span></button><button class="flex flex-col items-center gap-2 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-all hover:scale-105 group"><div class="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-indian-rupee w-6 h-6" aria-hidden="true"><path d="M6 3h12"></path><path d="M6 8h12"></path><path d="m6 13 8.5 8"></path><path d="M6 13h3"></path><path d="M9 13c6.667 0 6.667-10 0-10"></path></svg></div><span class="text-sm font-medium">Collect Fee</span></button><button class="flex flex-col items-center gap-2 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-all hover:scale-105 group"><div class="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-chart-column-increasing w-6 h-6" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M8 18v-2"></path><path d="M12 18v-4"></path><path d="M16 18v-6"></path></svg></div><span class="text-sm font-medium">View Reports</span></button><button class="flex flex-col items-center gap-2 p-4 rounded-xl bg-muted/50 hover:bg-muted transition-all hover:scale-105 group"><div class="w-12 h-12 bg-amber-500 rounded-xl flex items-center justify-center text-white shadow-lg group-hover:shadow-xl transition-shadow"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scan w-6 h-6" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path></svg></div><span class="text-sm font-medium">Scan QR</span></button></div></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl py-6 shadow-sm overflow-hidden border-2 border-[#1e3a8a]/10"><div data-slot="card-header" class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 bg-[#1e3a8a] text-white py-4"><div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2 text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up w-5 h-5 text-amber-400" aria-hidden="true"><path d="M16 7h6v6"></path><path d="m22 7-8.5 8.5-5-5L2 17"></path></svg>📊 Monthly Collection</div><div data-slot="card-description" class="text-sm text-blue-200">Fee collection per month (in ₹)</div></div><div data-slot="card-content" class="p-6"><div class="h-64"><div class="recharts-responsive-container" style="width:100%;height:100%;min-width:0"></div></div><div class="flex items-center justify-center gap-6 mt-4 pt-4 border-t"><div class="flex items-center gap-2"><div class="w-4 h-4 rounded bg-[#1e3a8a]"></div><span class="text-sm text-gray-600">Previous Months</span></div><div class="flex items-center gap-2"><div class="w-4 h-4 rounded bg-amber-500"></div><span class="text-sm text-gray-600">Current Month</span></div></div></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl py-6 shadow-sm overflow-hidden border-2 border-amber-500/20"><div data-slot="card-header" class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 bg-gradient-to-r from-amber-500 to-amber-600 text-white py-4"><div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2 text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award w-5 h-5" aria-hidden="true"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"></path><circle cx="12" cy="8" r="6"></circle></svg>🎓 Students by Class</div><div data-slot="card-description" class="text-sm text-amber-100">Total: <!-- -->4817<!-- --> active students</div></div><div data-slot="card-content" class="p-6"><div class="h-64 flex items-center justify-center"><div class="recharts-responsive-container" style="width:100%;height:100%;min-width:0"></div></div><div class="flex flex-wrap justify-center gap-2 mt-2"><div class="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium" style="background-color:#1e3a8a20;color:#1e3a8a"><span>Nursery</span><span class="font-bold">332</span></div><div class="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium" style="background-color:#f59e0b20;color:#f59e0b"><span>LKG</span><span class="font-bold">328</span></div><div class="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium" style="background-color:#16a34a20;color:#16a34a"><span>UKG</span><span class="font-bold">326</span></div><div class="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium" style="background-color:#7c3aed20;color:#7c3aed"><span>1st</span><span class="font-bold">333</span></div><div class="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium" style="background-color:#0891b220;color:#0891b2"><span>2nd</span><span class="font-bold">327</span></div><div class="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium" style="background-color:#db277720;color:#db2777"><span>3rd</span><span class="font-bold">322</span></div><div class="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium" style="background-color:#65a30d20;color:#65a30d"><span>4th</span><span class="font-bold">330</span></div><div class="flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium" style="background-color:#0d948820;color:#0d9488"><span>5th</span><span class="font-bold">333</span></div></div></div></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl py-6 shadow-sm border-2 border-green-500/20"><div data-slot="card-header" class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 bg-gradient-to-r from-green-500 to-emerald-600 text-white py-4"><div data-slot="card-title" class="leading-none font-semibold flex items-center gap-2 text-white"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card w-5 h-5" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"></rect><line x1="2" x2="22" y1="10" y2="10"></line></svg>💳 Payment Methods Used</div><div data-slot="card-description" class="text-sm text-green-100">How parents are paying fees</div></div><div data-slot="card-content" class="p-6"><div class="grid grid-cols-2 md:grid-cols-5 gap-4"><div class="text-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"><div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl">📱</div><p class="font-bold text-lg text-gray-900">1</p><p class="text-xs text-gray-500">UPI</p></div><div class="text-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"><div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl">💵</div><p class="font-bold text-lg text-gray-900">1</p><p class="text-xs text-gray-500">Cash</p></div><div class="text-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"><div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl">💳</div><p class="font-bold text-lg text-gray-900">1</p><p class="text-xs text-gray-500">Card</p></div><div class="text-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"><div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl">📝</div><p class="font-bold text-lg text-gray-900">1</p><p class="text-xs text-gray-500">Cheque</p></div><div class="text-center p-4 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors"><div class="w-12 h-12 bg-teal-500 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl">🏦</div><p class="font-bold text-lg text-gray-900">1</p><p class="text-xs text-gray-500">Bank</p></div></div></div></div><div class="grid grid-cols-1 lg:grid-cols-2 gap-6"><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-header" class="@container/card-header auto-rows-min grid-rows-[auto_auto] gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6 flex flex-row items-center justify-between"><div data-slot="card-title" class="leading-none font-semibold text-[#1e3a8a] flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-receipt w-5 h-5" aria-hidden="true"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><path d="M12 17.5v-11"></path></svg>Recent Payments</div><span data-slot="badge" class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden text-foreground [a&amp;]:hover:bg-accent [a&amp;]:hover:text-accent-foreground text-xs">5798<!-- --> Total</span></div><div data-slot="card-content" class="p-0"><div data-slot="table-container" class="relative w-full overflow-x-auto"><table data-slot="table" class="w-full caption-bottom text-sm"><thead data-slot="table-header" class="[&amp;_tr]:border-b"><tr data-slot="table-row" class="hover:bg-muted/50 data-[state=selected]:bg-muted border-b transition-colors bg-muted/50"><th data-slot="table-head" class="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]">Receipt</th><th data-slot="table-head" class="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]">Student</th><th data-slot="table-head" class="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]">Amount</th><th data-slot="table-head" class="text-foreground h-10 px-2 text-left align-middle font-medium whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]">Mode</th></tr></thead><tbody data-slot="table-body" class="[&amp;_tr:last-child]:border-0"><tr data-slot="table-row" class="data-[state=selected]:bg-muted border-b transition-colors hover:bg-muted/30"><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px] font-mono text-xs font-medium text-[#1e3a8a]">REC-2025-026523</td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]"><div><p class="font-medium text-sm">Ramesh Patel</p><p class="text-xs text-muted-foreground">7th<!-- -->-<!-- -->E</p></div></td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px] text-green-600 font-bold">₹13,000</td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]"><span data-slot="badge" class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent bg-secondary text-secondary-foreground [a&amp;]:hover:bg-secondary/90 text-xs font-medium">Cheque</span></td></tr><tr data-slot="table-row" class="data-[state=selected]:bg-muted border-b transition-colors hover:bg-muted/30"><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px] font-mono text-xs font-medium text-[#1e3a8a]">REC-2025-026057</td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]"><div><p class="font-medium text-sm">Nikhil Mahajan</p><p class="text-xs text-muted-foreground">6th<!-- -->-<!-- -->D</p></div></td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px] text-green-600 font-bold">₹12,000</td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]"><span data-slot="badge" class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent bg-secondary text-secondary-foreground [a&amp;]:hover:bg-secondary/90 text-xs font-medium">Bank Transfer</span></td></tr><tr data-slot="table-row" class="data-[state=selected]:bg-muted border-b transition-colors hover:bg-muted/30"><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px] font-mono text-xs font-medium text-[#1e3a8a]">REC-2025-026015</td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]"><div><p class="font-medium text-sm">Geeta Chauhan</p><p class="text-xs text-muted-foreground">6th<!-- -->-<!-- -->E</p></div></td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px] text-green-600 font-bold">₹12,000</td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]"><span data-slot="badge" class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent bg-secondary text-secondary-foreground [a&amp;]:hover:bg-secondary/90 text-xs font-medium">Cheque</span></td></tr><tr data-slot="table-row" class="data-[state=selected]:bg-muted border-b transition-colors hover:bg-muted/30"><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px] font-mono text-xs font-medium text-[#1e3a8a]">REC-2025-025928</td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]"><div><p class="font-medium text-sm">Ashok Malik</p><p class="text-xs text-muted-foreground">6th<!-- -->-<!-- -->A</p></div></td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px] text-green-600 font-bold">₹12,000</td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]"><span data-slot="badge" class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent bg-secondary text-secondary-foreground [a&amp;]:hover:bg-secondary/90 text-xs font-medium">Card</span></td></tr><tr data-slot="table-row" class="data-[state=selected]:bg-muted border-b transition-colors hover:bg-muted/30"><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px] font-mono text-xs font-medium text-[#1e3a8a]">REC-2025-025548</td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]"><div><p class="font-medium text-sm">Padma Kadam</p><p class="text-xs text-muted-foreground">5th<!-- -->-<!-- -->D</p></div></td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px] text-green-600 font-bold">₹24,000</td><td data-slot="table-cell" class="p-2 align-middle whitespace-nowrap [&amp;:has([role=checkbox])]:pr-0 [&amp;&gt;[role=checkbox]]:translate-y-[2px]"><span data-slot="badge" class="inline-flex items-center justify-center rounded-md border px-2 py-0.5 w-fit whitespace-nowrap shrink-0 [&amp;&gt;svg]:size-3 gap-1 [&amp;&gt;svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent bg-secondary text-secondary-foreground [a&amp;]:hover:bg-secondary/90 text-xs font-medium">UPI</span></td></tr></tbody></table></div></div></div><div data-slot="card" class="bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm"><div data-slot="card-header" class="@container/card-header grid auto-rows-min grid-rows-[auto_auto] items-start gap-1.5 px-6 has-data-[slot=card-action]:grid-cols-[1fr_auto] [.border-b]:pb-6"><div data-slot="card-title" class="leading-none font-semibold text-[#1e3a8a] flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell w-5 h-5" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path></svg>Recent Activity</div></div><div data-slot="card-content" class="px-6"><div dir="ltr" data-slot="scroll-area" class="relative h-64" style="position:relative;--radix-scroll-area-corner-width:0px;--radix-scroll-area-corner-height:0px"><style>[data-radix-scroll-area-viewport]{scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;}[data-radix-scroll-area-viewport]::-webkit-scrollbar{display:none}</style><div data-radix-scroll-area-viewport="" data-slot="scroll-area-viewport" class="focus-visible:ring-ring/50 size-full rounded-[inherit] transition-[color,box-shadow] outline-none focus-visible:ring-[3px] focus-visible:outline-1" style="overflow-x:hidden;overflow-y:hidden"><div style="min-width:100%;display:table"><div class="space-y-3"><div class="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"><div class="w-9 h-9 rounded-full flex items-center justify-center bg-green-100"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-indian-rupee w-4 h-4 text-green-600" aria-hidden="true"><path d="M6 3h12"></path><path d="M6 8h12"></path><path d="m6 13 8.5 8"></path><path d="M6 13h3"></path><path d="M9 13c6.667 0 6.667-10 0-10"></path></svg></div><div class="flex-1"><p class="text-sm font-medium">Fee collection for Academic Year 2026-27 started</p><p class="text-xs text-muted-foreground">2026-04-01 09:00 AM</p></div></div><div class="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"><div class="w-9 h-9 rounded-full flex items-center justify-center bg-amber-100"></div><div class="flex-1"><p class="text-sm font-medium">5,000 students enrolled for new academic session</p><p class="text-xs text-muted-foreground">2026-04-01 10:00 AM</p></div></div><div class="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"><div class="w-9 h-9 rounded-full flex items-center justify-center bg-blue-100"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-plus w-4 h-4 text-blue-600" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" x2="19" y1="8" y2="14"></line><line x1="22" x2="16" y1="11" y2="11"></line></svg></div><div class="flex-1"><p class="text-sm font-medium">New admissions open for Nursery to 12th</p><p class="text-xs text-muted-foreground">2026-03-15 11:00 AM</p></div></div><div class="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"><div class="w-9 h-9 rounded-full flex items-center justify-center bg-amber-100"></div><div class="flex-1"><p class="text-sm font-medium">Cloud backup system activated</p><p class="text-xs text-muted-foreground">2026-04-02 09:00 AM</p></div></div><div class="flex items-start gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"><div class="w-9 h-9 rounded-full flex items-center justify-center bg-amber-100"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen w-4 h-4 text-amber-600" aria-hidden="true"><path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"></path></svg></div><div class="flex-1"><p class="text-sm font-medium">Fee structure updated for new academic year</p><p class="text-xs text-muted-foreground">2026-03-20 02:00 PM</p></div></div></div></div></div></div></div></div></div></div></main></div></div><!--$--><!--/$--><div role="region" aria-label="Notifications (F8)" tabindex="-1" style="pointer-events:none"><ol tabindex="-1" class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"></ol></div><script id="_R_">self.__next_r="xJMnXOImd43aQNEipz-Nu"</script><script src="/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0])</script><script>self.__next_f.push([1,"7:I[\"[project]/node_modules/next/dist/next-devtools/userspace/app/segment-explorer-node.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"SegmentViewNode\"]\n9:\"$Sreact.fragment\"\n1b:I[\"[project]/node_modules/next/dist/client/components/layout-router.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"default\"]\n1d:I[\"[project]/node_modules/next/dist/client/components/render-from-template-context.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"default\"]\n2c:I[\"[project]/src/components/ui/toaster.tsx [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_394613a2._.js\",\"/_next/static/chunks/src_2bc135c0._.js\",\"/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js\"],\"Toaster\"]\n30:I[\"[project]/node_modules/next/dist/client/components/client-page.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"ClientPageRoot\"]\n31:I[\"[project]/src/app/page.tsx [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_394613a2._.js\",\"/_next/static/chunks/src_2bc135c0._.js\",\"/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js\",\"/_next/static/chunks/src_52428cab._.js\",\"/_next/static/chunks/node_modules_next_499cd0e9._.js\",\"/_next/static/chunks/node_modules_lodash_0ce7be08._.js\",\"/_next/static/chunks/node_modules_recharts_es6_68c6b850._.js\",\"/_next/static/chunks/node_modules_%40radix-ui_3df63156._.js\",\"/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js\",\"/_next/static/chunks/node_modules_6cad0b18._.js\",\"/_next/static/chunks/src_app_page_tsx_fd8e7853._.js\"],\"default\"]\n3d:I[\"[project]/node_modules/next/dist/lib/framework/boundary-components.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"OutletBoundary\"]\n3f:\"$Sreact.suspense\"\n48:I[\"[project]/node_modules/next/dist/lib/framework/boundary-components.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"ViewportBoundary\"]\n4f:I[\"[project]/node_modules/next/dist/lib/framework/boundary-components.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"MetadataBoundary\"]\n55:I[\"[project]/node_modules/next/dist/client/components/builtin/global-error.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"default\"]\n65:I[\"[project]/node_modules/next/dist/lib/metadata/generate/icon-mark.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"IconMark\"]\n:HL[\"/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css\",\"style\"]\n:HL[\"/_next/static/media/797e433ab948586e-s.p.dbea232f.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:HL[\"/_next/static/media/caa3a2e1cccd8315-s.p.853070df.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n:N1771997797199.156\n3:\"$EObject.defineProperty(()=\u003e{ctx.componentMod.preloadStyle(fullHref,ctx.renderOpts.crossOrigin,ctx.nonce)},\\\"name\\\",{value:\\\"\\\"})\"\n4:\"$EObject.defineProperty(()=\u003e{ctx.componentMod.preloadFont(href,type,ctx.renderOpts.crossOrigin,ctx.nonce)},\\\"name\\\",{value:\\\"\\\"})\"\n5:\"$EObject.defineProperty(()=\u003e{ctx.componentMo"])</script><script>self.__next_f.push([1,"d.preloadFont(href,type,ctx.renderOpts.crossOrigin,ctx.nonce)},\\\"name\\\",{value:\\\"\\\"})\"\n2:{\"name\":\"Preloads\",\"key\":null,\"env\":\"Server\",\"stack\":[],\"props\":{\"preloadCallbacks\":[\"$3\",\"$4\",\"$5\"]}}\n6:[]\n8:[]\na:[[\"Array.map\",\"\",0,0,0,0,false]]\nb:[[\"Array.map\",\"\",0,0,0,0,false]]\nc:[[\"Array.map\",\"\",0,0,0,0,false]]\nd:[[\"Array.map\",\"\",0,0,0,0,false]]\n10:I[\"[project]/node_modules/next/dist/client/components/layout-router.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"default\"]\n13:I[\"[project]/node_modules/next/dist/client/components/render-from-template-context.js [app-client] (ecmascript)\",[\"/_next/static/chunks/node_modules_next_dist_be32b49c._.js\",\"/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js\"],\"default\"]\n14:{}\n15:[[\"Promise.all\",\"\",0,0,0,0,true]]\n12:{\"children\":[\"$\",\"$L13\",null,\"$14\",null,\"$15\",1]}\n16:[[\"Promise.all\",\"\",0,0,0,0,true]]\n11:{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$9\",null,\"$12\",null,\"$16\",0],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$Y\",\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\",\"segmentViewBoundaries\":\"$Y\"}\n17:[[\"Promise.all\",\"\",0,0,0,0,true]]\nf:{\"name\":\"RootLayout\",\"key\":null,\"env\":\"Server\",\"stack\":[],\"props\":{\"children\":[\"$\",\"$L10\",null,\"$11\",null,\"$17\",1],\"params\":\"$Y\"}}\n18:[[\"RootLayout\",\"/home/z/my-project/.next/dev/server/chunks/ssr/[root-of-the-server]__2b0fc1b2._.js\",137,263,136,1,false]]\n19:[[\"RootLayout\",\"/home/z/my-project/.next/dev/server/chunks/ssr/[root-of-the-server]__2b0fc1b2._.js\",140,270,136,1,false]]\n1a:[[\"Promise.all\",\"\",0,0,0,0,true]]\n1c:[[\"Promise.all\",\"\",0,0,0,0,true]]\n1e:[]\n20:{\"name\":\"NotFound\",\"key\":null,\"env\":\"Server\",\"stack\":[],\"props\":{}}\n21:{\"name\":\"HTTPAccessErrorFallback\",\"key\":null,\"env\":\"Server\",\"owner\":\"$20\",\"stack\":[],\"props\":{\"status\":404,\"message\":\"This page could not be found.\"}}\n22:[]\n23:[]\n24:[]\n25:[]\n26:[]\n27:[]\n28:[]\n29:[[\"Promise.all\",\"\",0,0,0,0,true]]\n2a:[[\"Promise.all\",\"\",0,0,0,0,true]]\n2b:[[\"RootLayout\",\"/home/z/my-project/.next/dev/server/chunks/ssr/[root-of-the-server]__2b0fc1b2._.js\",144,268,136,1,false]]\n2d:[[\"Promise.all\",\"\",0,0,0,0,true]]\n2e:[[\"Promise.all\",\"\",0,0,0,0,true]]\n2f:[[\"Promise.all\",\"\",0,0,0,0,true]]\n32:[[\"Array.map\",\"\",0,0,0,0,false],[\"Array.map\",\"\",0,0,0,0,false]]\n33:[[\"Array.map\",\"\",0,0,0,0,false],[\"Array.map\",\"\",0,0,0,0,false]]\n34:[[\"Array.map\",\"\",0,0,0,0,false],[\"Array.map\",\"\",0,0,0,0,false]]\n35:[[\"Array.map\",\"\",0,0,0,0,false],[\"Array.map\",\"\",0,0,0,0,false]]\n36:[[\"Array.map\",\"\",0,0,0,0,false],[\"Array.map\",\"\",0,0,0,0,false]]\n37:[[\"Array.map\",\"\",0,0,0,0,false],[\"Array.map\",\"\",0,0,0,0,false]]\n38:[[\"Array.map\",\"\",0,0,0,0,false],[\"Array.map\",\"\",0,0,0,0,false]]\n39:[[\"Array.map\",\"\",0,0,0,0,false],[\"Array.map\",\"\",0,0,0,0,false]]\n3b:{\"name\":\"Next.MetadataOutlet\",\"key\":null,\"env\":\"Server\",\"stack\":[[\"Promise.all\",\"\",0,0,0,0,true]],\"props\":{}}\n3c:[]\n3e:[]\n41:[]\n"])</script><script>self.__next_f.push([1,"44:\"$EObject.defineProperty(function(type,config,children){for(var propName,i=2;i\u003carguments.length;i++)validateChildKeys(arguments[i]);i={};var key=null;if(null!=config)for(propName in didWarnAboutOldJSXRuntime||!(\\\"__self\\\"in config)||\\\"key\\\"in config||(didWarnAboutOldJSXRuntime=!0,console.warn(\\\"Your app (or one of its dependencies) is using an outdated JSX transform. Update to the modern JSX transform for faster performance: https://react.dev/link/new-jsx-transform\\\")),hasValidKey(config)\u0026\u0026(checkKeyStringCoercion(config.key),key=\\\"\\\"+config.key),config)hasOwnProperty.call(config,propName)\u0026\u0026\\\"key\\\"!==propName\u0026\u0026\\\"__self\\\"!==propName\u0026\u0026\\\"__source\\\"!==propName\u0026\u0026(i[propName]=config[propName]);var childrenLength=arguments.length-2;if(1===childrenLength)i.children=children;else if(1\u003cchildrenLength){for(var childArray=Array(childrenLength),_i=0;_i\u003cchildrenLength;_i++)childArray[_i]=arguments[_i+2];Object.freeze\u0026\u0026Object.freeze(childArray),i.children=childArray}if(type\u0026\u0026type.defaultProps)for(propName in childrenLength=type.defaultProps)void 0===i[propName]\u0026\u0026(i[propName]=childrenLength[propName]);return key\u0026\u0026function(props,displayName){function warnAboutAccessingKey(){specialPropKeyWarningShown||(specialPropKeyWarningShown=!0,console.error(\\\"%s: `key` is not a prop. Trying to access it will result in `undefined` being returned. If you need to access the same value within the child component, you should pass it as a different prop. (https://react.dev/link/special-props)\\\",displayName))}warnAboutAccessingKey.isReactWarning=!0,Object.defineProperty(props,\\\"key\\\",{get:warnAboutAccessingKey,configurable:!0})}(i,\\\"function\\\"==typeof type?type.displayName||type.name||\\\"Unknown\\\":type),(propName=1e4\u003eReactSharedInternals.recentlyCreatedOwnerStacks++)?(childArray=Error.stackTraceLimit,Error.stackTraceLimit=10,childrenLength=Error(\\\"react-stack-top-frame\\\"),Error.stackTraceLimit=childArray):childrenLength=unknownOwnerDebugStack,ReactElement(type,key,i,getOwner(),childrenLength,propName?createTask(getTaskName(type)):unknownOwnerDebugTask)},\\\"name\\\",{value:\\\"\\\"})\"\n"])</script><script>self.__next_f.push([1,"43:{\"name\":\"NonIndex\",\"key\":null,\"env\":\"Server\",\"stack\":[],\"props\":{\"createElement\":\"$44\",\"pagePath\":\"/\",\"statusCode\":200,\"isPossibleServerAction\":false}}\n46:{\"name\":\"ViewportWrapper\",\"key\":null,\"env\":\"Server\",\"stack\":[],\"props\":{}}\n47:[]\n4a:{\"name\":\"Next.Viewport\",\"key\":null,\"env\":\"Server\",\"owner\":\"$46\",\"stack\":[],\"props\":{}}\n4c:{\"name\":\"MetadataWrapper\",\"key\":null,\"env\":\"Server\",\"stack\":[],\"props\":{}}\n4d:[]\n4e:[]\n50:[]\n52:{\"name\":\"Next.Metadata\",\"key\":null,\"env\":\"Server\",\"owner\":\"$4c\",\"stack\":[],\"props\":{}}\n53:[]\n56:[]\n57:[]\n58:[]\n59:[]\n5a:[]\n5b:[[\"Array.map\",\"\",0,0,0,0,false]]\n5c:[]\n5d:[]\n5e:[]\n5f:[]\n60:[]\n61:[]\n62:[]\n63:[[\"Array.map\",\"\",0,0,0,0,false]]\n64:[]\n1:D{\"time\":0.2738860002718866}\n1:D\"$2\"\n1:D{\"time\":0.3311770004220307}\n1:null\ne:D{\"time\":0.8378970003686845}\ne:D\"$f\"\ne:D{\"time\":0.992852000053972}\n1f:D{\"time\":1.1464720000512898}\n1f:D\"$20\"\n1f:D{\"time\":1.2047820002771914}\n1f:D\"$21\"\n1f:D{\"time\":1.303770000115037}\n1f:[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"},\"$21\",\"$22\",1],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}},\"$21\",\"$25\",1],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":404},\"$21\",\"$26\",1],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"},\"$21\",\"$28\",1]},\"$21\",\"$27\",1]]},\"$21\",\"$24\",1]},\"$21\",\"$23\",1]]\ne:[\"$\",\"html\",null,{\"lang\":\"en\",\"suppressHydrationWarning\":true,\"children\":[\"$\",\"body\",null,{\"className\":\"geist_a71539c9-module__T19VSG__variable geist_mono_8d43a2aa-module__8Li5zG__variable antialiased bg-background text-foreground\",\"children\":[[\"$\",\"$L1b\",null,{\"parallelRouterKey\":\"children\",\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$L1d\",null,{},null,\"$1c\",1],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[\"$\",\"$L7\",\"c-not-found\",{\"type\":\"not-found\",\"pagePath\":\"__next_builtin__not-found.js\",\"children\":[\"$1f\",[]]},null,\"$1e\",0],\"forbidden\":\"$undefined\",\"unauthorized\":\"$undefined\",\"segmentViewBoundaries\":[[\"$\",\"$L7\",null,{\"type\":\"boundary:not-found\",\"pagePath\":\"__next_builtin__not-found.js@boundary\"},null,\"$29\",1],\"$undefined\",\"$undefined\",[\"$\",\"$L7\",null,{\"type\":\"boundary:global-error\",\"pagePath\":\"__next_builtin__global-error.js\"},null,\"$2a\",1]]},null,\"$1a\",1],[\"$\",\"$L2c\",null,{},\"$f\",\"$2b\",1]]},\"$f\",\"$19\",1]},\"$f\",\"$18\",1]\n3a:D{\"time\":2.0587590001523495}\n3a:D\"$3b\"\n3a:D{\"time\":3.0512430001981556}\n3a:[\"$\",\"$L3d\",null,{\"children\":[\"$\",\"$3f\",null,{\"name\":\"Next.MetadataOutlet\",\"children\":\"$@40\"},\"$3b\",\"$3e\",1]},\"$3b\",\"$3c\",1]\n42:D{\"time\":3.3733090003952384}\n42:D\"$43\"\n42:D{\"time\":3.385244000237435}\n42:null\n45:D{\"time\":3.4242390003055334}\n45:D\"$46\"\n45:D{\"time\":3.4686259999871254}\n49:D{\"time\":3.5037770001217723}\n49:D\"$4a\"\n45:[\"$\",\"$L48\",null,{\"children\":\"$L49\"},\"$46\",\"$47\",1]\n4b:D{\"time\":3.8081310000270605}\n4b:D\"$4c\"\n4b:D{\"time\":3.8717210004106164}\n51:D{\"time\":3.933457000181079}\n51:D\"$52\"\n4b:[\"$\",\"div\",null,{\"hidden\":true,\"children\":[\"$\",\"$L4f\",null,{\"children\":[\"$\",\"$3f\",null,{\"name\":\"Next.Metadata\",\"children\":\"$L51\"},\"$4c\",\"$50\",1]},\"$4c\",\"$4e\",1]},\"$4c\",\"$4d\",1]\n54:[]\n"])</script><script>self.__next_f.push([1,"0:{\"P\":\"$1\",\"b\":\"development\",\"c\":[\"\",\"\"],\"q\":\"\",\"i\":false,\"f\":[[[\"\",{\"children\":[\"__PAGE__\",{}]},\"$undefined\",\"$undefined\",true],[[\"$\",\"$L7\",\"layout\",{\"type\":\"layout\",\"pagePath\":\"layout.tsx\",\"children\":[\"$\",\"$9\",\"c\",{\"children\":[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/chunks/%5Broot-of-the-server%5D__0f0ba101._.css\",\"precedence\":\"next_static/chunks/[root-of-the-server]__0f0ba101._.css\",\"crossOrigin\":\"$undefined\",\"nonce\":\"$undefined\"},null,\"$a\",0],[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/node_modules_394613a2._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$b\",0],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/src_2bc135c0._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$c\",0],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$d\",0]],\"$e\"]},null,\"$8\",1]},null,\"$6\",0],{\"children\":[[\"$\",\"$9\",\"c\",{\"children\":[[\"$\",\"$L7\",\"c-page\",{\"type\":\"page\",\"pagePath\":\"page.tsx\",\"children\":[\"$\",\"$L30\",null,{\"Component\":\"$31\",\"serverProvidedParams\":{\"searchParams\":{},\"params\":{},\"promises\":null}},null,\"$2f\",1]},null,\"$2e\",1],[[\"$\",\"script\",\"script-0\",{\"src\":\"/_next/static/chunks/src_52428cab._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$32\",0],[\"$\",\"script\",\"script-1\",{\"src\":\"/_next/static/chunks/node_modules_next_499cd0e9._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$33\",0],[\"$\",\"script\",\"script-2\",{\"src\":\"/_next/static/chunks/node_modules_lodash_0ce7be08._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$34\",0],[\"$\",\"script\",\"script-3\",{\"src\":\"/_next/static/chunks/node_modules_recharts_es6_68c6b850._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$35\",0],[\"$\",\"script\",\"script-4\",{\"src\":\"/_next/static/chunks/node_modules_%40radix-ui_3df63156._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$36\",0],[\"$\",\"script\",\"script-5\",{\"src\":\"/_next/static/chunks/node_modules_%40floating-ui_1b6e7b6d._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$37\",0],[\"$\",\"script\",\"script-6\",{\"src\":\"/_next/static/chunks/node_modules_6cad0b18._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$38\",0],[\"$\",\"script\",\"script-7\",{\"src\":\"/_next/static/chunks/src_app_page_tsx_fd8e7853._.js\",\"async\":true,\"nonce\":\"$undefined\"},null,\"$39\",0]],\"$3a\"]},null,\"$2d\",0],{},null,false,false]},null,false,false],[\"$\",\"$9\",\"h\",{\"children\":[\"$42\",\"$45\",\"$4b\",[\"$\",\"meta\",null,{\"name\":\"next-size-adjust\",\"content\":\"\"},null,\"$53\",1]]},null,\"$41\",0],false]],\"m\":\"$W54\",\"G\":[\"$55\",[\"$\",\"$L7\",\"ge-svn\",{\"type\":\"global-error\",\"pagePath\":\"__next_builtin__global-error.js\",\"children\":[]},null,\"$56\",0]],\"S\":false}\n"])</script><script>self.__next_f.push([1,"49:D{\"time\":5.371273000258952}\n49:[[\"$\",\"meta\",\"0\",{\"charSet\":\"utf-8\"},\"$3b\",\"$57\",0],[\"$\",\"meta\",\"1\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"},\"$3b\",\"$58\",0]]\n40:D{\"time\":5.7916210000403225}\n40:null\n51:D{\"time\":5.803179000038654}\n51:[[\"$\",\"title\",\"0\",{\"children\":\"Delhi Public School - ERP System\"},\"$3b\",\"$59\",0],[\"$\",\"meta\",\"1\",{\"name\":\"description\",\"content\":\"Complete School ERP Software for managing students, fees, and reports. Professional school management system.\"},\"$3b\",\"$5a\",0],[\"$\",\"meta\",\"2\",{\"name\":\"author\",\"content\":\"Delhi Public School\"},\"$3b\",\"$5b\",0],[\"$\",\"meta\",\"3\",{\"name\":\"keywords\",\"content\":\"School ERP,Education Management,Fee Collection,Student Management,School Software\"},\"$3b\",\"$5c\",0],[\"$\",\"meta\",\"4\",{\"property\":\"og:title\",\"content\":\"Delhi Public School - ERP System\"},\"$3b\",\"$5d\",0],[\"$\",\"meta\",\"5\",{\"property\":\"og:description\",\"content\":\"Complete School ERP Software for managing students, fees, and reports\"},\"$3b\",\"$5e\",0],[\"$\",\"meta\",\"6\",{\"property\":\"og:type\",\"content\":\"website\"},\"$3b\",\"$5f\",0],[\"$\",\"meta\",\"7\",{\"name\":\"twitter:card\",\"content\":\"summary\"},\"$3b\",\"$60\",0],[\"$\",\"meta\",\"8\",{\"name\":\"twitter:title\",\"content\":\"Delhi Public School - ERP System\"},\"$3b\",\"$61\",0],[\"$\",\"meta\",\"9\",{\"name\":\"twitter:description\",\"content\":\"Complete School ERP Software for managing students, fees, and reports\"},\"$3b\",\"$62\",0],[\"$\",\"link\",\"10\",{\"rel\":\"icon\",\"href\":\"/logo.svg\"},\"$3b\",\"$63\",0],[\"$\",\"$L65\",\"11\",{},\"$3b\",\"$64\",0]]\n"])</script></body></html>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            overflow-x: hidden;
+        }
+
+        /* --- 3D SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: linear-gradient(180deg, var(--primary-dark) 0%, #0f172a 100%);
+            position: fixed;
+            left: 0;
+            top: 0;
+            color: var(--white);
+            z-index: 100;
+            box-shadow: 5px 0px 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .logo-section {
+            padding: 25px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--white);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+        .logo-text span { font-size: 12px; color: var(--secondary); font-weight: 500; }
+
+        nav { flex: 1; padding: 20px 15px; overflow-y: auto; }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 14px 20px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+            font-size: 15px;
+            color: rgba(255,255,255,0.7);
+        }
+
+        .nav-item:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: var(--secondary);
+            color: var(--primary-dark);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
+        }
+        
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: var(--white);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .user-card {
+            padding: 20px;
+            margin: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--secondary), #fbbf24);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--primary-dark);
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .user-info h4 { font-size: 14px; font-weight: 600; color: var(--white); }
+        .user-info p { font-size: 12px; color: rgba(255,255,255,0.6); }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 25px;
+            background: #f0f2f5;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header-left h2 { font-size: 24px; color: var(--primary-dark); margin-bottom: 5px; }
+        .header-left p { color: var(--text-light); font-size: 14px; }
+
+        .header-right {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .date-badge {
+            background: var(--white);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- BANNER --- */
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(30, 58, 138, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .welcome-banner::after {
+            content: '';
+            position: absolute;
+            right: -50px;
+            top: -50px;
+            width: 200px;
+            height: 200px;
+            background: var(--secondary);
+            opacity: 0.1;
+            border-radius: 50%;
+        }
+
+        .welcome-content h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--secondary); margin-bottom: 10px; }
+        .welcome-content h1 { font-size: 28px; margin-bottom: 10px; font-weight: 700; }
+        .welcome-content p { font-size: 15px; opacity: 0.9; }
+
+        .btn-3d {
+            background: var(--secondary);
+            color: var(--primary-dark);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #d97706, 0 8px 15px rgba(0,0,0,0.2);
+            transition: all 0.1s;
+            font-size: 14px;
+            text-decoration: none;
+        }
+        .btn-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
+        .btn-3d:hover { background: #fbbf24; }
+
+        /* --- STATS GRID --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+            border-left: 5px solid transparent;
+        }
+
+        .stat-card:hover { transform: translateY(-5px); }
+        
+        .stat-card.blue { border-left-color: var(--primary); }
+        .stat-card.green { border-left-color: var(--success); }
+        .stat-card.orange { border-left-color: var(--secondary); }
+        .stat-card.purple { border-left-color: #8b5cf6; }
+
+        .stat-card .icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            opacity: 0.2;
+            color: var(--text-dark);
+        }
+        
+        .stat-card.blue .icon-box { background: #e0e7ff; color: var(--primary); opacity: 1; }
+        .stat-card.green .icon-box { background: #d1fae5; color: var(--success); opacity: 1; }
+        .stat-card.orange .icon-box { background: #fef3c7; color: var(--secondary); opacity: 1; }
+        .stat-card.purple .icon-box { background: #ede9fe; color: #8b5cf6; opacity: 1; }
+
+        .stat-info h4 { color: var(--text-light); font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+        .stat-info h2 { font-size: 32px; color: var(--text-dark); margin-bottom: 10px; }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill { height: 100%; border-radius: 10px; }
+        .stat-footer { margin-top: 10px; font-size: 12px; color: var(--text-light); }
+
+        /* --- QUICK ACTIONS & CHARTS --- */
+        .grid-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-row { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 15px;
+        }
+        .card-title { font-size: 18px; font-weight: 700; color: var(--primary-dark); }
+
+        /* 3D CHART CONTAINER */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* QUICK ACTION BUTTONS */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .action-btn {
+            background: var(--bg-light);
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .action-btn:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+        }
+        .action-btn i { font-size: 24px; margin-bottom: 8px; display: block; color: var(--primary); }
+        .action-btn span { font-size: 12px; font-weight: 600; color: var(--text-dark); }
+
+        /* --- TABLE --- */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        th { background: #f8fafc; color: var(--text-light); font-weight: 600; font-size: 12px; text-transform: uppercase; }
+        tr:hover { background: #f8fafc; }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-paid { background: #d1fae5; color: #065f46; }
+        .status-pending { background: #fee2e2; color: #991b1b; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center; justify-content: center;
+            z-index: 200;
+        }
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+        .modal h2 { color: var(--primary-dark); margin-bottom: 15px; }
+        .modal p { color: var(--text-light); margin-bottom: 25px; }
+        .modal-close { background: var(--primary); color: white; padding: 10px 30px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
+
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <div class="logo-icon">🏫</div>
+            <div class="logo-text">
+                <h1>Podar Learn School</h1>
+                <span>Niphad</span>
+            </div>
+        </div>
+
+        <nav>
+            <div class="nav-item active" onclick="changePage('Dashboard', this)">
+                <i class="fas fa-th-large"></i> Dashboard
+            </div>
+            <div class="nav-item" onclick="changePage('Students', this)">
+                <i class="fas fa-user-graduate"></i> Students
+            </div>
+            <div class="nav-item" onclick="changePage('Fees', this)">
+                <i class="fas fa-rupee-sign"></i> Fee Collection
+            </div>
+            <div class="nav-item" onclick="changePage('Reports', this)">
+                <i class="fas fa-chart-line"></i> Reports
+            </div>
+            <div class="nav-item" onclick="changePage('QR', this)">
+                <i class="fas fa-qrcode"></i> QR Lookup
+            </div>
+            <div class="nav-item" onclick="changePage('AI', this)">
+                <i class="fas fa-robot"></i> AI Assistant
+            </div>
+            <div class="nav-item" onclick="changePage('Settings', this)">
+                <i class="fas fa-cog"></i> Settings
+            </div>
+        </nav>
+
+        <div class="user-card">
+            <div class="user-avatar">👨‍💼</div>
+            <div class="user-info">
+                <h4>Admin User</h4>
+                <p>admin@podar.edu</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h2 id="page-title">Dashboard</h2>
+                <p>Welcome to your school management panel</p>
+            </div>
+            <div class="header-right">
+                <div class="date-badge">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span id="live-date">Loading Date...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Banner -->
+        <div class="welcome-banner">
+            <div class="welcome-content">
+                <h3>WELCOME BACK</h3>
+                <h1 id="greeting-text">Good Morning, Admin! 👨‍💼</h1>
+                <p>Here's the financial overview for Academic Year 2026-27</p>
+            </div>
+            <button class="btn-3d" onclick="openModal('New Admission', 'Form to add new student will open here.')">
+                <i class="fas fa-plus"></i> New Admission
+            </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card blue">
+                <div class="icon-box"><i class="fas fa-users"></i></div>
+                <div class="stat-info">
+                    <h4>Total Students</h4>
+                    <h2>4,817</h2>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 85%; background: var(--primary);"></div></div>
+                    <div class="stat-footer">All Active Students</div>
+                </div>
+            </div>
+            <div class="stat-card green">
+                <div class="icon-box"><i class="fas fa-wallet"></i></div>
+                <div class="stat-info">
+                    <h4>Fees Collected</h4>
+                    <h2>₹11.05 Cr</h2>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 48%; background: var(--success);"></div></div>
+                    <div class="stat-footer">48.1% of Total</div>
+                </div>
+            </div>
+            <div class="stat-card orange">
+                <div class="icon-box"><i class="fas fa-exclamation-circle"></i></div>
+                <div class="stat-info">
+                    <h4>Pending Fees</h4>
+                    <h2>₹11.92 Cr</h2>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 52%; background: var(--secondary);"></div></div>
+                    <div class="stat-footer">3,106 Defaulters</div>
+                </div>
+            </div>
+            <div class="stat-card purple">
+                <div class="icon-box"><i class="fas fa-hand-holding-usd"></i></div>
+                <div class="stat-info">
+                    <h4>Today's Collection</h4>
+                    <h2>₹5.94 L</h2>
+                    <div class="progress-bar"><div class="progress-fill" style="width: 20%; background: #8b5cf6;"></div></div>
+                    <div class="stat-footer">32 Receipts Today</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card" style="margin-bottom: 30px;">
+            <div class="card-header">
+                <h3 class="card-title">⚡ Quick Actions</h3>
+            </div>
+            <div class="action-grid">
+                <div class="action-btn" onclick="openModal('New Student', 'Add student form activated.')">
+                    <i class="fas fa-user-plus"></i>
+                    <span>New Student</span>
+                </div>
+                <div class="action-btn" onclick="openModal('Collect Fee', 'Payment gateway integration here.')">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Collect Fee</span>
+                </div>
+                <div class="action-btn" onclick="openModal('Reports', 'Download PDF reports.')">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Reports</span>
+                </div>
+                <div class="action-btn" onclick="openModal('Scan QR', 'Camera will open to scan ID.')">
+                    <i class="fas fa-qrcode"></i>
+                    <span>Scan QR</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts & Table -->
+        <div class="grid-row">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📊 Monthly Collection Trend</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="feeChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">💳 Payment Methods</h3>
+                </div>
+                <div class="chart-container">
+                    <canvas id="paymentChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Payments Table -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">🧾 Recent Payments</h3>
+            </div>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Receipt ID</th>
+                            <th>Student Name</th>
+                            <th>Class</th>
+                            <th>Amount</th>
+                            <th>Mode</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr onclick="openModal('Receipt #26523', 'Details of Ramesh Patel')">
+                            <td style="color:var(--primary); font-weight:600;">#REC-2025-26523</td>
+                            <td>Ramesh Patel</td>
+                            <td>7th E</td>
+                            <td>₹13,000</td>
+                            <td>Cheque</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                        </tr>
+                        <tr onclick="openModal('Receipt #26057', 'Details of Nikhil Mahajan')">
+                            <td style="color:var(--primary); font-weight:600;">#REC-2025-26057</td>
+                            <td>Nikhil Mahajan</td>
+                            <td>6th D</td>
+                            <td>₹12,000</td>
+                            <td>Bank</td>
+                            <td><span class="status-badge status-paid">Paid</span></td>
+                        </tr>
+                        <tr onclick="openModal('Receipt #26015', 'Details of Geeta Chauhan')">
+                            <td style="color:var(--primary); font-weight:600;">#REC-2025-26015</td>
+                            <td>Geeta Chauhan</td>
+                            <td>6th E</td>
+                            <td>₹12,000</td>
+                            <td>Cheque</td>
+                            <td><span class="status-badge status-pending">Pending</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Popup -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <h2 id="modal-title">Title</h2>
+            <p id="modal-body">Content goes here...</p>
+            <button class="modal-close" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <!-- Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // --- LOGIC STARTS ---
+
+        // 1. Set Date
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const today = new Date();
+        document.getElementById('live-date').innerText = `${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]}, ${today.getFullYear()}`;
+
+        // 2. Dynamic Greeting (Sun/Moon logic)
+        const hour = today.getHours();
+        const greetingEl = document.getElementById('greeting-text');
+        let greeting = "";
+        
+        if (hour < 12) {
+            greeting = "Good Morning, Admin! ☀️"; // Sun Emoji
+        } else if (hour < 17) {
+            greeting = "Good Afternoon, Admin! ⛅";
+        } else {
+            greeting = "Good Evening, Admin! 🌙"; // Moon Emoji
+        }
+        greetingEl.innerText = greeting;
+
+        // 3. Navigation Logic
+        function changePage(pageName, element) {
+            // Remove active class from all
+            const items = document.querySelectorAll('.nav-item');
+            items.forEach(item => item.classList.remove('active'));
+            
+            // Add active to clicked
+            element.classList.add('active');
+            
+            // Update Header Title
+            document.getElementById('page-title').innerText = pageName;
+            
+            // Simulate Page Change Logic
+            if(pageName !== 'Dashboard') {
+                openModal(pageName, `This section contains features for ${pageName}. Buttons are working!`);
+            }
+        }
+
+        // 4. Modal Logic
+        function openModal(title, body) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerText = body;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // 5. 3D Charts Initialization
+        const ctx = document.getElementById('feeChart').getContext('2d');
+        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, '#2563eb');
+        gradient.addColorStop(1, '#1e3a8a');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Collection (Lakhs)',
+                    data: [120, 190, 300, 250, 220, 320],
+                    backgroundColor: gradient,
+                    borderRadius: 8, // Makes bars look 3D/Modern
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Payment Method Chart
+        const ctx2 = document.getElementById('paymentChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['UPI', 'Cash', 'Card', 'Cheque'],
+                datasets: [{
+                    data: [40, 20, 25, 15],
+                    backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6'],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%', // Donut effect
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
