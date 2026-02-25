@@ -3,713 +3,2437 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Podar Learn School - ERP System</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Podar Learn School Niphad - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb; /* Bright Blue */
-            --primary-dark: #1e3a8a;
-            --secondary: #f59e0b; /* Amber */
-            --bg-light: #f0f2f5;
-            --white: #ffffff;
-            --text-dark: #1f2937;
-            --text-light: #6b7280;
+            --bg-primary: #0a0f1a;
+            --bg-secondary: #111827;
+            --bg-card: #1a2332;
+            --accent-primary: #00d4aa;
+            --accent-secondary: #ff6b35;
+            --accent-tertiary: #3b82f6;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #2d3748;
             --success: #10b981;
+            --warning: #f59e0b;
             --danger: #ef4444;
-            --sidebar-width: 260px;
+            --glass: rgba(26, 35, 50, 0.8);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg-light);
-            color: var(--text-dark);
-            display: flex;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        /* --- 3D SIDEBAR --- */
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Animated Background */
+        .bg-animated {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(0, 212, 170, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(255, 107, 53, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(59, 130, 246, 0.04) 0%, transparent 70%),
+                var(--bg-primary);
+        }
+
+        .floating-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+
+        /* Sidebar */
         .sidebar {
-            width: var(--sidebar-width);
-            height: 100vh;
-            background: linear-gradient(180deg, var(--primary-dark) 0%, #0f172a 100%);
             position: fixed;
             left: 0;
             top: 0;
-            color: var(--white);
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
             z-index: 100;
-            box-shadow: 5px 0px 15px rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
+            transition: transform 0.3s ease;
         }
 
-        .logo-section {
-            padding: 25px 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo-icon {
-            width: 50px;
-            height: 50px;
-            background: var(--white);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
-        .logo-text span { font-size: 12px; color: var(--secondary); font-weight: 500; }
-
-        nav { flex: 1; padding: 20px 15px; overflow-y: auto; }
-        
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 14px 20px;
-            margin-bottom: 8px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            font-weight: 500;
-            font-size: 15px;
-            color: rgba(255,255,255,0.7);
-        }
-
-        .nav-item:hover {
-            background: rgba(255,255,255,0.1);
-            color: var(--white);
-            transform: translateX(5px);
-        }
-
-        .nav-item.active {
-            background: var(--secondary);
-            color: var(--primary-dark);
-            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
-        }
-        
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 5px;
-            background: var(--white);
-            border-radius: 0 4px 4px 0;
-        }
-
-        .user-card {
-            padding: 20px;
-            margin: 10px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
+        .sidebar-item {
             display: flex;
             align-items: center;
             gap: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 14px 20px;
+            margin: 4px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
         }
 
-        .user-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: linear-gradient(45deg, var(--secondary), #fbbf24);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            color: var(--primary-dark);
-            font-weight: bold;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        .sidebar-item:hover {
+            background: rgba(0, 212, 170, 0.1);
+            color: var(--accent-primary);
+            transform: translateX(4px);
         }
 
-        .user-info h4 { font-size: 14px; font-weight: 600; color: var(--white); }
-        .user-info p { font-size: 12px; color: rgba(255,255,255,0.6); }
+        .sidebar-item.active {
+            background: linear-gradient(135deg, rgba(0, 212, 170, 0.2), rgba(0, 212, 170, 0.05));
+            color: var(--accent-primary);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+        }
 
-        /* --- MAIN CONTENT --- */
+        /* Main Content */
         .main-content {
-            margin-left: var(--sidebar-width);
-            flex: 1;
-            padding: 25px;
-            background: #f0f2f5;
+            margin-left: 280px;
+            padding: 24px;
             min-height: 100vh;
         }
 
-        /* --- HEADER --- */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .header-left h2 { font-size: 24px; color: var(--primary-dark); margin-bottom: 5px; }
-        .header-left p { color: var(--text-light); font-size: 14px; }
-
-        .header-right {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .date-badge {
-            background: var(--white);
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            color: var(--primary-dark);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* --- BANNER --- */
-        .welcome-banner {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 30px;
-            color: var(--white);
+            padding: 24px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 20px rgba(30, 58, 138, 0.3);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
         }
 
-        .welcome-banner::after {
+        .card::before {
             content: '';
             position: absolute;
-            right: -50px;
-            top: -50px;
-            width: 200px;
-            height: 200px;
-            background: var(--secondary);
-            opacity: 0.1;
-            border-radius: 50%;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .welcome-content h3 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--secondary); margin-bottom: 10px; }
-        .welcome-content h1 { font-size: 28px; margin-bottom: 10px; font-weight: 700; }
-        .welcome-content p { font-size: 15px; opacity: 0.9; }
-
-        .btn-3d {
-            background: var(--secondary);
-            color: var(--primary-dark);
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #d97706, 0 8px 15px rgba(0,0,0,0.2);
-            transition: all 0.1s;
-            font-size: 14px;
-            text-decoration: none;
-        }
-        .btn-3d:active { transform: translateY(4px); box-shadow: 0 0 0 #d97706; }
-        .btn-3d:hover { background: #fbbf24; }
-
-        /* --- STATS GRID --- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            margin-bottom: 30px;
+        .card:hover::before {
+            opacity: 1;
         }
 
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(0, 212, 170, 0.1);
+        }
+
+        /* Stat Cards */
         .stat-card {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 25px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-            border-left: 5px solid transparent;
         }
 
-        .stat-card:hover { transform: translateY(-5px); }
-        
-        .stat-card.blue { border-left-color: var(--primary); }
-        .stat-card.green { border-left-color: var(--success); }
-        .stat-card.orange { border-left-color: var(--secondary); }
-        .stat-card.purple { border-left-color: #8b5cf6; }
-
-        .stat-card .icon-box {
-            width: 60px;
-            height: 60px;
+        .stat-card .icon-bg {
+            position: absolute;
+            right: -20px;
+            bottom: -20px;
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
+            opacity: 0.1;
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover .icon-bg {
+            transform: scale(1.2);
+            opacity: 0.15;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-family: 'Outfit', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), #00a88a);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 170, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--accent-secondary);
+            color: var(--accent-secondary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent-secondary);
+            color: var(--bg-primary);
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-primary);
+        }
+
+        /* Quick Action Buttons */
+        .quick-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 140px;
+        }
+
+        .quick-action:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0, 212, 170, 0.2);
+        }
+
+        .quick-action .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            opacity: 0.2;
-            color: var(--text-dark);
-        }
-        
-        .stat-card.blue .icon-box { background: #e0e7ff; color: var(--primary); opacity: 1; }
-        .stat-card.green .icon-box { background: #d1fae5; color: var(--success); opacity: 1; }
-        .stat-card.orange .icon-box { background: #fef3c7; color: var(--secondary); opacity: 1; }
-        .stat-card.purple .icon-box { background: #ede9fe; color: #8b5cf6; opacity: 1; }
-
-        .stat-info h4 { color: var(--text-light); font-size: 14px; font-weight: 500; margin-bottom: 5px; }
-        .stat-info h2 { font-size: 32px; color: var(--text-dark); margin-bottom: 10px; }
-        
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #e5e7eb;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .progress-fill { height: 100%; border-radius: 10px; }
-        .stat-footer { margin-top: 10px; font-size: 12px; color: var(--text-light); }
-
-        /* --- QUICK ACTIONS & CHARTS --- */
-        .grid-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 25px;
-            margin-bottom: 30px;
+            transition: transform 0.3s ease;
         }
 
-        @media (max-width: 1024px) {
-            .grid-row { grid-template-columns: 1fr; }
+        .quick-action:hover .icon {
+            transform: scale(1.1) rotate(5deg);
         }
 
-        .card {
-            background: var(--white);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #f0f0f0;
-            padding-bottom: 15px;
-        }
-        .card-title { font-size: 18px; font-weight: 700; color: var(--primary-dark); }
-
-        /* 3D CHART CONTAINER */
+        /* Chart Container */
         .chart-container {
             position: relative;
-            height: 300px;
-            width: 100%;
-        }
-
-        /* QUICK ACTION BUTTONS */
-        .action-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-        }
-        
-        .action-btn {
-            background: var(--bg-light);
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
-            padding: 15px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .action-btn:hover {
-            border-color: var(--primary);
-            background: #eff6ff;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0,0,0,0.05);
-        }
-        .action-btn i { font-size: 24px; margin-bottom: 8px; display: block; color: var(--primary); }
-        .action-btn span { font-size: 12px; font-weight: 600; color: var(--text-dark); }
-
-        /* --- TABLE --- */
-        .table-responsive { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #f0f0f0; }
-        th { background: #f8fafc; color: var(--text-light); font-weight: 600; font-size: 12px; text-transform: uppercase; }
-        tr:hover { background: #f8fafc; }
-        
-        .status-badge {
-            padding: 5px 12px;
+            background: var(--bg-card);
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+            padding: 24px;
+            border: 1px solid var(--border);
         }
-        .status-paid { background: #d1fae5; color: #065f46; }
-        .status-pending { background: #fee2e2; color: #991b1b; }
+
+        #threeChart {
+            width: 100%;
+            height: 350px;
+        }
+
+        /* Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s ease;
+        }
+
+        .data-table tr:hover td {
+            background: rgba(0, 212, 170, 0.05);
+        }
 
         /* Modal */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
             display: none;
-            align-items: center; justify-content: center;
-            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
         }
-        .modal {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-        }
-        .modal h2 { color: var(--primary-dark); margin-bottom: 15px; }
-        .modal p { color: var(--text-light); margin-bottom: 25px; }
-        .modal-close { background: var(--primary); color: white; padding: 10px 30px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; }
 
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 32px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Form Inputs */
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(0, 212, 170, 0.2);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Payment Method Cards */
+        .payment-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .payment-card:hover {
+            border-color: var(--accent-primary);
+            transform: scale(1.02);
+        }
+
+        .payment-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        /* Activity Timeline */
+        .activity-item {
+            display: flex;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .activity-item::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 50px;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent-primary), transparent);
+        }
+
+        .activity-item:last-child::before {
+            display: none;
+        }
+
+        .activity-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            margin-top: 6px;
+            box-shadow: 0 0 15px var(--accent-primary);
+            flex-shrink: 0;
+        }
+
+        /* Progress Ring */
+        .progress-ring {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .progress-ring svg {
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .progress-ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+
+        /* Print Styles for Receipt */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-receipt, .print-receipt * {
+                visibility: visible;
+            }
+            .print-receipt {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .animate-in {
+            animation: slideInLeft 0.6s ease forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .delay-3 { animation-delay: 0.3s; opacity: 0; }
+        .delay-4 { animation-delay: 0.4s; opacity: 0; }
+        .delay-5 { animation-delay: 0.5s; opacity: 0; }
+
+        /* 3D Chart Styles */
+        .chart-3d-wrapper {
+            perspective: 1000px;
+        }
+
+        .chart-3d {
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+
+        .chart-3d:hover {
+            transform: rotateX(5deg) rotateY(5deg);
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="bg-animated">
+        <div class="floating-orb" style="width: 400px; height: 400px; background: var(--accent-primary); top: 10%; left: 10%;"></div>
+        <div class="floating-orb" style="width: 300px; height: 300px; background: var(--accent-secondary); bottom: 20%; right: 15%; animation-delay: -5s;"></div>
+        <div class="floating-orb" style="width: 250px; height: 250px; background: var(--accent-tertiary); top: 60%; left: 50%; animation-delay: -10s;"></div>
+    </div>
 
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-        <div class="logo-section">
-            <div class="logo-icon">🏫</div>
-            <div class="logo-text">
-                <h1>Podar Learn School</h1>
-                <span>Niphad</span>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="p-6 border-b border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center font-display font-bold text-lg">
+                    P
+                </div>
+                <div>
+                    <h1 class="font-display font-bold text-lg">Podar Learn School</h1>
+                    <p class="text-sm text-gray-400">Niphad</p>
+                </div>
             </div>
         </div>
 
-        <nav>
-            <div class="nav-item active" onclick="changePage('Dashboard', this)">
-                <i class="fas fa-th-large"></i> Dashboard
+        <nav class="py-4">
+            <div class="sidebar-item active" data-page="dashboard" onclick="switchPage('dashboard')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1"/>
+                </svg>
+                <span>Dashboard</span>
             </div>
-            <div class="nav-item" onclick="changePage('Students', this)">
-                <i class="fas fa-user-graduate"></i> Students
+            <div class="sidebar-item" data-page="students" onclick="switchPage('students')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+                <span>Students</span>
             </div>
-            <div class="nav-item" onclick="changePage('Fees', this)">
-                <i class="fas fa-rupee-sign"></i> Fee Collection
+            <div class="sidebar-item" data-page="fees" onclick="switchPage('fees')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="1" x2="12" y2="23"/>
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                <span>Fee Collection</span>
             </div>
-            <div class="nav-item" onclick="changePage('Reports', this)">
-                <i class="fas fa-chart-line"></i> Reports
+            <div class="sidebar-item" data-page="reports" onclick="switchPage('reports')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                <span>Reports</span>
             </div>
-            <div class="nav-item" onclick="changePage('QR', this)">
-                <i class="fas fa-qrcode"></i> QR Lookup
+            <div class="sidebar-item" data-page="qr" onclick="switchPage('qr')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"/>
+                    <rect x="14" y="3" width="7" height="7"/>
+                    <rect x="3" y="14" width="7" height="7"/>
+                    <rect x="14" y="14" width="7" height="7"/>
+                </svg>
+                <span>QR Lookup</span>
             </div>
-            <div class="nav-item" onclick="changePage('AI', this)">
-                <i class="fas fa-robot"></i> AI Assistant
+            <div class="sidebar-item" data-page="ai" onclick="switchPage('ai')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1H2a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a7 7 0 0 1 7-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2"/>
+                    <circle cx="8" cy="14" r="2"/>
+                    <circle cx="16" cy="14" r="2"/>
+                </svg>
+                <span>AI Assistant</span>
             </div>
-            <div class="nav-item" onclick="changePage('Settings', this)">
-                <i class="fas fa-cog"></i> Settings
+            <div class="sidebar-item" data-page="settings" onclick="switchPage('settings')">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                <span>Settings</span>
             </div>
         </nav>
 
-        <div class="user-card">
-            <div class="user-avatar">👨‍💼</div>
-            <div class="user-info">
-                <h4>Admin User</h4>
-                <p>admin@podar.edu</p>
+        <div class="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center font-bold">
+                    AC
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold truncate">Accountant</p>
+                    <p class="text-xs text-gray-400 truncate">accountant@podarlearnNiphad.edu.in</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="fixed top-4 left-4 z-50 lg:hidden p-3 bg-gray-800 rounded-xl border border-gray-700" onclick="toggleSidebar()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+    </button>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="page-content">
+            <!-- Header -->
+            <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 animate-in">
+                <div>
+                    <p class="text-gray-400" id="current-date">Wed, 25 Feb, 2026</p>
+                    <h1 class="font-display text-3xl md:text-4xl font-bold mt-1">
+                        <span id="greeting">Good Morning</span>, Accountant!
+                    </h1>
+                    <p class="text-gray-400 mt-1">Here's your school's financial overview for today.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="btn btn-primary" onclick="openModal('newAdmission')">
+                        New Admission
+                    </button>
+                    <button class="btn btn-secondary" onclick="openModal('collectFee')">
+                        Collect Fee
+                    </button>
+                </div>
+            </header>
+
+            <!-- School Info Banner -->
+            <div class="card mb-8 animate-in delay-1" style="background: linear-gradient(135deg, rgba(0, 212, 170, 0.1), rgba(59, 130, 246, 0.1));">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center">
+                            <span class="font-display font-bold text-2xl">P</span>
+                        </div>
+                        <div>
+                            <h2 class="font-display text-xl font-bold">Podar Learn School Niphad</h2>
+                            <p class="text-gray-400">Academic Year 2026-27</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="px-4 py-2 rounded-full bg-green-500/20 text-green-400 text-sm font-medium">
+                            All Systems Active
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Total Students -->
+                <div class="card stat-card animate-in delay-1">
+                    <div class="icon-bg bg-teal-500"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-gray-400 font-medium">Total Students</span>
+                        <div class="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="font-display text-4xl font-bold" id="totalStudents">4,817</p>
+                    <p class="text-teal-400 text-sm mt-2">All Active</p>
+                </div>
+
+                <!-- Fees Collected -->
+                <div class="card stat-card animate-in delay-2">
+                    <div class="icon-bg bg-green-500"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-gray-400 font-medium">Fees Collected</span>
+                        <div class="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                                <polyline points="17 6 23 6 23 12"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="font-display text-3xl font-bold" id="feesCollected">₹11,05,61,750</p>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="flex-1 h-2 bg-gray-700 rounded-full overflow-hidden">
+                            <div class="h-full bg-green-500 rounded-full" style="width: 48.1%"></div>
+                        </div>
+                        <span class="text-green-400 text-sm font-medium">48.1%</span>
+                    </div>
+                </div>
+
+                <!-- Pending Fees -->
+                <div class="card stat-card animate-in delay-3">
+                    <div class="icon-bg bg-orange-500"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-gray-400 font-medium">Pending Fees</span>
+                        <div class="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="font-display text-3xl font-bold" id="pendingFees">₹11,92,78,250</p>
+                    <p class="text-orange-400 text-sm mt-2">3,106 Defaulters</p>
+                </div>
+
+                <!-- Today's Collection -->
+                <div class="card stat-card animate-in delay-4">
+                    <div class="icon-bg bg-blue-500"></div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-gray-400 font-medium">Today's Collection</span>
+                        <div class="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                                <line x1="1" y1="10" x2="23" y2="10"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="font-display text-4xl font-bold text-blue-400" id="todayCollection">₹5,94,000</p>
+                    <p class="text-gray-400 text-sm mt-2">32 Receipts Today</p>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="mb-8 animate-in delay-5">
+                <h3 class="font-display text-xl font-bold mb-4">Quick Actions</h3>
+                <div class="flex flex-wrap gap-4">
+                    <div class="quick-action" onclick="openModal('newStudent')">
+                        <div class="icon bg-gradient-to-br from-teal-400 to-emerald-600">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                                <circle cx="8.5" cy="7" r="4"/>
+                                <line x1="20" y1="8" x2="20" y2="14"/>
+                                <line x1="23" y1="11" x2="17" y2="11"/>
+                            </svg>
+                        </div>
+                        <span class="font-medium">New Student</span>
+                    </div>
+                    <div class="quick-action" onclick="openModal('collectFee')">
+                        <div class="icon bg-gradient-to-br from-green-400 to-emerald-600">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <line x1="12" y1="1" x2="12" y2="23"/>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                            </svg>
+                        </div>
+                        <span class="font-medium">Collect Fee</span>
+                    </div>
+                    <div class="quick-action" onclick="openModal('viewReports')">
+                        <div class="icon bg-gradient-to-br from-blue-400 to-indigo-600">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                            </svg>
+                        </div>
+                        <span class="font-medium">View Reports</span>
+                    </div>
+                    <div class="quick-action" onclick="openModal('scanQR')">
+                        <div class="icon bg-gradient-to-br from-purple-400 to-pink-600">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"/>
+                                <rect x="14" y="3" width="7" height="7"/>
+                                <rect x="3" y="14" width="7" height="7"/>
+                                <rect x="14" y="14" width="7" height="7"/>
+                            </svg>
+                        </div>
+                        <span class="font-medium">Scan QR</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <!-- Monthly Collection Chart -->
+                <div class="chart-container animate-in delay-2">
+                    <h3 class="font-display text-xl font-bold mb-4">Monthly Collection</h3>
+                    <p class="text-gray-400 text-sm mb-4">Fee collection per month (in ₹)</p>
+                    <div class="chart-3d-wrapper">
+                        <canvas id="monthlyChart" class="chart-3d" height="250"></canvas>
+                    </div>
+                </div>
+
+                <!-- Students by Class -->
+                <div class="chart-container animate-in delay-3">
+                    <h3 class="font-display text-xl font-bold mb-4">Students by Class</h3>
+                    <p class="text-gray-400 text-sm mb-4">Total: 4,817 active students</p>
+                    <div class="chart-3d-wrapper">
+                        <canvas id="classChart" class="chart-3d" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Methods & Recent Payments -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Payment Methods -->
+                <div class="card animate-in delay-4">
+                    <h3 class="font-display text-xl font-bold mb-4">Payment Methods Used</h3>
+                    <p class="text-gray-400 text-sm mb-6">How parents are paying fees</p>
+                    <div class="space-y-3">
+                        <div class="payment-card">
+                            <div class="payment-icon bg-purple-500/20 text-purple-400">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                                    <line x1="12" y1="18" x2="12.01" y2="18"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium">UPI</p>
+                                <p class="text-sm text-gray-400">2,847 payments</p>
+                            </div>
+                            <span class="text-teal-400 font-bold">49%</span>
+                        </div>
+                        <div class="payment-card">
+                            <div class="payment-icon bg-green-500/20 text-green-400">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="6" width="20" height="12" rx="2"/>
+                                    <circle cx="12" cy="12" r="2"/>
+                                    <path d="M6 12h.01M18 12h.01"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium">Cash</p>
+                                <p class="text-sm text-gray-400">1,523 payments</p>
+                            </div>
+                            <span class="text-teal-400 font-bold">26%</span>
+                        </div>
+                        <div class="payment-card">
+                            <div class="payment-icon bg-blue-500/20 text-blue-400">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                                    <line x1="1" y1="10" x2="23" y2="10"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium">Card</p>
+                                <p class="text-sm text-gray-400">876 payments</p>
+                            </div>
+                            <span class="text-teal-400 font-bold">15%</span>
+                        </div>
+                        <div class="payment-card">
+                            <div class="payment-icon bg-orange-500/20 text-orange-400">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium">Cheque</p>
+                                <p class="text-sm text-gray-400">362 payments</p>
+                            </div>
+                            <span class="text-teal-400 font-bold">6%</span>
+                        </div>
+                        <div class="payment-card">
+                            <div class="payment-icon bg-cyan-500/20 text-cyan-400">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 21h18"/>
+                                    <path d="M3 10h18"/>
+                                    <path d="M5 6l7-3 7 3"/>
+                                    <path d="M4 10v11"/>
+                                    <path d="M20 10v11"/>
+                                    <path d="M8 14v3"/>
+                                    <path d="M12 14v3"/>
+                                    <path d="M16 14v3"/>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium">Bank Transfer</p>
+                                <p class="text-sm text-gray-400">190 payments</p>
+                            </div>
+                            <span class="text-teal-400 font-bold">4%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Payments -->
+                <div class="card lg:col-span-2 animate-in delay-5">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-display text-xl font-bold">Recent Payments</h3>
+                            <p class="text-gray-400 text-sm">5,798 Total</p>
+                        </div>
+                        <button class="btn btn-ghost text-sm" onclick="openModal('allPayments')">View All</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Receipt</th>
+                                    <th>Student</th>
+                                    <th>Amount</th>
+                                    <th>Mode</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recentPaymentsBody">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card animate-in delay-5">
+                <h3 class="font-display text-xl font-bold mb-4">Recent Activity</h3>
+                <div class="space-y-2" id="activityLog">
+                    <!-- Dynamic content -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Page -->
+        <div id="page-students" class="page-content hidden">
+            <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 class="font-display text-3xl font-bold">Students Management</h1>
+                    <p class="text-gray-400 mt-1">Manage all student records and admissions</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="btn btn-primary" onclick="openModal('newStudent')">Add New Student</button>
+                    <button class="btn btn-ghost" onclick="exportStudents()">Export Data</button>
+                </div>
+            </header>
+
+            <!-- Search & Filters -->
+            <div class="card mb-6">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <input type="text" class="form-input" placeholder="Search by name, ID, or class..." id="studentSearch" onkeyup="searchStudents()">
+                    </div>
+                    <select class="form-input w-full md:w-48" id="classFilter" onchange="filterStudents()">
+                        <option value="">All Classes</option>
+                        <option value="nursery">Nursery</option>
+                        <option value="lkg">LKG</option>
+                        <option value="ukg">UKG</option>
+                        <option value="1st">1st</option>
+                        <option value="2nd">2nd</option>
+                        <option value="3rd">3rd</option>
+                        <option value="4th">4th</option>
+                        <option value="5th">5th</option>
+                    </select>
+                    <select class="form-input w-full md:w-48" id="statusFilter" onchange="filterStudents()">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="card">
+                <div class="overflow-x-auto">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student Name</th>
+                                <th>Class</th>
+                                <th>Parent Name</th>
+                                <th>Contact</th>
+                                <th>Fee Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fee Collection Page -->
+        <div id="page-fees" class="page-content hidden">
+            <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 class="font-display text-3xl font-bold">Fee Collection</h1>
+                    <p class="text-gray-400 mt-1">This section contains features for Fees. Buttons are working!</p>
+                </div>
+                <button class="btn btn-primary" onclick="openModal('collectFee')">Collect New Fee</button>
+            </header>
+
+            <!-- Fee Stats -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="card">
+                    <p class="text-gray-400 mb-2">Total Fee Expected</p>
+                    <p class="font-display text-2xl font-bold">₹22,98,40,000</p>
+                </div>
+                <div class="card">
+                    <p class="text-gray-400 mb-2">Collected</p>
+                    <p class="font-display text-2xl font-bold text-green-400">₹11,05,61,750</p>
+                </div>
+                <div class="card">
+                    <p class="text-gray-400 mb-2">Pending</p>
+                    <p class="font-display text-2xl font-bold text-orange-400">₹11,92,78,250</p>
+                </div>
+                <div class="card">
+                    <p class="text-gray-400 mb-2">Overdue</p>
+                    <p class="font-display text-2xl font-bold text-red-400">₹4,52,15,000</p>
+                </div>
+            </div>
+
+            <!-- Fee Records -->
+            <div class="card">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-display text-xl font-bold">Fee Records</h3>
+                    <div class="flex gap-2">
+                        <button class="btn btn-ghost text-sm" onclick="filterFeeRecords('all')">All</button>
+                        <button class="btn btn-ghost text-sm" onclick="filterFeeRecords('paid')">Paid</button>
+                        <button class="btn btn-ghost text-sm" onclick="filterFeeRecords('pending')">Pending</button>
+                        <button class="btn btn-ghost text-sm" onclick="filterFeeRecords('overdue')">Overdue</button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Receipt No</th>
+                                <th>Student</th>
+                                <th>Class</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feeRecordsBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Page -->
+        <div id="page-reports" class="page-content hidden">
+            <header class="mb-8">
+                <h1 class="font-display text-3xl font-bold">Reports & Analytics</h1>
+                <p class="text-gray-400 mt-1">Generate and view comprehensive reports</p>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card cursor-pointer hover:border-teal-500" onclick="generateReport('collection')">
+                    <div class="w-12 h-12 rounded-xl bg-teal-500/20 flex items-center justify-center mb-4">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00d4aa" stroke-width="2">
+                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-lg font-bold mb-2">Collection Report</h3>
+                    <p class="text-gray-400 text-sm">Daily, weekly, monthly fee collection summary</p>
+                </div>
+                <div class="card cursor-pointer hover:border-blue-500" onclick="generateReport('defaulter')">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center mb-4">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-lg font-bold mb-2">Defaulter Report</h3>
+                    <p class="text-gray-400 text-sm">List of students with pending fees</p>
+                </div>
+                <div class="card cursor-pointer hover:border-purple-500" onclick="generateReport('student')">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center mb-4">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-lg font-bold mb-2">Student Report</h3>
+                    <p class="text-gray-400 text-sm">Class-wise student distribution</p>
+                </div>
+                <div class="card cursor-pointer hover:border-orange-500" onclick="generateReport('payment')">
+                    <div class="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center mb-4">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                            <line x1="1" y1="10" x2="23" y2="10"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-lg font-bold mb-2">Payment Methods</h3>
+                    <p class="text-gray-400 text-sm">Analysis of payment modes used</p>
+                </div>
+                <div class="card cursor-pointer hover:border-green-500" onclick="generateReport('admission')">
+                    <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center mb-4">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="8.5" cy="7" r="4"/>
+                            <line x1="20" y1="8" x2="20" y2="14"/>
+                            <line x1="23" y1="11" x2="17" y2="11"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-lg font-bold mb-2">Admission Report</h3>
+                    <p class="text-gray-400 text-sm">New admissions and trends</p>
+                </div>
+                <div class="card cursor-pointer hover:border-pink-500" onclick="generateReport('custom')">
+                    <div class="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center mb-4">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                    </div>
+                    <h3 class="font-display text-lg font-bold mb-2">Custom Report</h3>
+                    <p class="text-gray-400 text-sm">Build your own custom report</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Lookup Page -->
+        <div id="page-qr" class="page-content hidden">
+            <header class="mb-8">
+                <h1 class="font-display text-3xl font-bold">QR Lookup</h1>
+                <p class="text-gray-400 mt-1">Scan student QR codes to view details</p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="font-display text-xl font-bold mb-4">Scan QR Code</h3>
+                    <div class="border-2 border-dashed border-gray-600 rounded-xl p-8 text-center" id="qrScanner">
+                        <div class="w-32 h-32 mx-auto mb-4 rounded-xl bg-gray-700 flex items-center justify-center">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="3" y="3" width="7" height="7"/>
+                                <rect x="14" y="3" width="7" height="7"/>
+                                <rect x="3" y="14" width="7" height="7"/>
+                                <rect x="14" y="14" width="7" height="7"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-400 mb-4">Click to start camera or upload QR image</p>
+                        <button class="btn btn-primary" onclick="startQRScan()">Start Scanning</button>
+                        <input type="file" id="qrFileInput" accept="image/*" class="hidden" onchange="processQRImage(event)">
+                        <button class="btn btn-ghost ml-2" onclick="document.getElementById('qrFileInput').click()">Upload Image</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="font-display text-xl font-bold mb-4">Manual Lookup</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="form-label">Student ID or Admission Number</label>
+                            <input type="text" class="form-input" id="manualStudentId" placeholder="Enter ID (e.g., STU-2026-0001)">
+                        </div>
+                        <button class="btn btn-primary w-full" onclick="lookupStudent()">Lookup Student</button>
+                    </div>
+                    <div id="qrStudentDetails" class="mt-6 hidden">
+                        <!-- Student details will appear here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Assistant Page -->
+        <div id="page-ai" class="page-content hidden">
+            <header class="mb-8">
+                <h1 class="font-display text-3xl font-bold">AI Assistant</h1>
+                <p class="text-gray-400 mt-1">Get intelligent help with school management</p>
+            </header>
+
+            <div class="card" style="height: 600px;">
+                <div class="flex flex-col h-full">
+                    <div class="flex-1 overflow-y-auto p-4" id="aiChatMessages">
+                        <div class="flex gap-3 mb-4">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                                AI
+                            </div>
+                            <div class="bg-gray-700/50 rounded-xl p-4 max-w-lg">
+                                <p>Hello! I'm your school management AI assistant. I can help you with:</p>
+                                <ul class="list-disc list-inside mt-2 text-gray-300">
+                                    <li>Fee collection queries</li>
+                                    <li>Student information lookup</li>
+                                    <li>Report generation</li>
+                                    <li>Data analysis and insights</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-700 p-4">
+                        <div class="flex gap-3">
+                            <input type="text" class="form-input flex-1" id="aiInput" placeholder="Ask me anything about school management..." onkeypress="handleAIKeyPress(event)">
+                            <button class="btn btn-primary" onclick="sendAIMessage()">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Page -->
+        <div id="page-settings" class="page-content hidden">
+            <header class="mb-8">
+                <h1 class="font-display text-3xl font-bold">Settings</h1>
+                <p class="text-gray-400 mt-1">Configure your school management system</p>
+            </header>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card">
+                    <h3 class="font-display text-xl font-bold mb-4">School Information</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="form-label">School Name</label>
+                            <input type="text" class="form-input" value="Podar Learn School Niphad" id="settingSchoolName">
+                        </div>
+                        <div>
+                            <label class="form-label">Academic Year</label>
+                            <select class="form-input" id="settingAcademicYear">
+                                <option value="2026-27" selected>2026-27</option>
+                                <option value="2025-26">2025-26</option>
+                                <option value="2024-25">2024-25</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Address</label>
+                            <textarea class="form-input" rows="2" id="settingAddress">Niphad, Maharashtra, India</textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="font-display text-xl font-bold mb-4">Fee Settings</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="form-label">Late Fee Amount (Monthly)</label>
+                            <input type="number" class="form-input" value="500" id="settingLateFee">
+                        </div>
+                        <div>
+                            <label class="form-label">Fee Due Date</label>
+                            <input type="date" class="form-input" id="settingDueDate" value="2026-04-15">
+                        </div>
+                        <div>
+                            <label class="form-label">Currency Symbol</label>
+                            <input type="text" class="form-input" value="₹" id="settingCurrency" maxlength="1">
+                        </div>
+                        <button class="btn btn-primary" onclick="saveSettings()">Save Changes</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="font-display text-xl font-bold mb-4">Notification Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span>Email Notifications</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-teal-500 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>SMS Notifications</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-teal-500 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+                            </label>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span>Payment Reminders</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" checked>
+                                <div class="w-11 h-6 bg-gray-700 rounded-full peer peer-checked:bg-teal-500 after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 class="font-display text-xl font-bold mb-4">Data Management</h3>
+                    <div class="space-y-4">
+                        <button class="btn btn-ghost w-full" onclick="backupData()">Backup Data</button>
+                        <button class="btn btn-ghost w-full" onclick="restoreData()">Restore Data</button>
+                        <button class="btn btn-ghost w-full text-red-400 border-red-400/30" onclick="clearData()">Clear All Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals -->
+    <!-- New Student Modal -->
+    <div class="modal-overlay" id="modal-newStudent">
+        <div class="modal">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-display text-2xl font-bold">Add New Student</h2>
+                <button onclick="closeModal('newStudent')" class="text-gray-400 hover:text-white">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="submitNewStudent(event)">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="form-label">First Name</label>
+                        <input type="text" class="form-input" required id="studentFirstName">
+                    </div>
+                    <div>
+                        <label class="form-label">Last Name</label>
+                        <input type="text" class="form-input" required id="studentLastName">
+                    </div>
+                    <div>
+                        <label class="form-label">Class</label>
+                        <select class="form-input" required id="studentClass">
+                            <option value="">Select Class</option>
+                            <option value="Nursery">Nursery</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="1st">1st</option>
+                            <option value="2nd">2nd</option>
+                            <option value="3rd">3rd</option>
+                            <option value="4th">4th</option>
+                            <option value="5th">5th</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Section</label>
+                        <select class="form-input" required id="studentSection">
+                            <option value="">Select Section</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                            <option value="E">E</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Parent/Guardian Name</label>
+                        <input type="text" class="form-input" required id="studentParentName">
+                    </div>
+                    <div>
+                        <label class="form-label">Contact Number</label>
+                        <input type="tel" class="form-input" required id="studentContact">
+                    </div>
+                    <div>
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="studentEmail">
+                    </div>
+                    <div>
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" class="form-input" required id="studentDOB">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-input" rows="2" id="studentAddress"></textarea>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('newStudent')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Collect Fee Modal -->
+    <div class="modal-overlay" id="modal-collectFee">
+        <div class="modal">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-display text-2xl font-bold">Collect Fee</h2>
+                <button onclick="closeModal('collectFee')" class="text-gray-400 hover:text-white">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <form onsubmit="submitFeeCollection(event)">
+                <div class="space-y-4">
+                    <div>
+                        <label class="form-label">Search Student</label>
+                        <input type="text" class="form-input" placeholder="Enter student ID or name" id="feeStudentSearch" onkeyup="searchStudentForFee()">
+                        <div id="feeStudentResults" class="mt-2 hidden">
+                            <!-- Search results -->
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Student Name</label>
+                            <input type="text" class="form-input" id="feeStudentName" readonly>
+                        </div>
+                        <div>
+                            <label class="form-label">Class</label>
+                            <input type="text" class="form-input" id="feeStudentClass" readonly>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Fee Type</label>
+                        <select class="form-input" required id="feeType">
+                            <option value="">Select Fee Type</option>
+                            <option value="tuition">Tuition Fee</option>
+                            <option value="admission">Admission Fee</option>
+                            <option value="exam">Exam Fee</option>
+                            <option value="transport">Transport Fee</option>
+                            <option value="library">Library Fee</option>
+                            <option value="lab">Lab Fee</option>
+                            <option value="sports">Sports Fee</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="form-label">Amount</label>
+                            <input type="number" class="form-input" required id="feeAmount" placeholder="Enter amount">
+                        </div>
+                        <div>
+                            <label class="form-label">Payment Mode</label>
+                            <select class="form-input" required id="feePaymentMode">
+                                <option value="">Select Mode</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Card</option>
+                                <option value="Cheque">Cheque</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="chequeDetails" class="hidden">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="form-label">Cheque Number</label>
+                                <input type="text" class="form-input" id="chequeNumber">
+                            </div>
+                            <div>
+                                <label class="form-label">Bank Name</label>
+                                <input type="text" class="form-input" id="chequeBank">
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label">Remarks</label>
+                        <textarea class="form-input" rows="2" id="feeRemarks" placeholder="Any additional notes"></textarea>
+                    </div>
+                </div>
+                <div class="flex justify-end gap-3 mt-6">
+                    <button type="button" class="btn btn-ghost" onclick="closeModal('collectFee')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Collect & Generate Receipt</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div class="modal-overlay" id="modal-receipt">
+        <div class="modal print-receipt" style="max-width: 500px;">
+            <div id="receiptContent">
+                <div class="text-center mb-6">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center mb-3">
+                        <span class="font-display font-bold text-2xl">P</span>
+                    </div>
+                    <h2 class="font-display text-xl font-bold">Podar Learn School Niphad</h2>
+                    <p class="text-gray-400 text-sm">Fee Receipt</p>
+                </div>
+                <div class="border border-gray-700 rounded-xl p-4 mb-4">
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <p class="text-gray-400">Receipt No:</p>
+                        <p class="font-medium" id="receiptNo">REC-2026-000001</p>
+                        <p class="text-gray-400">Date:</p>
+                        <p class="font-medium" id="receiptDate">25 Feb 2026</p>
+                        <p class="text-gray-400">Student Name:</p>
+                        <p class="font-medium" id="receiptStudentName">-</p>
+                        <p class="text-gray-400">Class:</p>
+                        <p class="font-medium" id="receiptClass">-</p>
+                        <p class="text-gray-400">Fee Type:</p>
+                        <p class="font-medium" id="receiptFeeType">-</p>
+                        <p class="text-gray-400">Amount:</p>
+                        <p class="font-bold text-teal-400" id="receiptAmount">-</p>
+                        <p class="text-gray-400">Payment Mode:</p>
+                        <p class="font-medium" id="receiptPaymentMode">-</p>
+                    </div>
+                </div>
+                <p class="text-center text-gray-400 text-sm mb-4">Thank you for your payment!</p>
+                <div class="flex gap-3">
+                    <button class="btn btn-ghost flex-1" onclick="closeModal('receipt')">Close</button>
+                    <button class="btn btn-primary flex-1" onclick="printReceipt()">Print Receipt</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="main-content">
-        
-        <!-- Header -->
-        <div class="header">
-            <div class="header-left">
-                <h2 id="page-title">Dashboard</h2>
-                <p>Welcome to your school management panel</p>
+    <!-- Scan QR Modal -->
+    <div class="modal-overlay" id="modal-scanQR">
+        <div class="modal">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-display text-2xl font-bold">Scan QR Code</h2>
+                <button onclick="closeModal('scanQR')" class="text-gray-400 hover:text-white">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
             </div>
-            <div class="header-right">
-                <div class="date-badge">
-                    <i class="fas fa-calendar-alt"></i>
-                    <span id="live-date">Loading Date...</span>
+            <div class="text-center">
+                <div class="w-64 h-64 mx-auto mb-4 border-2 border-gray-600 rounded-xl flex items-center justify-center bg-gray-800">
+                    <p class="text-gray-400">Camera view</p>
+                </div>
+                <p class="text-gray-400 mb-4">Point camera at student QR code</p>
+                <button class="btn btn-primary" onclick="simulateQRScan()">Simulate Scan (Demo)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Reports Modal -->
+    <div class="modal-overlay" id="modal-viewReports">
+        <div class="modal" style="max-width: 800px;">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-display text-2xl font-bold">Reports</h2>
+                <button onclick="closeModal('viewReports')" class="text-gray-400 hover:text-white">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="card cursor-pointer hover:border-teal-500" onclick="generateReport('collection')">
+                    <h3 class="font-bold mb-2">Collection Report</h3>
+                    <p class="text-gray-400 text-sm">View fee collection summary</p>
+                </div>
+                <div class="card cursor-pointer hover:border-orange-500" onclick="generateReport('defaulter')">
+                    <h3 class="font-bold mb-2">Defaulter Report</h3>
+                    <p class="text-gray-400 text-sm">View pending fees list</p>
+                </div>
+                <div class="card cursor-pointer hover:border-blue-500" onclick="generateReport('student')">
+                    <h3 class="font-bold mb-2">Student Report</h3>
+                    <p class="text-gray-400 text-sm">View student statistics</p>
+                </div>
+                <div class="card cursor-pointer hover:border-green-500" onclick="generateReport('daily')">
+                    <h3 class="font-bold mb-2">Daily Report</h3>
+                    <p class="text-gray-400 text-sm">View today's summary</p>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Dynamic Banner -->
-        <div class="welcome-banner">
-            <div class="welcome-content">
-                <h3>WELCOME BACK</h3>
-                <h1 id="greeting-text">Good Morning, Admin! 👨‍💼</h1>
-                <p>Here's the financial overview for Academic Year 2026-27</p>
+    <!-- Student Details Modal -->
+    <div class="modal-overlay" id="modal-studentDetails">
+        <div class="modal">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-display text-2xl font-bold">Student Details</h2>
+                <button onclick="closeModal('studentDetails')" class="text-gray-400 hover:text-white">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
             </div>
-            <button class="btn-3d" onclick="openModal('New Admission', 'Form to add new student will open here.')">
-                <i class="fas fa-plus"></i> New Admission
-            </button>
-        </div>
-
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card blue">
-                <div class="icon-box"><i class="fas fa-users"></i></div>
-                <div class="stat-info">
-                    <h4>Total Students</h4>
-                    <h2>4,817</h2>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 85%; background: var(--primary);"></div></div>
-                    <div class="stat-footer">All Active Students</div>
-                </div>
-            </div>
-            <div class="stat-card green">
-                <div class="icon-box"><i class="fas fa-wallet"></i></div>
-                <div class="stat-info">
-                    <h4>Fees Collected</h4>
-                    <h2>₹11.05 Cr</h2>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 48%; background: var(--success);"></div></div>
-                    <div class="stat-footer">48.1% of Total</div>
-                </div>
-            </div>
-            <div class="stat-card orange">
-                <div class="icon-box"><i class="fas fa-exclamation-circle"></i></div>
-                <div class="stat-info">
-                    <h4>Pending Fees</h4>
-                    <h2>₹11.92 Cr</h2>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 52%; background: var(--secondary);"></div></div>
-                    <div class="stat-footer">3,106 Defaulters</div>
-                </div>
-            </div>
-            <div class="stat-card purple">
-                <div class="icon-box"><i class="fas fa-hand-holding-usd"></i></div>
-                <div class="stat-info">
-                    <h4>Today's Collection</h4>
-                    <h2>₹5.94 L</h2>
-                    <div class="progress-bar"><div class="progress-fill" style="width: 20%; background: #8b5cf6;"></div></div>
-                    <div class="stat-footer">32 Receipts Today</div>
-                </div>
+            <div id="studentDetailsContent">
+                <!-- Dynamic content -->
             </div>
         </div>
+    </div>
 
-        <!-- Quick Actions -->
-        <div class="card" style="margin-bottom: 30px;">
-            <div class="card-header">
-                <h3 class="card-title">⚡ Quick Actions</h3>
+    <!-- All Payments Modal -->
+    <div class="modal-overlay" id="modal-allPayments">
+        <div class="modal" style="max-width: 900px;">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-display text-2xl font-bold">All Payments</h2>
+                <button onclick="closeModal('allPayments')" class="text-gray-400 hover:text-white">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
             </div>
-            <div class="action-grid">
-                <div class="action-btn" onclick="openModal('New Student', 'Add student form activated.')">
-                    <i class="fas fa-user-plus"></i>
-                    <span>New Student</span>
-                </div>
-                <div class="action-btn" onclick="openModal('Collect Fee', 'Payment gateway integration here.')">
-                    <i class="fas fa-money-bill-wave"></i>
-                    <span>Collect Fee</span>
-                </div>
-                <div class="action-btn" onclick="openModal('Reports', 'Download PDF reports.')">
-                    <i class="fas fa-file-pdf"></i>
-                    <span>Reports</span>
-                </div>
-                <div class="action-btn" onclick="openModal('Scan QR', 'Camera will open to scan ID.')">
-                    <i class="fas fa-qrcode"></i>
-                    <span>Scan QR</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Charts & Table -->
-        <div class="grid-row">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">📊 Monthly Collection Trend</h3>
-                </div>
-                <div class="chart-container">
-                    <canvas id="feeChart"></canvas>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">💳 Payment Methods</h3>
-                </div>
-                <div class="chart-container">
-                    <canvas id="paymentChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Payments Table -->
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">🧾 Recent Payments</h3>
-            </div>
-            <div class="table-responsive">
-                <table>
+            <div class="overflow-x-auto max-h-96">
+                <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Receipt ID</th>
-                            <th>Student Name</th>
-                            <th>Class</th>
+                            <th>Receipt</th>
+                            <th>Student</th>
                             <th>Amount</th>
                             <th>Mode</th>
-                            <th>Status</th>
+                            <th>Date</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr onclick="openModal('Receipt #26523', 'Details of Ramesh Patel')">
-                            <td style="color:var(--primary); font-weight:600;">#REC-2025-26523</td>
-                            <td>Ramesh Patel</td>
-                            <td>7th E</td>
-                            <td>₹13,000</td>
-                            <td>Cheque</td>
-                            <td><span class="status-badge status-paid">Paid</span></td>
-                        </tr>
-                        <tr onclick="openModal('Receipt #26057', 'Details of Nikhil Mahajan')">
-                            <td style="color:var(--primary); font-weight:600;">#REC-2025-26057</td>
-                            <td>Nikhil Mahajan</td>
-                            <td>6th D</td>
-                            <td>₹12,000</td>
-                            <td>Bank</td>
-                            <td><span class="status-badge status-paid">Paid</span></td>
-                        </tr>
-                        <tr onclick="openModal('Receipt #26015', 'Details of Geeta Chauhan')">
-                            <td style="color:var(--primary); font-weight:600;">#REC-2025-26015</td>
-                            <td>Geeta Chauhan</td>
-                            <td>6th E</td>
-                            <td>₹12,000</td>
-                            <td>Cheque</td>
-                            <td><span class="status-badge status-pending">Pending</span></td>
-                        </tr>
+                    <tbody id="allPaymentsBody">
+                        <!-- Dynamic content -->
                     </tbody>
                 </table>
             </div>
         </div>
-
     </div>
-
-    <!-- Modal Popup -->
-    <div class="modal-overlay" id="modal">
-        <div class="modal">
-            <h2 id="modal-title">Title</h2>
-            <p id="modal-body">Content goes here...</p>
-            <button class="modal-close" onclick="closeModal()">Close</button>
-        </div>
-    </div>
-
-    <!-- Chart.js Library -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        // --- LOGIC STARTS ---
+        // ============================================
+        // DATA STORE
+        // ============================================
+        const studentsData = [
+            { id: 'STU-2026-0001', firstName: 'Aarav', lastName: 'Sharma', class: '5th', section: 'A', parentName: 'Rajesh Sharma', contact: '9876543210', feeStatus: 'paid' },
+            { id: 'STU-2026-0002', firstName: 'Ananya', lastName: 'Patel', class: '4th', section: 'B', parentName: 'Vikram Patel', contact: '9876543211', feeStatus: 'pending' },
+            { id: 'STU-2026-0003', firstName: 'Arjun', lastName: 'Kumar', class: '3rd', section: 'A', parentName: 'Suresh Kumar', contact: '9876543212', feeStatus: 'paid' },
+            { id: 'STU-2026-0004', firstName: 'Diya', lastName: 'Singh', class: '2nd', section: 'C', parentName: 'Mohan Singh', contact: '9876543213', feeStatus: 'overdue' },
+            { id: 'STU-2026-0005', firstName: 'Ishaan', lastName: 'Verma', class: '1st', section: 'A', parentName: 'Amit Verma', contact: '9876543214', feeStatus: 'paid' },
+            { id: 'STU-2026-0006', firstName: 'Kavya', lastName: 'Gupta', class: 'UKG', section: 'B', parentName: 'Rahul Gupta', contact: '9876543215', feeStatus: 'pending' },
+            { id: 'STU-2026-0007', firstName: 'Vihaan', lastName: 'Joshi', class: 'LKG', section: 'A', parentName: 'Sanjay Joshi', contact: '9876543216', feeStatus: 'paid' },
+            { id: 'STU-2026-0008', firstName: 'Myra', lastName: 'Yadav', class: 'Nursery', section: 'C', parentName: 'Krishna Yadav', contact: '9876543217', feeStatus: 'paid' },
+            { id: 'STU-2026-0009', firstName: 'Ramesh', lastName: 'Patel', class: '7th', section: 'E', parentName: 'Magan Patel', contact: '9876543218', feeStatus: 'paid' },
+            { id: 'STU-2026-0010', firstName: 'Nikhil', lastName: 'Mahajan', class: '6th', section: 'D', parentName: 'Dilip Mahajan', contact: '9876543219', feeStatus: 'paid' },
+        ];
 
-        // 1. Set Date
-        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-        const today = new Date();
-        document.getElementById('live-date').innerText = `${days[today.getDay()]}, ${today.getDate()} ${months[today.getMonth()]}, ${today.getFullYear()}`;
+        const recentPaymentsData = [
+            { receipt: 'REC-2025-026523', studentName: 'Ramesh Patel', class: '7th-E', amount: 13000, mode: 'Cheque', date: '2026-02-25' },
+            { receipt: 'REC-2025-026057', studentName: 'Nikhil Mahajan', class: '6th-D', amount: 12000, mode: 'Bank Transfer', date: '2026-02-25' },
+            { receipt: 'REC-2025-026015', studentName: 'Geeta Chauhan', class: '6th-E', amount: 12000, mode: 'Cheque', date: '2026-02-24' },
+            { receipt: 'REC-2025-025928', studentName: 'Ashok Malik', class: '6th-A', amount: 12000, mode: 'Card', date: '2026-02-24' },
+            { receipt: 'REC-2025-025548', studentName: 'Padma Kadam', class: '5th-D', amount: 24000, mode: 'UPI', date: '2026-02-23' },
+            { receipt: 'REC-2025-025421', studentName: 'Suresh Patil', class: '4th-B', amount: 11000, mode: 'Cash', date: '2026-02-23' },
+            { receipt: 'REC-2025-025312', studentName: 'Meena Devi', class: '3rd-C', amount: 10500, mode: 'UPI', date: '2026-02-22' },
+        ];
 
-        // 2. Dynamic Greeting (Sun/Moon logic)
-        const hour = today.getHours();
-        const greetingEl = document.getElementById('greeting-text');
-        let greeting = "";
-        
-        if (hour < 12) {
-            greeting = "Good Morning, Admin! ☀️"; // Sun Emoji
-        } else if (hour < 17) {
-            greeting = "Good Afternoon, Admin! ⛅";
-        } else {
-            greeting = "Good Evening, Admin! 🌙"; // Moon Emoji
-        }
-        greetingEl.innerText = greeting;
+        const activityData = [
+            { title: 'Fee collection for Academic Year 2026-27 started', time: '2026-04-01 09:00 AM', type: 'info' },
+            { title: '5,000 students enrolled for new academic session', time: '2026-04-01 10:00 AM', type: 'success' },
+            { title: 'New admissions open for Nursery to 12th', time: '2026-03-15 11:00 AM', type: 'info' },
+            { title: 'Cloud backup system activated', time: '2026-04-02 09:00 AM', type: 'success' },
+            { title: 'Fee structure updated for new academic year', time: '2026-03-20 02:00 PM', type: 'info' },
+        ];
 
-        // 3. Navigation Logic
-        function changePage(pageName, element) {
-            // Remove active class from all
-            const items = document.querySelectorAll('.nav-item');
-            items.forEach(item => item.classList.remove('active'));
+        const monthlyCollectionData = {
+            labels: ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar'],
+            data: [8500000, 7200000, 6100000, 5800000, 9200000, 8800000, 7500000, 6900000, 11000000, 9500000, 110561750, 0]
+        };
+
+        const classDistributionData = {
+            labels: ['Nursery', 'LKG', 'UKG', '1st', '2nd', '3rd', '4th', '5th'],
+            data: [332, 328, 326, 333, 327, 322, 330, 333]
+        };
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime();
+            renderRecentPayments();
+            renderActivityLog();
+            renderStudentsTable();
+            renderFeeRecords();
+            initCharts();
             
-            // Add active to clicked
-            element.classList.add('active');
-            
-            // Update Header Title
-            document.getElementById('page-title').innerText = pageName;
-            
-            // Simulate Page Change Logic
-            if(pageName !== 'Dashboard') {
-                openModal(pageName, `This section contains features for ${pageName}. Buttons are working!`);
-            }
-        }
-
-        // 4. Modal Logic
-        function openModal(title, body) {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-body').innerText = body;
-            document.getElementById('modal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-
-        // 5. 3D Charts Initialization
-        const ctx = document.getElementById('feeChart').getContext('2d');
-        const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-        gradient.addColorStop(0, '#2563eb');
-        gradient.addColorStop(1, '#1e3a8a');
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Collection (Lakhs)',
-                    data: [120, 190, 300, 250, 220, 320],
-                    backgroundColor: gradient,
-                    borderRadius: 8, // Makes bars look 3D/Modern
-                    borderSkipped: false,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: {
-                    y: { beginAtZero: true, grid: { color: '#f0f0f0' } },
-                    x: { grid: { display: false } }
-                }
-            }
+            // Payment mode change handler
+            document.getElementById('feePaymentMode').addEventListener('change', function() {
+                document.getElementById('chequeDetails').classList.toggle('hidden', this.value !== 'Cheque');
+            });
         });
 
-        // Payment Method Chart
-        const ctx2 = document.getElementById('paymentChart').getContext('2d');
-        new Chart(ctx2, {
-            type: 'doughnut',
-            data: {
-                labels: ['UPI', 'Cash', 'Card', 'Cheque'],
-                datasets: [{
-                    data: [40, 20, 25, 15],
-                    backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#8b5cf6'],
-                    borderWidth: 0,
-                    hoverOffset: 10
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '70%', // Donut effect
-                plugins: {
-                    legend: { position: 'bottom' }
+        // ============================================
+        // PAGE NAVIGATION
+        // ============================================
+        function switchPage(page) {
+            // Hide all pages
+            document.querySelectorAll('.page-content').forEach(p => p.classList.add('hidden'));
+            // Show selected page
+            document.getElementById('page-' + page).classList.remove('hidden');
+            
+            // Update sidebar
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                item.classList.remove('active');
+                if(item.dataset.page === page) {
+                    item.classList.add('active');
                 }
-            }
+            });
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // ============================================
+        // MODAL FUNCTIONS
+        // ============================================
+        function openModal(modalId) {
+            document.getElementById('modal-' + modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById('modal-' + modalId).classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if(e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
         });
 
+        // ============================================
+        // DATE & GREETING
+        // ============================================
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-IN', options);
+            
+            const hour = now.getHours();
+            let greeting = 'Good Morning';
+            if(hour >= 12 && hour < 17) greeting = 'Good Afternoon';
+            else if(hour >= 17) greeting = 'Good Evening';
+            
+            document.getElementById('greeting').textContent = greeting;
+        }
+
+        // ============================================
+        // RENDER FUNCTIONS
+        // ============================================
+        function renderRecentPayments() {
+            const tbody = document.getElementById('recentPaymentsBody');
+            tbody.innerHTML = recentPaymentsData.slice(0, 5).map(p => `
+                <tr>
+                    <td class="font-mono text-sm">${p.receipt}</td>
+                    <td>
+                        <p class="font-medium">${p.studentName}</p>
+                        <p class="text-gray-400 text-sm">${p.class}</p>
+                    </td>
+                    <td class="font-bold text-teal-400">₹${p.amount.toLocaleString('en-IN')}</td>
+                    <td><span class="px-2 py-1 rounded-lg text-xs ${getPaymentModeClass(p.mode)}">${p.mode}</span></td>
+                    <td>
+                        <button class="btn btn-ghost text-xs" onclick="viewReceipt('${p.receipt}')">View</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderAllPayments() {
+            const tbody = document.getElementById('allPaymentsBody');
+            tbody.innerHTML = recentPaymentsData.map(p => `
+                <tr>
+                    <td class="font-mono text-sm">${p.receipt}</td>
+                    <td>
+                        <p class="font-medium">${p.studentName}</p>
+                        <p class="text-gray-400 text-sm">${p.class}</p>
+                    </td>
+                    <td class="font-bold text-teal-400">₹${p.amount.toLocaleString('en-IN')}</td>
+                    <td><span class="px-2 py-1 rounded-lg text-xs ${getPaymentModeClass(p.mode)}">${p.mode}</span></td>
+                    <td class="text-gray-400 text-sm">${p.date}</td>
+                </tr>
+            `).join('');
+            openModal('allPayments');
+        }
+
+        function renderActivityLog() {
+            const container = document.getElementById('activityLog');
+            container.innerHTML = activityData.map(a => `
+                <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <div>
+                        <p class="font-medium">${a.title}</p>
+                        <p class="text-gray-400 text-sm">${a.time}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderStudentsTable() {
+            const tbody = document.getElementById('studentsTableBody');
+            tbody.innerHTML = studentsData.map(s => `
+                <tr>
+                    <td class="font-mono text-sm">${s.id}</td>
+                    <td class="font-medium">${s.firstName} ${s.lastName}</td>
+                    <td>${s.class}-${s.section}</td>
+                    <td>${s.parentName}</td>
+                    <td>${s.contact}</td>
+                    <td><span class="px-2 py-1 rounded-lg text-xs ${getFeeStatusClass(s.feeStatus)}">${s.feeStatus}</span></td>
+                    <td>
+                        <div class="flex gap-2">
+                            <button class="btn btn-ghost text-xs" onclick="viewStudentDetails('${s.id}')">View</button>
+                            <button class="btn btn-ghost text-xs" onclick="editStudent('${s.id}')">Edit</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderFeeRecords() {
+            const tbody = document.getElementById('feeRecordsBody');
+            const records = [
+                { receipt: 'REC-2026-001', student: 'Aarav Sharma', class: '5th-A', amount: 24000, date: '2026-02-20', status: 'paid' },
+                { receipt: 'REC-2026-002', student: 'Ananya Patel', class: '4th-B', amount: 22000, date: '2026-02-20', status: 'pending' },
+                { receipt: 'REC-2026-003', student: 'Arjun Kumar', class: '3rd-A', amount: 21000, date: '2026-02-19', status: 'paid' },
+                { receipt: 'REC-2026-004', student: 'Diya Singh', class: '2nd-C', amount: 20000, date: '2026-02-15', status: 'overdue' },
+            ];
+            
+            tbody.innerHTML = records.map(r => `
+                <tr>
+                    <td class="font-mono text-sm">${r.receipt}</td>
+                    <td class="font-medium">${r.student}</td>
+                    <td>${r.class}</td>
+                    <td class="font-bold">₹${r.amount.toLocaleString('en-IN')}</td>
+                    <td class="text-gray-400 text-sm">${r.date}</td>
+                    <td><span class="px-2 py-1 rounded-lg text-xs ${getFeeStatusClass(r.status)}">${r.status}</span></td>
+                    <td>
+                        <button class="btn btn-ghost text-xs" onclick="viewReceipt('${r.receipt}')">View</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ============================================
+        // CHARTS
+        // ============================================
+        function initCharts() {
+            // Monthly Collection Chart
+            const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+            new Chart(monthlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: monthlyCollectionData.labels,
+                    datasets: [{
+                        label: 'Collection (₹)',
+                        data: monthlyCollectionData.data,
+                        backgroundColor: (context) => {
+                            const ctx = context.chart.ctx;
+                            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                            gradient.addColorStop(0, 'rgba(0, 212, 170, 0.8)');
+                            gradient.addColorStop(1, 'rgba(0, 212, 170, 0.2)');
+                            return gradient;
+                        },
+                        borderColor: '#00d4aa',
+                        borderWidth: 2,
+                        borderRadius: 8,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: '#1a2332',
+                            titleColor: '#f1f5f9',
+                            bodyColor: '#94a3b8',
+                            borderColor: '#2d3748',
+                            borderWidth: 1,
+                            padding: 12,
+                            callbacks: {
+                                label: (context) => `₹${context.raw.toLocaleString('en-IN')}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(45, 55, 72, 0.5)' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { color: 'rgba(45, 55, 72, 0.5)' },
+                            ticks: {
+                                color: '#94a3b8',
+                                callback: (value) => '₹' + (value / 10000000).toFixed(1) + 'Cr'
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+
+            // Students by Class Chart
+            const classCtx = document.getElementById('classChart').getContext('2d');
+            new Chart(classCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: classDistributionData.labels,
+                    datasets: [{
+                        data: classDistributionData.data,
+                        backgroundColor: [
+                            '#00d4aa',
+                            '#3b82f6',
+                            '#ff6b35',
+                            '#a855f7',
+                            '#f59e0b',
+                            '#ec4899',
+                            '#14b8a6',
+                            '#6366f1'
+                        ],
+                        borderColor: '#1a2332',
+                        borderWidth: 3,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#94a3b8',
+                                padding: 15,
+                                usePointStyle: true,
+                                pointStyle: 'circle'
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#1a2332',
+                            titleColor: '#f1f5f9',
+                            bodyColor: '#94a3b8',
+                            borderColor: '#2d3748',
+                            borderWidth: 1,
+                            padding: 12
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 2000,
+                        easing: 'easeOutQuart'
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+        function getPaymentModeClass(mode) {
+            const classes = {
+                'UPI': 'bg-purple-500/20 text-purple-400',
+                'Cash': 'bg-green-500/20 text-green-400',
+                'Card': 'bg-blue-500/20 text-blue-400',
+                'Cheque': 'bg-orange-500/20 text-orange-400',
+                'Bank Transfer': 'bg-cyan-500/20 text-cyan-400'
+            };
+            return classes[mode] || 'bg-gray-500/20 text-gray-400';
+        }
+
+        function getFeeStatusClass(status) {
+            const classes = {
+                'paid': 'bg-green-500/20 text-green-400',
+                'pending': 'bg-yellow-500/20 text-yellow-400',
+                'overdue': 'bg-red-500/20 text-red-400'
+            };
+            return classes[status] || 'bg-gray-500/20 text-gray-400';
+        }
+
+        // ============================================
+        // FORM SUBMISSIONS
+        // ============================================
+        function submitNewStudent(e) {
+            e.preventDefault();
+            
+            const newStudent = {
+                id: 'STU-2026-' + String(studentsData.length + 1).padStart(4, '0'),
+                firstName: document.getElementById('studentFirstName').value,
+                lastName: document.getElementById('studentLastName').value,
+                class: document.getElementById('studentClass').value,
+                section: document.getElementById('studentSection').value,
+                parentName: document.getElementById('studentParentName').value,
+                contact: document.getElementById('studentContact').value,
+                feeStatus: 'pending'
+            };
+            
+            studentsData.push(newStudent);
+            renderStudentsTable();
+            closeModal('newStudent');
+            
+            // Show success notification
+            showNotification('Student added successfully!', 'success');
+            
+            // Reset form
+            e.target.reset();
+        }
+
+        function submitFeeCollection(e) {
+            e.preventDefault();
+            
+            const receiptNo = 'REC-2026-' + String(Math.floor(Math.random() * 900000) + 100000);
+            const now = new Date();
+            
+            // Generate receipt
+            document.getElementById('receiptNo').textContent = receiptNo;
+            document.getElementById('receiptDate').textContent = now.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            document.getElementById('receiptStudentName').textContent = document.getElementById('feeStudentName').value || 'Test Student';
+            document.getElementById('receiptClass').textContent = document.getElementById('feeStudentClass').value || '5th-A';
+            document.getElementById('receiptFeeType').textContent = document.getElementById('feeType').value;
+            document.getElementById('receiptAmount').textContent = '₹' + parseInt(document.getElementById('feeAmount').value).toLocaleString('en-IN');
+            document.getElementById('receiptPaymentMode').textContent = document.getElementById('feePaymentMode').value;
+            
+            closeModal('collectFee');
+            openModal('receipt');
+            
+            // Update stats
+            const todayCollection = document.getElementById('todayCollection');
+            const currentAmount = parseInt(todayCollection.textContent.replace(/[^\d]/g, ''));
+            const newAmount = currentAmount + parseInt(document.getElementById('feeAmount').value);
+            todayCollection.textContent = '₹' + newAmount.toLocaleString('en-IN');
+            
+            showNotification('Fee collected successfully!', 'success');
+        }
+
+        // ============================================
+        // QR FUNCTIONS
+        // ============================================
+        function startQRScan() {
+            showNotification('Camera started. Point at QR code...', 'info');
+            setTimeout(() => {
+                simulateQRScan();
+            }, 2000);
+        }
+
+        function processQRImage(event) {
+            showNotification('Processing QR image...', 'info');
+            setTimeout(() => {
+                simulateQRScan();
+            }, 1000);
+        }
+
+        function simulateQRScan() {
+            const randomStudent = studentsData[Math.floor(Math.random() * studentsData.length)];
+            lookupStudentById(randomStudent.id);
+            showNotification('QR Code scanned successfully!', 'success');
+        }
+
+        function lookupStudent() {
+            const studentId = document.getElementById('manualStudentId').value;
+            if(studentId) {
+                lookupStudentById(studentId);
+            } else {
+                showNotification('Please enter a student ID', 'error');
+            }
+        }
+
+        function lookupStudentById(studentId) {
+            const student = studentsData.find(s => s.id.toLowerCase() === studentId.toLowerCase());
+            const detailsDiv = document.getElementById('qrStudentDetails');
+            
+            if(student) {
+                detailsDiv.innerHTML = `
+                    <div class="border border-gray-700 rounded-xl p-4">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center font-bold">
+                                ${student.firstName.charAt(0)}${student.lastName.charAt(0)}
+                            </div>
+                            <div>
+                                <p class="font-bold">${student.firstName} ${student.lastName}</p>
+                                <p class="text-gray-400 text-sm">${student.id}</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <p class="text-gray-400">Class:</p>
+                            <p>${student.class}-${student.section}</p>
+                            <p class="text-gray-400">Parent:</p>
+                            <p>${student.parentName}</p>
+                            <p class="text-gray-400">Contact:</p>
+                            <p>${student.contact}</p>
+                            <p class="text-gray-400">Fee Status:</p>
+                            <p><span class="px-2 py-1 rounded-lg text-xs ${getFeeStatusClass(student.feeStatus)}">${student.feeStatus}</span></p>
+                        </div>
+                        <div class="flex gap-2 mt-4">
+                            <button class="btn btn-primary flex-1" onclick="collectFeeForStudent('${student.id}')">Collect Fee</button>
+                            <button class="btn btn-ghost flex-1" onclick="viewStudentDetails('${student.id}')">Full Details</button>
+                        </div>
+                    </div>
+                `;
+                detailsDiv.classList.remove('hidden');
+            } else {
+                detailsDiv.innerHTML = `<p class="text-red-400">Student not found. Please check the ID.</p>`;
+                detailsDiv.classList.remove('hidden');
+            }
+        }
+
+        // ============================================
+        // STUDENT FUNCTIONS
+        // ============================================
+        function viewStudentDetails(studentId) {
+            const student = studentsData.find(s => s.id === studentId);
+            if(!student) return;
+            
+            const content = document.getElementById('studentDetailsContent');
+            content.innerHTML = `
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-2xl font-bold">
+                        ${student.firstName.charAt(0)}${student.lastName.charAt(0)}
+                    </div>
+                    <div>
+                        <h3 class="font-display text-xl font-bold">${student.firstName} ${student.lastName}</h3>
+                        <p class="text-gray-400">${student.id}</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="card p-4">
+                        <p class="text-gray-400 text-sm">Class</p>
+                        <p class="font-bold">${student.class}-${student.section}</p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-gray-400 text-sm">Fee Status</p>
+                        <p><span class="px-2 py-1 rounded-lg text-xs ${getFeeStatusClass(student.feeStatus)}">${student.feeStatus}</span></p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-gray-400 text-sm">Parent/Guardian</p>
+                        <p class="font-bold">${student.parentName}</p>
+                    </div>
+                    <div class="card p-4">
+                        <p class="text-gray-400 text-sm">Contact</p>
+                        <p class="font-bold">${student.contact}</p>
+                    </div>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button class="btn btn-primary flex-1" onclick="collectFeeForStudent('${student.id}')">Collect Fee</button>
+                    <button class="btn btn-ghost flex-1" onclick="editStudent('${student.id}')">Edit</button>
+                </div>
+            `;
+            openModal('studentDetails');
+        }
+
+        function editStudent(studentId) {
+            showNotification('Edit feature - Student ID: ' + studentId, 'info');
+        }
+
+        function collectFeeForStudent(studentId) {
+            const student = studentsData.find(s => s.id === studentId);
+            if(student) {
+                document.getElementById('feeStudentName').value = `${student.firstName} ${student.lastName}`;
+                document.getElementById('feeStudentClass').value = `${student.class}-${student.section}`;
+            }
+            closeModal('studentDetails');
+            openModal('collectFee');
+        }
+
+        function searchStudents() {
+            const query = document.getElementById('studentSearch').value.toLowerCase();
+            const filtered = studentsData.filter(s => 
+                s.firstName.toLowerCase().includes(query) ||
+                s.lastName.toLowerCase().includes(query) ||
+                s.id.toLowerCase().includes(query) ||
+                s.class.toLowerCase().includes(query)
+            );
+            renderFilteredStudents(filtered);
+        }
+
+        function filterStudents() {
+            let filtered = [...studentsData];
+            const classFilter = document.getElementById('classFilter').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            if(classFilter) {
+                filtered = filtered.filter(s => s.class.toLowerCase() === classFilter);
+            }
+            if(statusFilter) {
+                filtered = filtered.filter(s => s.feeStatus === statusFilter);
+            }
+            
+            renderFilteredStudents(filtered);
+        }
+
+        function renderFilteredStudents(students) {
+            const tbody = document.getElementById('studentsTableBody');
+            tbody.innerHTML = students.map(s => `
+                <tr>
+                    <td class="font-mono text-sm">${s.id}</td>
+                    <td class="font-medium">${s.firstName} ${s.lastName}</td>
+                    <td>${s.class}-${s.section}</td>
+                    <td>${s.parentName}</td>
+                    <td>${s.contact}</td>
+                    <td><span class="px-2 py-1 rounded-lg text-xs ${getFeeStatusClass(s.feeStatus)}">${s.feeStatus}</span></td>
+                    <td>
+                        <div class="flex gap-2">
+                            <button class="btn btn-ghost text-xs" onclick="viewStudentDetails('${s.id}')">View</button>
+                            <button class="btn btn-ghost text-xs" onclick="editStudent('${s.id}')">Edit</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ============================================
+        // FEE FUNCTIONS
+        // ============================================
+        function searchStudentForFee() {
+            const query = document.getElementById('feeStudentSearch').value.toLowerCase();
+            if(query.length < 2) {
+                document.getElementById('feeStudentResults').classList.add('hidden');
+                return;
+            }
+            
+            const results = studentsData.filter(s => 
+                s.firstName.toLowerCase().includes(query) ||
+                s.lastName.toLowerCase().includes(query) ||
+                s.id.toLowerCase().includes(query)
+            );
+            
+            if(results.length > 0) {
+                document.getElementById('feeStudentResults').innerHTML = results.slice(0, 3).map(s => `
+                    <div class="p-3 bg-gray-800 rounded-lg mb-2 cursor-pointer hover:bg-gray-700" onclick="selectStudentForFee('${s.id}')">
+                        <p class="font-medium">${s.firstName} ${s.lastName}</p>
+                        <p class="text-gray-400 text-sm">${s.id} | ${s.class}-${s.section}</p>
+                    </div>
+                `).join('');
+                document.getElementById('feeStudentResults').classList.remove('hidden');
+            } else {
+                document.getElementById('feeStudentResults').classList.add('hidden');
+            }
+        }
+
+        function selectStudentForFee(studentId) {
+            const student = studentsData.find(s => s.id === studentId);
+            if(student) {
+                document.getElementById('feeStudentName').value = `${student.firstName} ${student.lastName}`;
+                document.getElementById('feeStudentClass').value = `${student.class}-${student.section}`;
+                document.getElementById('feeStudentResults').classList.add('hidden');
+                document.getElementById('feeStudentSearch').value = '';
+            }
+        }
+
+        function filterFeeRecords(filter) {
+            showNotification(`Showing ${filter} records`, 'info');
+        }
+
+        function viewReceipt(receiptNo) {
+            const payment = recentPaymentsData.find(p => p.receipt === receiptNo);
+            if(payment) {
+                document.getElementById('receiptNo').textContent = payment.receipt;
+                document.getElementById('receiptDate').textContent = payment.date;
+                document.getElementById('receiptStudentName').textContent = payment.studentName;
+                document.getElementById('receiptClass').textContent = payment.class;
+                document.getElementById('receiptFeeType').textContent = 'Tuition Fee';
+                document.getElementById('receiptAmount').textContent = '₹' + payment.amount.toLocaleString('en-IN');
+                document.getElementById('receiptPaymentMode').textContent = payment.mode;
+                openModal('receipt');
+            }
+        }
+
+        function printReceipt() {
+            window.print();
+        }
+
+        // ============================================
+        // REPORT FUNCTIONS
+        // ============================================
+        function generateReport(type) {
+            showNotification(`Generating ${type} report...`, 'info');
+            
+            setTimeout(() => {
+                let message = '';
+                switch(type) {
+                    case 'collection':
+                        message = 'Collection report generated: Total ₹11.05 Cr collected (48.1%)';
+                        break;
+                    case 'defaulter':
+                        message = 'Defaulter report generated: 3,106 students with pending fees';
+                        break;
+                    case 'student':
+                        message = 'Student report generated: 4,817 active students across 8 classes';
+                        break;
+                    case 'payment':
+                        message = 'Payment methods report: UPI (49%), Cash (26%), Card (15%)';
+                        break;
+                    case 'admission':
+                        message = 'Admission report: 500 new admissions this session';
+                        break;
+                    case 'daily':
+                        message = 'Daily report: ₹5,94,000 collected today (32 receipts)';
+                        break;
+                    default:
+                        message = 'Report generated successfully';
+                }
+                showNotification(message, 'success');
+            }, 1500);
+        }
+
+        // ============================================
+        // AI ASSISTANT
+        // ============================================
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const message = input.value.trim();
+            if(!message) return;
+            
+            const chatContainer = document.getElementById('aiChatMessages');
+            
+            // Add user message
+            chatContainer.innerHTML += `
+                <div class="flex gap-3 mb-4 justify-end">
+                    <div class="bg-teal-500/20 rounded-xl p-4 max-w-lg">
+                        <p>${message}</p>
+                    </div>
+                    <div class="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                        AC
+                    </div>
+                </div>
+            `;
+            
+            input.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                let response = '';
+                const lowerMsg = message.toLowerCase();
+                
+                if(lowerMsg.includes('fee') || lowerMsg.includes('collection')) {
+                    response = `Current fee collection status:\n- Total Expected: ₹22.98 Cr\n- Collected: ₹11.05 Cr (48.1%)\n- Pending: ₹11.92 Cr\n- Today's Collection: ₹5.94 Lakh\n\nWould you like me to generate a detailed report?`;
+                } else if(lowerMsg.includes('student') || lowerMsg.includes('admission')) {
+                    response = `Student Statistics:\n- Total Active Students: 4,817\n- Highest: Nursery (332 students)\n- Lowest: 3rd (322 students)\n\nNew admissions are open. Would you like to add a new student?`;
+                } else if(lowerMsg.includes('defaulter') || lowerMsg.includes('pending')) {
+                    response = `There are 3,106 students with pending fees totaling ₹11.92 Cr.\n\nTop classes with defaulters:\n1. 5th - 412 students\n2. 4th - 398 students\n3. 3rd - 356 students\n\nWould you like me to send payment reminders?`;
+                } else if(lowerMsg.includes('help') || lowerMsg.includes('what can you')) {
+                    response = `I can help you with:\n• Fee collection queries and reports\n• Student information lookup\n• Generating reports\n• Data analysis\n• Setting reminders\n\nJust ask me anything!`;
+                } else {
+                    response = `I understand you're asking about "${message}". Let me help you with that. Could you provide more details or ask about fees, students, reports, or any specific feature?`;
+                }
+                
+                chatContainer.innerHTML += `
+                    <div class="flex gap-3 mb-4">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                            AI
+                        </div>
+                        <div class="bg-gray-700/50 rounded-xl p-4 max-w-lg">
+                            <p class="whitespace-pre-line">${response}</p>
+                        </div>
+                    </div>
+                `;
+                
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 1000);
+        }
+
+        function handleAIKeyPress(e) {
+            if(e.key === 'Enter') {
+                sendAIMessage();
+            }
+        }
+
+        // ============================================
+        // SETTINGS FUNCTIONS
+        // ============================================
+        function saveSettings() {
+            showNotification('Settings saved successfully!', 'success');
+        }
+
+        function backupData() {
+            showNotification('Creating backup... This may take a moment.', 'info');
+            setTimeout(() => {
+                showNotification('Backup created successfully! Data saved to cloud.', 'success');
+            }, 2000);
+        }
+
+        function restoreData() {
+            showNotification('Restore feature - Select backup file to restore', 'info');
+        }
+
+        function clearData() {
+            if(confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                showNotification('All data has been cleared', 'warning');
+            }
+        }
+
+        function exportStudents() {
+            showNotification('Exporting student data to Excel...', 'info');
+            setTimeout(() => {
+                showNotification('Student data exported successfully!', 'success');
+            }, 1500);
+        }
+
+        // ============================================
+        // NOTIFICATION SYSTEM
+        // ============================================
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: 'bg-green-500',
+                error: 'bg-red-500',
+                warning: 'bg-orange-500',
+                info: 'bg-blue-500'
+            };
+            
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 ${colors[type]} text-white px-6 py-3 rounded-xl shadow-lg z-[9999] animate-in`;
+            notification.style.animation = 'slideInLeft 0.3s ease';
+            notification.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="text-white/80 hover:text-white">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 4000);
+        }
     </script>
 </body>
 </html>
