@@ -742,7 +742,7 @@ function renderStudentsTable(data) {
       '<td>'+(s.contact||'-')+'</td>'+
       '<td><span class="badge '+getBadge(st)+'">'+st+'</span></td>'+
       '<td><div style="display:flex;gap:6px;">'+
-        '<button class="btn btn-ghost btn-sm" onclick="viewStudent(''+s.id+'')">View</button>'+
+        '<button class="btn btn-ghost btn-sm" onclick="viewStudent(&#39;'+s.id+'&#39;)">View</button>'+
         '</div></td>'+
     '</tr>';
   }).join('');
@@ -782,7 +782,7 @@ function viewStudent(id) {
       '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Parent</p><p style="font-weight:600;">'+(s.parent_name||'-')+'</p></div>'+
       '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Contact</p><p style="font-weight:600;">'+(s.contact||'-')+'</p></div></div>'+
     '<div style="display:flex;gap:10px;">'+
-      '<button class="btn btn-primary" style="flex:1;" onclick="collectFeeFor(''+s.id+'')">Collect Fee</button>'+
+      '<button class="btn btn-primary" style="flex:1;" onclick="collectFeeFor(&#39;'+s.id+'&#39;)">Collect Fee</button>'+
       '<button class="btn btn-ghost" style="flex:1;" onclick="closeModal('studentDetails')">Close</button></div>';
   openModal('studentDetails');
 }
@@ -847,7 +847,7 @@ function renderFeeRecords(filter) {
       '<td style="font-weight:600;">&#8377;'+(f.amount||0).toLocaleString('en-IN')+'</td>'+
       '<td style="font-size:12px;color:var(--grey);">'+dt+'</td>'+
       '<td><span class="badge '+getBadge(st)+'">'+st+'</span></td>'+
-      '<td><button class="btn btn-ghost btn-sm" onclick="viewFeeReceipt(''+f.receipt_no+'')">View</button></td></tr>';
+      '<td><button class="btn btn-ghost btn-sm" onclick="viewFeeReceipt(&#39;'+f.receipt_no+'&#39;)">View</button></td></tr>';
   }).join('');
 }
 
@@ -872,7 +872,7 @@ function searchFeeStudent() {
     return ((s.first_name||'')+(s.last_name||'')).toLowerCase().includes(q)||(s.id||'').toLowerCase().includes(q);
   });
   document.getElementById('feeSearchResults').innerHTML = results.slice(0,4).map(function(s){
-    return '<div style="padding:10px;background:var(--grey-light);border-radius:8px;margin-bottom:6px;cursor:pointer;" onclick="selectFeeStudent(''+s.id+'')">'+
+    return '<div style="padding:10px;background:var(--grey-light);border-radius:8px;margin-bottom:6px;cursor:pointer;" onclick="selectFeeStudent(&#39;'+s.id+'&#39;)">'+
       '<p style="font-weight:500;">'+(s.first_name||'')+' '+(s.last_name||'')+'</p>'+
       '<p style="font-size:11px;color:var(--grey);">'+s.id+' | '+(s.class||'')+'-'+(s.section||'')+'</p></div>';
   }).join('');
@@ -995,8 +995,8 @@ function showLookupResult(s) {
     '<p style="color:var(--grey);">Parent:</p><p style="font-weight:500;">'+(s.parent_name||'-')+'</p>'+
     '<p style="color:var(--grey);">Fee Status:</p><span class="badge '+getBadge(st)+'">'+st+'</span></div>'+
     '<div style="display:flex;gap:8px;">'+
-    '<button class="btn btn-primary btn-sm" style="flex:1;" onclick="collectFeeFor(''+s.id+'')">Collect Fee</button>'+
-    '<button class="btn btn-ghost btn-sm" style="flex:1;" onclick="viewStudent(''+s.id+'')">Details</button></div></div>';
+    '<button class="btn btn-primary btn-sm" style="flex:1;" onclick="collectFeeFor(&#39;'+s.id+'&#39;)">Collect Fee</button>'+
+    '<button class="btn btn-ghost btn-sm" style="flex:1;" onclick="viewStudent(&#39;'+s.id+'&#39;)">Details</button></div></div>';
 }
 
 // ============================================================
