@@ -183,7 +183,7 @@
             </button>
         </div>
         <p style="text-align:center; font-size:12px; color:var(--grey); margin-top:20px;">
-            Admin: admin@podarschool.com | Accountant: accountant@podarschool.com
+            Admin: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0d6c696064634d7d62696c7f7e6e65626261236e6260">[email&#160;protected]</a> | Accountant: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="81e0e2e2eef4eff5e0eff5c1f1eee5e0f3f2e2e9eeeeedafe2eeec">[email&#160;protected]</a>
         </p>
     </div>
 </div>
@@ -222,7 +222,7 @@
             </div>
             <div style="flex:1; min-width:0;">
                 <p id="userDisplayName" style="font-weight:600; font-size:14px;">Accountant</p>
-                <p id="userEmail" style="font-size:11px; color:var(--grey); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">accountant@podar.edu.in</p>
+                <p id="userEmail" style="font-size:11px; color:var(--grey); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8beae8e8e4fee5ffeae5ffcbfbe4efeaf9a5eeeffea5e2e5">[email&#160;protected]</a></p>
             </div>
             <button onclick="doLogout()" style="background:none; border:none; cursor:pointer; color:var(--grey); font-size:18px;" title="Logout">🚪</button>
         </div>
@@ -640,7 +640,7 @@
     <div class="modal"><div class="modal-header"><h2 class="modal-title font-display">Student Details</h2><button class="modal-close" onclick="closeModal('studentDetails')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div id="studentDetailsContent"></div></div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // =============================================
 // SUPABASE CONFIGURATION
 // =============================================
@@ -792,51 +792,44 @@ async function loadAllData() {
 }
 
 async function loadStudents() {
-    // Try multiple possible table names
-    const tableNames = ['students', 'Students', 'student'];
-    for (const table of tableNames) {
-        try {
-            const { data, error } = await Promise.race([
-                supabaseClient.from(table).select('*').order('created_at', { ascending: false }),
-                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
-            ]);
-            if (!error && data) {
-                studentsCache = data;
-                renderStudentsTable();
-                console.log('Students loaded from table:', table, '- Count:', data.length);
-                return;
-            }
-        } catch(e) {
-            console.warn('Table "' + table + '" failed:', e.message || JSON.stringify(e));
+    try {
+        const { data, error } = await supabaseClient
+            .from('students')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.warn('Students load error:', error.message);
+            studentsCache = getFallbackStudents();
+        } else {
+            studentsCache = data && data.length > 0 ? data : getFallbackStudents();
+            console.log('Students loaded:', studentsCache.length);
         }
+    } catch(e) {
+        console.warn('Students fetch failed:', e.message);
+        studentsCache = getFallbackStudents();
     }
-    // All failed - use fallback
-    console.warn('Using fallback student data');
-    studentsCache = getFallbackStudents();
     renderStudentsTable();
 }
 
 async function loadFees() {
-    // Try multiple possible table names
-    const tableNames = ['fees', 'Fees', 'fee_records', 'payments'];
-    for (const table of tableNames) {
-        try {
-            const { data, error } = await Promise.race([
-                supabaseClient.from(table).select('*').order('created_at', { ascending: false }),
-                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
-            ]);
-            if (!error && data) {
-                feesCache = data;
-                console.log('Fees loaded from table:', table, '- Count:', data.length);
-                return;
-            }
-        } catch(e) {
-            console.warn('Table "' + table + '" failed:', e.message || JSON.stringify(e));
+    try {
+        const { data, error } = await supabaseClient
+            .from('fees')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.warn('Fees load error:', error.message);
+            feesCache = getFallbackFees();
+        } else {
+            feesCache = data && data.length > 0 ? data : getFallbackFees();
+            console.log('Fees loaded:', feesCache.length);
         }
+    } catch(e) {
+        console.warn('Fees fetch failed:', e.message);
+        feesCache = getFallbackFees();
     }
-    // All failed - use fallback
-    console.warn('Using fallback fee data');
-    feesCache = getFallbackFees();
 }
 
 // =============================================
@@ -1600,15 +1593,4 @@ function getStatusBadge(status) {
 function showNotification(msg, type) {
     const colors = { success:'#22c55e', error:'#ef4444', warning:'#f59e0b', info:'#3b82f6' };
     const n = document.createElement('div');
-    n.className = 'notification';
-    n.style.background = colors[type] || colors.info;
-    n.innerHTML = `<span>${msg}</span><button onclick="this.parentElement.remove()" style="background:none;border:none;color:white;cursor:pointer;margin-left:10px;font-size:18px;">×</button>`;
-    document.body.appendChild(n);
-    setTimeout(() => { n.style.opacity = '0'; setTimeout(() => n.remove(), 300); }, 3500);
-}
-
-// Start the app
-document.addEventListener('DOMContentLoaded', initSupabase);
-</script>
-</body>
-</html>
+    n.className = 'notific
