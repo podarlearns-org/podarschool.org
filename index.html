@@ -745,7 +745,20 @@ async function submitStu(){
     address:ge('nsAdr').value,
     fee_status:'pending', created_at:new Date().toISOString()
   };
-  if(DB){ try{ await DB.from('students').insert([ns]); } catch(e){} }
+  if(DB){
+    try{
+      var ins = await DB.from('students').insert([ns]);
+      if(ins.error){
+        console.error('Insert error:', ins.error);
+        notify('DB Error: ' + (ins.error.message || JSON.stringify(ins.error)), 'error');
+      } else {
+        notify('Supabase mein bhi save ho gaya!', 'success');
+      }
+    } catch(e){
+      console.error('Insert catch:', e);
+      notify('Save failed: ' + e.message, 'error');
+    }
+  }
   stuDB.unshift(ns);
   renderStuTbl();
   closeM('newStudent');
@@ -852,7 +865,15 @@ async function submitFee(){
     status:'paid', created_at:now.toISOString()
   };
 
-  if(DB){ try{ await DB.from('fees').insert([rec]); } catch(e){} }
+  if(DB){
+    try{
+      var fins = await DB.from('fees').insert([rec]);
+      if(fins.error){
+        console.error('Fee insert error:', fins.error);
+        notify('Fee DB Error: ' + (fins.error.message || JSON.stringify(fins.error)), 'error');
+      }
+    } catch(e){ console.error('Fee insert catch:', e); }
+  }
 
   feeDB.unshift(rec);
   renderRecPay(); renderFeeRecs('all'); updateStats(); updatePayCounts();
