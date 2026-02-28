@@ -620,11 +620,11 @@ async function loadFee(){
 
 function sampleStu(){
   return [
-    {id:'STU-2026-0001',first_name:'Aarav',last_name:'Sharma',class:'5th',section:'A',parent_name:'Rajesh Sharma',contact:'9876543210',fee_status:'paid'},
-    {id:'STU-2026-0002',first_name:'Ananya',last_name:'Patel',class:'4th',section:'B',parent_name:'Vikram Patel',contact:'9876543211',fee_status:'pending'},
-    {id:'STU-2026-0003',first_name:'Arjun',last_name:'Kumar',class:'3rd',section:'A',parent_name:'Suresh Kumar',contact:'9876543212',fee_status:'paid'},
-    {id:'STU-2026-0004',first_name:'Diya',last_name:'Singh',class:'2nd',section:'C',parent_name:'Mohan Singh',contact:'9876543213',fee_status:'overdue'},
-    {id:'STU-2026-0005',first_name:'Ishaan',last_name:'Verma',class:'1st',section:'A',parent_name:'Amit Verma',contact:'9876543214',fee_status:'paid'}
+    {id:'STU-2026-0001',first_name:'Aarav',last_name:'Sharma',class_name:'5th',section:'A',parent_name:'Rajesh Sharma',contact:'9876543210',fee_status:'paid'},
+    {id:'STU-2026-0002',first_name:'Ananya',last_name:'Patel',class_name:'4th',section:'B',parent_name:'Vikram Patel',contact:'9876543211',fee_status:'pending'},
+    {id:'STU-2026-0003',first_name:'Arjun',last_name:'Kumar',class_name:'3rd',section:'A',parent_name:'Suresh Kumar',contact:'9876543212',fee_status:'paid'},
+    {id:'STU-2026-0004',first_name:'Diya',last_name:'Singh',class_name:'2nd',section:'C',parent_name:'Mohan Singh',contact:'9876543213',fee_status:'overdue'},
+    {id:'STU-2026-0005',first_name:'Ishaan',last_name:'Verma',class_name:'1st',section:'A',parent_name:'Amit Verma',contact:'9876543214',fee_status:'paid'}
   ];
 }
 
@@ -692,7 +692,7 @@ function renderStuTbl(data){
     var fn=s.first_name||''; var ln=s.last_name||''; var st=s.fee_status||'pending';
     return '<tr><td style="font-family:monospace;font-size:12px;">'+(s.id||'')+'</td>'+
       '<td style="font-weight:500;">'+fn+' '+ln+'</td>'+
-      '<td>'+(s.class||'')+'-'+(s.section||'')+'</td>'+
+      '<td>'+(s.class_name||'')+'-'+(s.section||'')+'</td>'+
       '<td>'+(s.parent_name||'-')+'</td>'+
       '<td>'+(s.contact||'-')+'</td>'+
       '<td><span class="badge '+badge(st)+'">'+st+'</span></td>'+
@@ -707,7 +707,7 @@ function filterStu(){
   renderStuTbl(stuDB.filter(function(s){
     var nm=((s.first_name||'')+(s.last_name||'')).toLowerCase();
     return (!q||nm.includes(q)||(s.id||'').toLowerCase().includes(q)) &&
-           (!cls||s.class===cls) && (!st||s.fee_status===st);
+           (!cls||s.class_name===cls) && (!st||s.fee_status===st);
   }));
 }
 
@@ -722,7 +722,7 @@ function viewStu(btn){
     '<span style="font-size:20px;font-weight:700;color:#fff;">'+(fn.charAt(0)+ln.charAt(0))+'</span></div>'+
     '<div><h3 style="font-size:20px;font-weight:700;">'+fn+' '+ln+'</h3><p style="font-size:13px;color:var(--grey);">'+s.id+'</p></div></div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">'+
-    '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Class</p><p style="font-weight:600;">'+(s.class||'')+'-'+(s.section||'')+'</p></div>'+
+    '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Class</p><p style="font-weight:600;">'+(s.class_name||'')+'-'+(s.section||'')+'</p></div>'+
     '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Status</p><span class="badge '+badge(st)+'">'+st+'</span></div>'+
     '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Parent</p><p style="font-weight:600;">'+(s.parent_name||'-')+'</p></div>'+
     '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Contact</p><p style="font-weight:600;">'+(s.contact||'-')+'</p></div></div>'+
@@ -739,7 +739,7 @@ async function submitStu(){
   if(!fn||!ln||!cls||!sec||!par||!con){ notify('Sabhi * fields bharein','error'); return; }
   var ns={
     id:'STU-2026-'+String(stuDB.length+1).padStart(4,'0'),
-    first_name:fn,last_name:ln,class:cls,section:sec,
+    first_name:fn,last_name:ln,class_name:cls,section:sec,
     parent_name:par,contact:con,
     email:ge('nsEml').value, dob:ge('nsDob').value,
     address:ge('nsAdr').value,
@@ -819,7 +819,7 @@ function searchFeeStu(){
   ge('feeRes').innerHTML=res.slice(0,4).map(function(s){
     return '<div style="padding:10px;background:var(--grey-light);border-radius:8px;margin-bottom:6px;cursor:pointer;" onclick="selFeeStu(this)" data-id="'+s.id+'">'+
       '<p style="font-weight:500;">'+(s.first_name||'')+' '+(s.last_name||'')+'</p>'+
-      '<p style="font-size:11px;color:var(--grey);">'+s.id+' | '+(s.class||'')+'-'+(s.section||'')+'</p></div>';
+      '<p style="font-size:11px;color:var(--grey);">'+s.id+' | '+(s.class_name||'')+'-'+(s.section||'')+'</p></div>';
   }).join('');
 }
 
@@ -828,7 +828,7 @@ function selFeeStu(el){
   var s=stuDB.find(function(x){return x.id===id;});
   if(!s) return;
   ge('feeStuName').value=(s.first_name||'')+' '+(s.last_name||'');
-  ge('feeStuCls').value=(s.class||'')+'-'+(s.section||'');
+  ge('feeStuCls').value=(s.class_name||'')+'-'+(s.section||'');
   ge('feeStuId').value=id;
   ge('feeRes').innerHTML='';
   ge('feeSearch').value='';
@@ -940,7 +940,7 @@ function showLookup(s){
     '<span style="font-weight:600;color:#fff;">'+(fn.charAt(0)+ln.charAt(0))+'</span></div>'+
     '<div><p style="font-weight:600;font-size:16px;">'+fn+' '+ln+'</p><p style="font-size:12px;color:var(--grey);">'+s.id+'</p></div></div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin-bottom:14px;">'+
-    '<p style="color:var(--grey);">Class:</p><p style="font-weight:500;">'+(s.class||'')+'-'+(s.section||'')+'</p>'+
+    '<p style="color:var(--grey);">Class:</p><p style="font-weight:500;">'+(s.class_name||'')+'-'+(s.section||'')+'</p>'+
     '<p style="color:var(--grey);">Parent:</p><p style="font-weight:500;">'+(s.parent_name||'-')+'</p>'+
     '<p style="color:var(--grey);">Status:</p><span class="badge '+badge(st)+'">'+st+'</span></div>'+
     '<div style="display:flex;gap:8px;">'+
@@ -991,10 +991,10 @@ function expExcel(){
     data=feeDB.map(function(f){return {Receipt:f.receipt_no,Student:f.student_name,Class:f.student_class,Amount:f.amount,Mode:f.payment_mode,Date:f.created_at?new Date(f.created_at).toLocaleDateString():'',Status:f.status};});
     fn='Fee_Records';
   } else if(type==='def'){
-    data=stuDB.filter(function(s){return s.fee_status!=='paid';}).map(function(s){return {ID:s.id,Name:(s.first_name||'')+' '+(s.last_name||''),Class:s.class+'-'+s.section,Parent:s.parent_name,Contact:s.contact,Status:s.fee_status};});
+    data=stuDB.filter(function(s){return s.fee_status!=='paid';}).map(function(s){return {ID:s.id,Name:(s.first_name||'')+' '+(s.last_name||''),Class:s.class_name_name+'-'+s.section,Parent:s.parent_name,Contact:s.contact,Status:s.fee_status};});
     fn='Defaulters';
   } else {
-    data=stuDB.map(function(s){return {ID:s.id,Name:(s.first_name||'')+' '+(s.last_name||''),Class:s.class,Section:s.section,Parent:s.parent_name,Contact:s.contact,Status:s.fee_status};});
+    data=stuDB.map(function(s){return {ID:s.id,Name:(s.first_name||'')+' '+(s.last_name||''),Class:s.class_name_name,Section:s.section,Parent:s.parent_name,Contact:s.contact,Status:s.fee_status};});
     fn='All_Students';
   }
   if(!data.length){ notify('No data','error'); return; }
@@ -1005,7 +1005,7 @@ function expExcel(){
 }
 
 function expPDF(){
-  var rows=stuDB.map(function(s){return '<tr><td>'+s.id+'</td><td>'+(s.first_name||'')+' '+(s.last_name||'')+'</td><td>'+s.class+'-'+s.section+'</td><td>'+(s.fee_status||'')+'</td></tr>';}).join('');
+  var rows=stuDB.map(function(s){return '<tr><td>'+s.id+'</td><td>'+(s.first_name||'')+' '+(s.last_name||'')+'</td><td>'+s.class_name+'-'+s.section+'</td><td>'+(s.fee_status||'')+'</td></tr>';}).join('');
   var w=window.open('','_blank');
   w.document.write('<html><head><title>Report</title><style>body{font-family:Arial;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:8px}th{background:#ec4899;color:#fff}</style></head><body><h2>Podar Learn School - Report</h2><table><tr><th>ID</th><th>Name</th><th>Class</th><th>Status</th></tr>'+rows+'</table></body></html>');
   w.document.close(); w.print();
