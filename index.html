@@ -889,7 +889,26 @@ async function submitFee(){
   btn.innerHTML='Collect &amp; Receipt';
   btn.disabled=false;
   closeM('collectFee');
-  openM('receipt');
+  
+  // Open full receipt page with QR code
+  var s = stuDB.find(function(x){return x.id===sid;}) || {};
+  var params = new URLSearchParams({
+    rno: rno,
+    name: name||'Walk-in',
+    cls: cls||'-',
+    parent: s.parent_name||'-',
+    contact: s.contact||'-',
+    sid: sid||'-',
+    ftype: type,
+    mode: mode,
+    date: now.toISOString(),
+    total: parseInt(amt),
+    disc: 0,
+    paid: parseInt(amt),
+    remarks: rem||'Thank you for your payment!'
+  });
+  window.open('fee_receipt.html?' + params.toString(), '_blank');
+  
   notify('Fee collected! '+rno,'success');
   ['feeStuName','feeStuCls','feeStuId','feeType','feeAmt','feeMode','feeRem','feeSearch'].forEach(function(id){ ge(id).value=''; });
 }
