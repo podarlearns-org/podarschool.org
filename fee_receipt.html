@@ -50,8 +50,8 @@ body{font-family:Arial,sans-serif;background:#ddd6fe;min-height:100vh;display:fl
   position:absolute;
   top:50%;left:50%;
   transform:translate(-50%,-50%);
-  width:170px;height:170px;
-  opacity:0.08;
+  width:240px;height:240px;
+  opacity:0.09;
   z-index:0;
   pointer-events:none;
   object-fit:contain;
@@ -312,11 +312,9 @@ body{font-family:Arial,sans-serif;background:#ddd6fe;min-height:100vh;display:fl
       <div id="noDues" style="display:none;" class="nodues"><p>&#9989; NO DUES CLEAR</p></div>
 
       <div class="sec-box">
-        <div class="sec-title">&#128274; Security Verification</div>
+        <div class="sec-title">&#128274; Verification</div>
         <p id="secHash">Verify ID: -</p>
         <p id="secTime">Generated: -</p>
-        <p>System: Podar ERP v2.0</p>
-        <p id="secSerial">Serial: -</p>
       </div>
     </div>
   </div>
@@ -364,10 +362,7 @@ function makeVerifyId(rno, total, paid) {
   return 'PLS-' + Math.abs(h).toString(36).toUpperCase().substring(0,8);
 }
 
-function makeSerial(rno, date) {
-  var d = date ? new Date(date) : new Date();
-  return 'SN' + d.getFullYear() + ('0'+(d.getMonth()+1)).slice(-2) + ('0'+d.getDate()).slice(-2) + '-' + (rno||'0000').replace(/\D/g,'').slice(-4);
-}
+
 
 function render(d) {
   var total = parseInt(d.total||0);
@@ -415,9 +410,9 @@ function render(d) {
   ge('fPaid').innerHTML  = '&#8377; '+fmt(paid);
 
   var vid = makeVerifyId(d.rno, total, paid);
-  var sn  = makeSerial(d.rno, d.date);
+  
   ge('secHash').textContent  = 'Verify ID: ' + vid;
-  ge('secSerial').textContent = 'Serial: ' + sn;
+  
   ge('secTime').textContent  = 'Generated: ' + new Date().toLocaleString('en-IN');
 
   ge('qrcode').innerHTML = '';
