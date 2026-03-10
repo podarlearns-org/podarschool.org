@@ -559,19 +559,21 @@ async function doLogin(){
   btn.disabled = true;
   err.style.display = 'none';
 
-  // Try Supabase
+  // Local check FIRST - instant login
+  var lc = LCREDS[em];
+  if(lc && lc.pw===pw){ onLogin(em); return; }
+
+  // Try Supabase with timeout
   if(DB){
     try{
-      var r = await DB.auth.signInWithPassword({email:em, password:pw});
+      var sbPromise = DB.auth.signInWithPassword({email:em, password:pw});
+      var timeout = new Promise(function(_, reject){ setTimeout(function(){ reject(new Error('timeout')); }, 3000); });
+      var r = await Promise.race([sbPromise, timeout]);
       if(r.data && r.data.user && !r.error){
         onLogin(em); return;
       }
-    } catch(e){ console.warn('Supabase:', e.message); }
+    } catch(e){ console.warn('Supabase auth:', e.message); }
   }
-
-  // Local fallback
-  var lc = LCREDS[em];
-  if(lc && lc.pw===pw){ onLogin(em); return; }
 
   err.textContent = 'Galat email ya password!';
   err.style.display = 'block';
