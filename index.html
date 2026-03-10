@@ -110,7 +110,7 @@ body{font-family:'Outfit',sans-serif;background:var(--grey-light);color:var(--bl
       <div><label class="fl">Password</label><input type="password" class="fi" id="loginPassword" placeholder="Password"></div>
       <button class="btn bp" style="width:100%;margin-top:8px;" id="loginBtn">Login to ERP</button>
     </div>
-    <p style="text-align:center;font-size:11px;color:var(--grey);margin-top:16px;">Admin: admin@podarschool.com / Podar@Admin2026</p>
+    <p style="text-align:center;font-size:11px;color:var(--grey);margin-top:16px;">Admin: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b4d5d0d9dddaf4c4dbd0d5c6c7d7dcdbdbd89ad7dbd9">[email&#160;protected]</a> / Podar@Admin2026</p>
   </div>
 </div>
 
@@ -403,7 +403,7 @@ body{font-family:'Outfit',sans-serif;background:var(--grey-light);color:var(--bl
   <div class="md"><div class="mhd"><h2 class="mt fd">Student Details</h2><button class="mc2" data-modal="stuDet"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div id="stuDetCnt"></div></div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var SURL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
 var SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
 var LCREDS = {
@@ -881,7 +881,12 @@ async function submitFee(){
   btn.innerHTML='Collect &amp; Receipt';
   btn.disabled=false;
   closeM('collectFee');
-  openM('receipt');
+
+  // INSTANT receipt open
+  var _s = stuDB.find(function(x){return x.id===sid;}) || {};
+  var _p = 'rno='+encodeURIComponent(rno)+'&name='+encodeURIComponent(name||'Walk-in')+'&cls='+encodeURIComponent(cls||'-')+'&parent='+encodeURIComponent(_s.parent_name||'-')+'&contact='+encodeURIComponent(_s.contact||'-')+'&sid='+encodeURIComponent(sid||'-')+'&ftype='+encodeURIComponent(type)+'&mode='+encodeURIComponent(mode)+'&date='+encodeURIComponent(now.toISOString())+'&total='+parseInt(amt)+'&disc=0&paid='+parseInt(amt)+'&term=1&remarks='+encodeURIComponent(rem||'Thank you!');
+  window.open('fee_receipt.html?'+_p, '_blank');
+
   notify('Fee collected! '+rno,'success');
   ['feeStuName','feeStuCls','feeStuId','feeType','feeAmt','feeMode','feeRem','feeSearch'].forEach(function(id){ ge(id).value=''; });
 }
@@ -1197,10 +1202,4 @@ function showStuProfile(btn) {
 
 function setDate(){
   var now=new Date();
-  ge('dateEl').textContent=now.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
-  var h=now.getHours();
-  ge('greetEl').textContent=h<12?'Good Morning':h<17?'Good Afternoon':'Good Evening';
-}
-</script>
-</body>
-</html>
+  ge('dateEl').textContent
