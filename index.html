@@ -110,7 +110,7 @@ body{font-family:'Outfit',sans-serif;background:var(--grey-light);color:var(--bl
       <div><label class="fl">Password</label><input type="password" class="fi" id="loginPassword" placeholder="Password"></div>
       <button class="btn bp" style="width:100%;margin-top:8px;" id="loginBtn">Login to ERP</button>
     </div>
-    <p style="text-align:center;font-size:11px;color:var(--grey);margin-top:16px;">Admin: admin@podarschool.com / Podar@Admin2026</p>
+    <p style="text-align:center;font-size:11px;color:var(--grey);margin-top:16px;">Admin: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b4d5d0d9dddaf4c4dbd0d5c6c7d7dcdbdbd89ad7dbd9">[email&#160;protected]</a> / Podar@Admin2026</p>
   </div>
 </div>
 
@@ -403,7 +403,7 @@ body{font-family:'Outfit',sans-serif;background:var(--grey-light);color:var(--bl
   <div class="md"><div class="mhd"><h2 class="mt fd">Student Details</h2><button class="mc2" data-modal="stuDet"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div id="stuDetCnt"></div></div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var SURL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
 var SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
 var LCREDS = {
@@ -442,8 +442,7 @@ window.addEventListener('load', function() {
   // STUDENTS PAGE
   ge('addStuBtn').onclick = function(){ openM('newStudent'); };
   ge('expStuBtn').onclick = function(){ openM('export'); };
-  var stuSearchTimer;
-  ge('stuSearch').oninput = function(){ clearTimeout(stuSearchTimer); stuSearchTimer=setTimeout(filterStu,200); };
+  ge('stuSearch').oninput = filterStu;
   ge('clsFilter').onchange = filterStu;
   ge('stFilter').onchange = filterStu;
 
@@ -452,8 +451,7 @@ window.addEventListener('load', function() {
   qsa('[data-filter]').forEach(function(btn){
     btn.onclick = function(){ renderFeeRecs(this.dataset.filter); };
   });
-  var feeSearchTimer;
-  ge('feeSearch').oninput = function(){ clearTimeout(feeSearchTimer); feeSearchTimer=setTimeout(searchFeeStu,150); };
+  ge('feeSearch').oninput = searchFeeStu;
   ge('subStuBtn').onclick = submitStu;
   ge('subFeeBtn').onclick = submitFee;
 
@@ -494,7 +492,7 @@ window.addEventListener('load', function() {
 
   // CLOSE ON OVERLAY CLICK
   qsa('.mo').forEach(function(o){
-    o.onclick = function(e){ if(e.target===this) this.class_nameList.remove('active'); };
+    o.onclick = function(e){ if(e.target===this) this.classList.remove('active'); };
   });
 
   checkSession();
@@ -559,21 +557,19 @@ async function doLogin(){
   btn.disabled = true;
   err.style.display = 'none';
 
-  // Local check FIRST - instant login
-  var lc = LCREDS[em];
-  if(lc && lc.pw===pw){ onLogin(em); return; }
-
-  // Try Supabase with timeout
+  // Try Supabase
   if(DB){
     try{
-      var sbPromise = DB.auth.signInWithPassword({email:em, password:pw});
-      var timeout = new Promise(function(_, reject){ setTimeout(function(){ reject(new Error('timeout')); }, 3000); });
-      var r = await Promise.race([sbPromise, timeout]);
+      var r = await DB.auth.signInWithPassword({email:em, password:pw});
       if(r.data && r.data.user && !r.error){
         onLogin(em); return;
       }
-    } catch(e){ console.warn('Supabase auth:', e.message); }
+    } catch(e){ console.warn('Supabase:', e.message); }
   }
+
+  // Local fallback
+  var lc = LCREDS[em];
+  if(lc && lc.pw===pw){ onLogin(em); return; }
 
   err.textContent = 'Galat email ya password!';
   err.style.display = 'block';
@@ -708,7 +704,7 @@ function renderStuTbl(data){
     var fn=s.first_name||''; var ln=s.last_name||''; var st=s.fee_status||'pending';
     return '<tr><td style="font-family:monospace;font-size:12px;">'+(s.id||'')+'</td>'+
       '<td style="font-weight:500;">'+fn+' '+ln+'</td>'+
-      '<td>'+(s.class_name||'')+'-'+(s.section||'')+'</td>'+
+      '<td>'+(s.class||'')+'-'+(s.section||'')+'</td>'+
       '<td>'+(s.parent_name||'-')+'</td>'+
       '<td>'+(s.contact||'-')+'</td>'+
       '<td><span class="badge '+badge(st)+'">'+st+'</span></td>'+
@@ -723,7 +719,7 @@ function filterStu(){
   renderStuTbl(stuDB.filter(function(s){
     var nm=((s.first_name||'')+(s.last_name||'')).toLowerCase();
     return (!q||nm.includes(q)||(s.id||'').toLowerCase().includes(q)) &&
-           (!cls||s.class_name===cls) && (!st||s.fee_status===st);
+           (!cls||s.class===cls) && (!st||s.fee_status===st);
   }));
 }
 
@@ -738,7 +734,7 @@ function viewStu(btn){
     '<span style="font-size:20px;font-weight:700;color:#fff;">'+(fn.charAt(0)+ln.charAt(0))+'</span></div>'+
     '<div><h3 style="font-size:20px;font-weight:700;">'+fn+' '+ln+'</h3><p style="font-size:13px;color:var(--grey);">'+s.id+'</p></div></div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;">'+
-    '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Class</p><p style="font-weight:600;">'+(s.class_name||'')+'-'+(s.section||'')+'</p></div>'+
+    '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Class</p><p style="font-weight:600;">'+(s.class||'')+'-'+(s.section||'')+'</p></div>'+
     '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Status</p><span class="badge '+badge(st)+'">'+st+'</span></div>'+
     '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Parent</p><p style="font-weight:600;">'+(s.parent_name||'-')+'</p></div>'+
     '<div class="card" style="padding:14px;background:var(--grey-light);"><p style="font-size:12px;color:var(--grey);">Contact</p><p style="font-weight:600;">'+(s.contact||'-')+'</p></div></div>'+
@@ -756,18 +752,13 @@ async function submitStu(){
   if(!fn||!ln||!cls||!sec||!par||!con){ notify('Sabhi * fields bharein','error'); return; }
   var ns={
     id:'STU-2026-'+String(stuDB.length+1).padStart(4,'0'),
-    first_name:fn,last_name:ln,class_name:cls,section:sec,
+    first_name:fn,last_name:ln,class:cls,section:sec,
     parent_name:par,contact:con,
     email:ge('nsEml').value, dob:ge('nsDob').value,
     address:ge('nsAdr').value,
     fee_status:'pending', created_at:new Date().toISOString()
   };
-  if(DB){
-    try{
-      var ins = await DB.from('students').insert([ns]);
-      if(ins.error){ notify('DB Error: '+(ins.error.message||'Unknown'),'error'); console.error(ins.error); }
-    } catch(e){ notify('Save error: '+e.message,'error'); console.error(e); }
-  }
+  if(DB){ try{ await DB.from('students').insert([ns]); } catch(e){} }
   stuDB.unshift(ns);
   renderStuTbl();
   closeM('newStudent');
@@ -828,7 +819,7 @@ function searchFeeStu(){
   ge('feeRes').innerHTML=res.slice(0,4).map(function(s){
     return '<div style="padding:10px;background:var(--grey-light);border-radius:8px;margin-bottom:6px;cursor:pointer;" onclick="selFeeStu(this)" data-id="'+s.id+'">'+
       '<p style="font-weight:500;">'+(s.first_name||'')+' '+(s.last_name||'')+'</p>'+
-      '<p style="font-size:11px;color:var(--grey);">'+s.id+' | '+(s.class_name||'')+'-'+(s.section||'')+'</p></div>';
+      '<p style="font-size:11px;color:var(--grey);">'+s.id+' | '+(s.class||'')+'-'+(s.section||'')+'</p></div>';
   }).join('');
 }
 
@@ -837,7 +828,7 @@ function selFeeStu(el){
   var s=stuDB.find(function(x){return x.id===id;});
   if(!s) return;
   ge('feeStuName').value=(s.first_name||'')+' '+(s.last_name||'');
-  ge('feeStuCls').value=(s.class_name||'')+'-'+(s.section||'');
+  ge('feeStuCls').value=(s.class||'')+'-'+(s.section||'');
   ge('feeStuId').value=id;
   ge('feeRes').innerHTML='';
   ge('feeSearch').value='';
@@ -891,24 +882,11 @@ async function submitFee(){
   btn.disabled=false;
   closeM('collectFee');
 
-  var s = stuDB.find(function(x){return x.id===sid;}) || {};
-  var p2 = new URLSearchParams({
-    rno: rno,
-    name: name||'Walk-in',
-    cls: cls||'-',
-    parent: s.parent_name||'-',
-    contact: s.contact||'-',
-    sid: sid||'-',
-    ftype: type,
-    mode: mode,
-    date: now.toISOString(),
-    total: parseInt(amt),
-    disc: 0,
-    paid: parseInt(amt),
-    remarks: rem||'Thank you for your payment!',
-    term: '1'
-  });
-  window.open('fee_receipt.html?' + p2.toString(), '_blank');
+  // INSTANT receipt open
+  var _s = stuDB.find(function(x){return x.id===sid;}) || {};
+  var _p = 'rno='+encodeURIComponent(rno)+'&name='+encodeURIComponent(name||'Walk-in')+'&cls='+encodeURIComponent(cls||'-')+'&parent='+encodeURIComponent(_s.parent_name||'-')+'&contact='+encodeURIComponent(_s.contact||'-')+'&sid='+encodeURIComponent(sid||'-')+'&ftype='+encodeURIComponent(type)+'&mode='+encodeURIComponent(mode)+'&date='+encodeURIComponent(now.toISOString())+'&total='+parseInt(amt)+'&disc=0&paid='+parseInt(amt)+'&term=1&remarks='+encodeURIComponent(rem||'Thank you!');
+  window.open('fee_receipt.html?'+_p, '_blank');
+
   notify('Fee collected! '+rno,'success');
   ['feeStuName','feeStuCls','feeStuId','feeType','feeAmt','feeMode','feeRem','feeSearch'].forEach(function(id){ ge(id).value=''; });
 }
@@ -959,7 +937,7 @@ function showLookup(s){
     '<span style="font-weight:600;color:#fff;">'+(fn.charAt(0)+ln.charAt(0))+'</span></div>'+
     '<div><p style="font-weight:600;font-size:16px;">'+fn+' '+ln+'</p><p style="font-size:12px;color:var(--grey);">'+s.id+'</p></div></div>'+
     '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;margin-bottom:14px;">'+
-    '<p style="color:var(--grey);">Class:</p><p style="font-weight:500;">'+(s.class_name||'')+'-'+(s.section||'')+'</p>'+
+    '<p style="color:var(--grey);">Class:</p><p style="font-weight:500;">'+(s.class||'')+'-'+(s.section||'')+'</p>'+
     '<p style="color:var(--grey);">Parent:</p><p style="font-weight:500;">'+(s.parent_name||'-')+'</p>'+
     '<p style="color:var(--grey);">Status:</p><span class="badge '+badge(st)+'">'+st+'</span></div>'+
     '<div style="display:flex;gap:8px;">'+
@@ -1010,10 +988,10 @@ function expExcel(){
     data=feeDB.map(function(f){return {Receipt:f.receipt_no,Student:f.student_name,Class:f.student_class,Amount:f.amount,Mode:f.payment_mode,Date:f.created_at?new Date(f.created_at).toLocaleDateString():'',Status:f.status};});
     fn='Fee_Records';
   } else if(type==='def'){
-    data=stuDB.filter(function(s){return s.fee_status!=='paid';}).map(function(s){return {ID:s.id,Name:(s.first_name||'')+' '+(s.last_name||''),Class:s.class_name+'-'+s.section,Parent:s.parent_name,Contact:s.contact,Status:s.fee_status};});
+    data=stuDB.filter(function(s){return s.fee_status!=='paid';}).map(function(s){return {ID:s.id,Name:(s.first_name||'')+' '+(s.last_name||''),Class:s.class+'-'+s.section,Parent:s.parent_name,Contact:s.contact,Status:s.fee_status};});
     fn='Defaulters';
   } else {
-    data=stuDB.map(function(s){return {ID:s.id,Name:(s.first_name||'')+' '+(s.last_name||''),Class:s.class_name,Section:s.section,Parent:s.parent_name,Contact:s.contact,Status:s.fee_status};});
+    data=stuDB.map(function(s){return {ID:s.id,Name:(s.first_name||'')+' '+(s.last_name||''),Class:s.class,Section:s.section,Parent:s.parent_name,Contact:s.contact,Status:s.fee_status};});
     fn='All_Students';
   }
   if(!data.length){ notify('No data','error'); return; }
@@ -1024,7 +1002,7 @@ function expExcel(){
 }
 
 function expPDF(){
-  var rows=stuDB.map(function(s){return '<tr><td>'+s.id+'</td><td>'+(s.first_name||'')+' '+(s.last_name||'')+'</td><td>'+s.class_name+'-'+s.section+'</td><td>'+(s.fee_status||'')+'</td></tr>';}).join('');
+  var rows=stuDB.map(function(s){return '<tr><td>'+s.id+'</td><td>'+(s.first_name||'')+' '+(s.last_name||'')+'</td><td>'+s.class+'-'+s.section+'</td><td>'+(s.fee_status||'')+'</td></tr>';}).join('');
   var w=window.open('','_blank');
   w.document.write('<html><head><title>Report</title><style>body{font-family:Arial;padding:20px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:8px}th{background:#ec4899;color:#fff}</style></head><body><h2>Podar Learn School - Report</h2><table><tr><th>ID</th><th>Name</th><th>Class</th><th>Status</th></tr>'+rows+'</table></body></html>');
   w.document.close(); w.print();
@@ -1189,8 +1167,7 @@ function showStuProfile(btn) {
                 total: rec.amount||0,
                 disc: 0,
                 paid: rec.amount||0,
-                remarks: rec.remarks||'',
-                term: '1'
+                remarks: rec.remarks||''
               });
               window.open('fee_receipt.html?'+params.toString(),'_blank');
             };
@@ -1225,4 +1202,4 @@ function showStuProfile(btn) {
 
 function setDate(){
   var now=new Date();
-  ge('dateEl').textContent=
+  ge('dateEl').textContent
