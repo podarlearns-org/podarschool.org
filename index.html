@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Podar Learn School Niphad - ERP</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -545,7 +545,7 @@ async function checkSession(){
   } catch(e){}
 }
 
-async function doLogin(){
+async async function doLogin(){
   var em = ge('loginEmail').value.trim().toLowerCase();
   var pw = ge('loginPassword').value;
   var btn = ge('loginBtn');
@@ -557,7 +557,11 @@ async function doLogin(){
   btn.disabled = true;
   err.style.display = 'none';
 
-  // Try Supabase
+  // Local login first - instant!
+  var lc = LCREDS[em];
+  if(lc && lc.pw===pw){ onLogin(em); return; }
+
+  // Try Supabase as backup
   if(DB){
     try{
       var r = await DB.auth.signInWithPassword({email:em, password:pw});
@@ -566,10 +570,6 @@ async function doLogin(){
       }
     } catch(e){ console.warn('Supabase:', e.message); }
   }
-
-  // Local fallback
-  var lc = LCREDS[em];
-  if(lc && lc.pw===pw){ onLogin(em); return; }
 
   err.textContent = 'Galat email ya password!';
   err.style.display = 'block';
