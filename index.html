@@ -107,8 +107,8 @@ body{font-family:'Outfit',sans-serif;background:var(--grey-light);color:var(--bl
     <div id="loginError" style="display:none;background:#fee2e2;color:#dc2626;padding:12px;border-radius:10px;font-size:13px;margin-bottom:16px;"></div>
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div><label class="fl">Email</label><input type="email" class="fi" id="loginEmail" placeholder="admin@podarschool.com"></div>
-      <div><label class="fl">Password</label><input type="password" class="fi" id="loginPassword" placeholder="Password"></div>
-      <button class="btn bp" style="width:100%;margin-top:8px;" id="loginBtn">Login to ERP</button>
+      <div><label class="fl">Password</label><input type="password" class="fi" id="loginPassword" placeholder="Password" onkeypress="if(event.key==='Enter')doLogin();"></div>
+      <button class="btn bp" style="width:100%;margin-top:8px;" id="loginBtn" onclick="doLogin()">Login to ERP</button>
     </div>
     <p style="text-align:center;font-size:11px;color:var(--grey);margin-top:16px;">Admin: admin@podarschool.com / Podar@Admin2026</p>
   </div>
@@ -403,7 +403,12 @@ body{font-family:'Outfit',sans-serif;background:var(--grey-light);color:var(--bl
   <div class="md"><div class="mhd"><h2 class="mt fd">Student Details</h2><button class="mc2" data-modal="stuDet"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div id="stuDetCnt"></div></div>
 </div>
 
-<script>
+<script>function setDate(){
+  var now = new Date();
+  var els = document.querySelectorAll('.curDate');
+  els.forEach(function(el){ el.textContent = now.toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); });
+}
+
 var SURL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
 var SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
 var LCREDS = {
@@ -535,17 +540,17 @@ function fmtAmt(n){
 }
 
 // AUTH
-async function checkSession(){
+function checkSession(){
   if(!DB) return;
   try {
-    var r = await DB.auth.getSession();
+    var r = DB.auth.getSession();
     if(r.data && r.data.session && r.data.session.user){
       onLogin(r.data.session.user.email);
     }
   } catch(e){}
 }
 
-async async function doLogin(){
+function doLogin(){
   var em = ge('loginEmail').value.trim().toLowerCase();
   var pw = ge('loginPassword').value;
   var btn = ge('loginBtn');
@@ -557,19 +562,9 @@ async async function doLogin(){
   btn.disabled = true;
   err.style.display = 'none';
 
-  // Local login first - instant!
+  // Local login - instant!
   var lc = LCREDS[em];
   if(lc && lc.pw===pw){ onLogin(em); return; }
-
-  // Try Supabase as backup
-  if(DB){
-    try{
-      var r = await DB.auth.signInWithPassword({email:em, password:pw});
-      if(r.data && r.data.user && !r.error){
-        onLogin(em); return;
-      }
-    } catch(e){ console.warn('Supabase:', e.message); }
-  }
 
   err.textContent = 'Galat email ya password!';
   err.style.display = 'block';
@@ -592,15 +587,15 @@ function onLogin(email){
   notify('Welcome ' + u.name + '!', 'success');
 }
 
-async function doLogout(){
-  if(DB){ try{ await DB.auth.signOut(); } catch(e){} }
+function doLogout(){
+  if(DB){ try{ DB.auth.signOut(); } catch(e){} }
   ge('loginScreen').style.display = 'flex';
   ge('mainWrapper').style.display = 'none';
 }
 
 // DATA
-async function loadData(){
-  await Promise.all([loadStu(), loadFee()]);
+function loadData(){
+  Promise.all([loadStu(), loadFee()]);
   updateStats();
   renderRecPay();
   renderFeeRecs('all');
@@ -611,20 +606,20 @@ async function loadData(){
   testDB();
 }
 
-async function loadStu(){
+function loadStu(){
   if(!DB){ stuDB=sampleStu(); renderStuTbl(); return; }
   try{
-    var r = await DB.from('students').select('*').order('created_at',{ascending:false});
+    var r = DB.from('students').select('*').order('created_at',{ascending:false});
     if(r.error) throw r.error;
     stuDB = (r.data && r.data.length>0) ? r.data : sampleStu();
   } catch(e){ stuDB=sampleStu(); }
   renderStuTbl();
 }
 
-async function loadFee(){
+function loadFee(){
   if(!DB){ feeDB=sampleFee(); return; }
   try{
-    var r = await DB.from('fees').select('*').order('created_at',{ascending:false});
+    var r = DB.from('fees').select('*').order('created_at',{ascending:false});
     if(r.error) throw r.error;
     feeDB = (r.data && r.data.length>0) ? r.data : sampleFee();
   } catch(e){ feeDB=sampleFee(); }
@@ -745,7 +740,7 @@ function viewStu(btn){
   openM('stuDet');
 
 }
-async function submitStu(){
+function submitStu(){
   var fn=ge('nsFN').value.trim(); var ln=ge('nsLN').value.trim();
   var cls=ge('nsCls').value; var sec=ge('nsSec').value;
   var par=ge('nsPar').value.trim(); var con=ge('nsCon').value.trim();
@@ -758,7 +753,7 @@ async function submitStu(){
     address:ge('nsAdr').value,
     fee_status:'pending', created_at:new Date().toISOString()
   };
-  if(DB){ try{ await DB.from('students').insert([ns]); } catch(e){} }
+  if(DB){ try{ DB.from('students').insert([ns]); } catch(e){} }
   stuDB.unshift(ns);
   renderStuTbl();
   closeM('newStudent');
@@ -840,7 +835,7 @@ function collectFor(btn){
   openM('collectFee');
 }
 
-async function submitFee(){
+function submitFee(){
   var name=ge('feeStuName').value;
   var cls=ge('feeStuCls').value;
   var type=ge('feeType').value;
@@ -865,7 +860,7 @@ async function submitFee(){
     status:'paid', created_at:now.toISOString()
   };
 
-  if(DB){ try{ await DB.from('fees').insert([rec]); } catch(e){} }
+  if(DB){ try{ DB.from('fees').insert([rec]); } catch(e){} }
 
   feeDB.unshift(rec);
   renderRecPay(); renderFeeRecs('all'); updateStats(); updatePayCounts();
@@ -1038,11 +1033,11 @@ function doClear(){
   }
 }
 
-async function testDB(){
+function testDB(){
   var el=ge('dbSt'); if(!el||!DB) { if(el) el.textContent='DB not init'; return; }
   el.textContent='Testing...';
   try{
-    var r=await DB.from('students').select('count',{count:'exact',head:true});
+    var r=DB.from('students').select('count',{count:'exact',head:true});
     if(r.error) throw r.error;
     el.textContent='Connected'; el.style.color='var(--success)';
   } catch(e){
@@ -1192,14 +1187,13 @@ function showStuProfile(btn) {
   var feeB = document.createElement('button');
   feeB.className='btn bp'; feeB.textContent='Collect Fee';
   feeB.dataset.id=id;
-  feeB.onclick=function(){ closeM('stuProfile'); selFeeStu(feeB); openM('collectFee'); };
-  btns.appendChild(closeB); btns.appendChild(feeB);
+  feeB.onclick=function(){ closeM('stuProfile'); collectFor(this); };
+  btns.appendChild(closeB);
+  btns.appendChild(feeB);
   cnt.appendChild(btns);
-
   openM('stuProfile');
 }
 
-
-function setDate(){
-  var now=new Date();
-  ge('dateEl').textContent
+</script>
+</body>
+</html>
