@@ -1242,20 +1242,16 @@ function handleLogin() {
   if (!email || !pass) { errEl.textContent = 'Please enter email and password'; errEl.style.display = 'block'; return; }
   btn.innerHTML = '<span class="spinner"></span> Logging in...';
   btn.disabled = true;
-  errEl.style.display = 'none';
-
-  db.auth.signInWithPassword({ email: email, password: pass }).then(function(result) {
-    if (result.error) {
-      errEl.textContent = result.error.message || 'Invalid email or password';
-      errEl.style.display = 'block';
-      btn.innerHTML = 'Login to ERP';
-      btn.disabled = false;
-      return;
-    }
-    var roleName = LOCAL_CREDS[email] ? LOCAL_CREDS[email].name : 'Admin';
-    currentUser = { email: email, name: roleName };
+  var user = LOCAL_CREDS[email];
+  if (user && user.password === pass) {
+    currentUser = { email: email, name: user.name };
     onLoginSuccess();
-  });
+    return;
+  }
+  errEl.textContent = 'Invalid email or password';
+  errEl.style.display = 'block';
+  btn.innerHTML = 'Login to ERP';
+  btn.disabled = false;
 }
 function onLoginSuccess() {
   ge('loginScreen').style.display = 'none';
@@ -1300,14 +1296,24 @@ function navigateTo(page) {
 // SAMPLE DATA
 // =====================
 function loadSampleData() {
-  // Fresh start — all data loads from Supabase only
-  studentsDB = [];
-  feeDB = [];
-  staffDB = [];
-  enquiryDB = [];
-  admissionDB = [];
-  counters.student = 1;
-  counters.admission = 1;
+  studentsDB = [
+    { id:'STU-2026-0001', name:'Aarav Sharma', father:'Rajesh Sharma', mobile:'9876543210', class:'5th', div:'A', status:'paid', gr:'GR-1001', aadhar:'1234-5678-9012' },
+    { id:'STU-2026-0002', name:'Ananya Patel', father:'Vikram Patel', mobile:'9876543211', class:'4th', div:'B', status:'pending', gr:'GR-1002', aadhar:'2345-6789-0123' },
+    { id:'STU-2026-0003', name:'Arjun Kumar', father:'Suresh Kumar', mobile:'9876543212', class:'3rd', div:'A', status:'paid', gr:'GR-1003', aadhar:'3456-7890-1234' },
+    { id:'STU-2026-0004', name:'Priya Joshi', father:'Manoj Joshi', mobile:'9876543213', class:'6th', div:'A', status:'pending', gr:'GR-1004', aadhar:'4567-8901-2345' },
+    { id:'STU-2026-0005', name:'Rahul Singh', father:'Anil Singh', mobile:'9876543214', class:'5th', div:'B', status:'paid', gr:'GR-1005', aadhar:'5678-9012-3456' }
+  ];
+  feeDB = [
+    { id:'FEE-27000', student_id:'STU-2026-0001', student_name:'Aarav Sharma', student_class:'5th-A', amount:24000, type:'Tuition Fee', mode:'UPI', date:'2026-03-10', status:'paid' },
+    { id:'FEE-27001', student_id:'STU-2026-0003', student_name:'Arjun Kumar', student_class:'3rd-A', amount:21000, type:'Tuition Fee', mode:'Cash', date:'2026-03-09', status:'paid' },
+    { id:'FEE-27002', student_id:'STU-2026-0005', student_name:'Rahul Singh', student_class:'5th-B', amount:22000, type:'Tuition Fee', mode:'UPI', date:'2026-03-12', status:'paid' }
+  ];
+  staffDB = [
+    { id:'STF-2026-001', name:'Mrs. Priya Teacher', designation:'Teacher', department:'Academic', mobile:'9876543220', basic:25000, status:'active' },
+    { id:'STF-2026-002', name:'Mr. Amit Admin', designation:'Admin', department:'Administration', mobile:'9876543221', basic:20000, status:'active' }
+  ];
+  counters.student = 6;
+  counters.admission = 6;
   renderAllTables();
   dashUpdateStats();
 }
