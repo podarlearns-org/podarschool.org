@@ -174,7 +174,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
     <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;border-top:1px solid rgba(255,255,255,0.1);">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
         <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--pink),#db2777);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;" id="uAvatar">AD</div>
-        <div><p style="font-size:14px;font-weight:600;" id="uName">Admin</p><p style="font-size:11px;opacity:0.7;" id="uEmail">admin@podarschool.com</p></div>
+        <div><p style="font-size:14px;font-weight:600;" id="uName">Admin</p><p style="font-size:11px;opacity:0.7;" id="uEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="85e4e1e8ecebc5f5eae1e4f7f6e6edeaeae9abe6eae8">[email&#160;protected]</a></p></div>
       </div>
       <button onclick="doLogout()" style="width:100%;padding:10px;background:rgba(255,255,255,0.1);border:none;border-radius:8px;color:white;cursor:pointer;font-size:13px;">🚪 Logout</button>
     </div>
@@ -1085,6 +1085,88 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
 
 <!-- Upgrade Modal Removed - All Features Are Now Free -->
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// =====================
+// SUPABASE CONFIG
+// =====================
+var SUPABASE_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
+var db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// =====================
+// SUPABASE FUNCTIONS
+// =====================
+async function sbLoadStudents() {
+  try {
+    var res = await db.from('students').select('*').order('created_at', { ascending: false });
+    if (res.data && res.data.length > 0) {
+      studentsDB = res.data.map(function(s) {
+        return { id: s.id, name: s.name, father: s.father_name, mobile: s.phone, class: s.class_name, div: s.section || 'A', status: s.fee_status || 'pending', gr: s.gr_number, aadhar: s.aadhar_number };
+      });
+      renderStudentsTable();
+      renderAdmissionTable();
+      dashUpdateStats();
+    }
+  } catch(e) { console.log('Students load error:', e); }
+}
+
+async function sbLoadFees() {
+  try {
+    var res = await db.from('fees').select('*').order('created_at', { ascending: false });
+    if (res.data && res.data.length > 0) {
+      feeDB = res.data.map(function(f) {
+        return { id: f.receipt_number, student_id: f.student_id, student_name: f.student_name, student_class: f.student_class, type: f.fee_type, amount: f.amount, mode: f.payment_mode, date: f.payment_date ? f.payment_date.split('T')[0] : f.payment_date, status: 'paid' };
+      });
+      renderFeeTable();
+      dashUpdateStats();
+    }
+  } catch(e) { console.log('Fees load error:', e); }
+}
+
+async function sbSaveStudent(student) {
+  try {
+    var res = await db.from('students').upsert({
+      id: student.id,
+      name: student.name,
+      father_name: student.father,
+      phone: student.mobile,
+      class_name: student.class,
+      section: student.div || 'A',
+      fee_status: student.status || 'pending',
+      gr_number: student.gr,
+      aadhar_number: student.aadhar
+    });
+    if (res.error) { console.log('Save student error:', res.error); return false; }
+    return true;
+  } catch(e) { console.log('Save student error:', e); return false; }
+}
+
+async function sbSaveFee(fee) {
+  try {
+    var res = await db.from('fees').insert({
+      receipt_number: fee.id,
+      student_id: fee.student_id,
+      student_name: fee.student_name,
+      student_class: fee.student_class,
+      fee_type: fee.type,
+      amount: fee.amount,
+      payment_mode: fee.mode,
+      payment_date: fee.date,
+      status: 'paid'
+    });
+    if (res.error) { console.log('Save fee error:', res.error); return false; }
+    // Update student fee_status in DB
+    await db.from('students').update({ fee_status: 'paid' }).eq('id', fee.student_id);
+    return true;
+  } catch(e) { console.log('Save fee error:', e); return false; }
+}
+
+async function sbLoadAll() {
+  await sbLoadStudents();
+  await sbLoadFees();
+}
+</script>
 <script>
 // =====================
 // DATABASE & STATE
@@ -1160,16 +1242,20 @@ function handleLogin() {
   if (!email || !pass) { errEl.textContent = 'Please enter email and password'; errEl.style.display = 'block'; return; }
   btn.innerHTML = '<span class="spinner"></span> Logging in...';
   btn.disabled = true;
-  var user = LOCAL_CREDS[email];
-  if (user && user.password === pass) {
-    currentUser = { email: email, name: user.name };
+  errEl.style.display = 'none';
+
+  db.auth.signInWithPassword({ email: email, password: pass }).then(function(result) {
+    if (result.error) {
+      errEl.textContent = result.error.message || 'Invalid email or password';
+      errEl.style.display = 'block';
+      btn.innerHTML = 'Login to ERP';
+      btn.disabled = false;
+      return;
+    }
+    var roleName = LOCAL_CREDS[email] ? LOCAL_CREDS[email].name : 'Admin';
+    currentUser = { email: email, name: roleName };
     onLoginSuccess();
-    return;
-  }
-  errEl.textContent = 'Invalid email or password';
-  errEl.style.display = 'block';
-  btn.innerHTML = 'Login to ERP';
-  btn.disabled = false;
+  });
 }
 function onLoginSuccess() {
   ge('loginScreen').style.display = 'none';
@@ -1179,6 +1265,11 @@ function onLoginSuccess() {
   ge('uAvatar').textContent = currentUser.name.substring(0,2).toUpperCase();
   loadSampleData();
   notify('Welcome back, ' + currentUser.name + '!', 'success');
+  sbLoadAll().then(function() {
+    if (studentsDB.length > 5) {
+      notify('✅ Database connected! ' + studentsDB.length + ' students loaded', 'success');
+    }
+  });
 }
 function doLogout() {
   currentUser = null;
@@ -1209,24 +1300,14 @@ function navigateTo(page) {
 // SAMPLE DATA
 // =====================
 function loadSampleData() {
-  studentsDB = [
-    { id:'STU-2026-0001', name:'Aarav Sharma', father:'Rajesh Sharma', mobile:'9876543210', class:'5th', div:'A', status:'paid', gr:'GR-1001', aadhar:'1234-5678-9012' },
-    { id:'STU-2026-0002', name:'Ananya Patel', father:'Vikram Patel', mobile:'9876543211', class:'4th', div:'B', status:'pending', gr:'GR-1002', aadhar:'2345-6789-0123' },
-    { id:'STU-2026-0003', name:'Arjun Kumar', father:'Suresh Kumar', mobile:'9876543212', class:'3rd', div:'A', status:'paid', gr:'GR-1003', aadhar:'3456-7890-1234' },
-    { id:'STU-2026-0004', name:'Priya Joshi', father:'Manoj Joshi', mobile:'9876543213', class:'6th', div:'A', status:'pending', gr:'GR-1004', aadhar:'4567-8901-2345' },
-    { id:'STU-2026-0005', name:'Rahul Singh', father:'Anil Singh', mobile:'9876543214', class:'5th', div:'B', status:'paid', gr:'GR-1005', aadhar:'5678-9012-3456' }
-  ];
-  feeDB = [
-    { id:'FEE-27000', student_id:'STU-2026-0001', student_name:'Aarav Sharma', student_class:'5th-A', amount:24000, type:'Tuition Fee', mode:'UPI', date:'2026-03-10', status:'paid' },
-    { id:'FEE-27001', student_id:'STU-2026-0003', student_name:'Arjun Kumar', student_class:'3rd-A', amount:21000, type:'Tuition Fee', mode:'Cash', date:'2026-03-09', status:'paid' },
-    { id:'FEE-27002', student_id:'STU-2026-0005', student_name:'Rahul Singh', student_class:'5th-B', amount:22000, type:'Tuition Fee', mode:'UPI', date:'2026-03-12', status:'paid' }
-  ];
-  staffDB = [
-    { id:'STF-2026-001', name:'Mrs. Priya Teacher', designation:'Teacher', department:'Academic', mobile:'9876543220', basic:25000, status:'active' },
-    { id:'STF-2026-002', name:'Mr. Amit Admin', designation:'Admin', department:'Administration', mobile:'9876543221', basic:20000, status:'active' }
-  ];
-  counters.student = 6;
-  counters.admission = 6;
+  // Fresh start — all data loads from Supabase only
+  studentsDB = [];
+  feeDB = [];
+  staffDB = [];
+  enquiryDB = [];
+  admissionDB = [];
+  counters.student = 1;
+  counters.admission = 1;
   renderAllTables();
   dashUpdateStats();
 }
@@ -1696,6 +1777,8 @@ function saveAdmission() {
   dashUpdateStats();
   ge('admissionForm').style.display = 'none';
   notify('Admission saved! ' + adm.id, 'success');
+  var stuObj = studentsDB[studentsDB.length-1];
+  sbSaveStudent(stuObj).then(function(ok){ if(ok) notify('✅ Saved to database!', 'success'); });
 }
 function renderAdmissionTable() {
   var tbody = ge('admissionTableBody');
@@ -1789,6 +1872,7 @@ function saveFee() {
   dashUpdateStats();
   showReceipt(fee);
   notify('Fee collected! ' + fee.id, 'success');
+  sbSaveFee(fee).then(function(ok){ if(ok) notify('✅ Fee saved to database!', 'success'); });
 }
 function renderFeeTable() {
   var tbody = ge('feeTableBody');
@@ -2937,16 +3021,4 @@ function getAIResponse(question) {
     '• "Total students" - Student count<br>' +
     '• "Pending fees" - Baki fee list<br>' +
     '• "Student name" - Specific student info<br>' +
-    '• "Receipt [number]" - Receipt details<br>' +
-    '• "[Name] ka fee" - Fee status';
-}
-
-</script>
-<style>
-@keyframes typing {
-  0%, 100% { opacity: 0.3; transform: translateY(0); }
-  50% { opacity: 1; transform: translateY(-2px); }
-}
-</style>
-</body>
-</html>
+    '• "Receipt [number]" - Recei
