@@ -174,7 +174,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
     <div style="position:absolute;bottom:0;left:0;right:0;padding:20px;border-top:1px solid rgba(255,255,255,0.1);">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
         <div style="width:40px;height:40px;background:linear-gradient(135deg,var(--pink),#db2777);border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;" id="uAvatar">AD</div>
-        <div><p style="font-size:14px;font-weight:600;" id="uName">Admin</p><p style="font-size:11px;opacity:0.7;" id="uEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="85e4e1e8ecebc5f5eae1e4f7f6e6edeaeae9abe6eae8">[email&#160;protected]</a></p></div>
+        <div><p style="font-size:14px;font-weight:600;" id="uName">Admin</p><p style="font-size:11px;opacity:0.7;" id="uEmail">admin@podarschool.com</p></div>
       </div>
       <button onclick="doLogout()" style="width:100%;padding:10px;background:rgba(255,255,255,0.1);border:none;border-radius:8px;color:white;cursor:pointer;font-size:13px;">🚪 Logout</button>
     </div>
@@ -1085,88 +1085,6 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
 
 <!-- Upgrade Modal Removed - All Features Are Now Free -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-// =====================
-// SUPABASE CONFIG
-// =====================
-var SUPABASE_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
-var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
-var db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// =====================
-// SUPABASE FUNCTIONS
-// =====================
-async function sbLoadStudents() {
-  try {
-    var res = await db.from('students').select('*').order('created_at', { ascending: false });
-    if (res.data && res.data.length > 0) {
-      studentsDB = res.data.map(function(s) {
-        return { id: s.id, name: s.name, father: s.father_name, mobile: s.phone, class: s.class_name, div: s.section || 'A', status: s.fee_status || 'pending', gr: s.gr_number, aadhar: s.aadhar_number };
-      });
-      renderStudentsTable();
-      renderAdmissionTable();
-      dashUpdateStats();
-    }
-  } catch(e) { console.log('Students load error:', e); }
-}
-
-async function sbLoadFees() {
-  try {
-    var res = await db.from('fees').select('*').order('created_at', { ascending: false });
-    if (res.data && res.data.length > 0) {
-      feeDB = res.data.map(function(f) {
-        return { id: f.receipt_number, student_id: f.student_id, student_name: f.student_name, student_class: f.student_class, type: f.fee_type, amount: f.amount, mode: f.payment_mode, date: f.payment_date ? f.payment_date.split('T')[0] : f.payment_date, status: 'paid' };
-      });
-      renderFeeTable();
-      dashUpdateStats();
-    }
-  } catch(e) { console.log('Fees load error:', e); }
-}
-
-async function sbSaveStudent(student) {
-  try {
-    var res = await db.from('students').upsert({
-      id: student.id,
-      name: student.name,
-      father_name: student.father,
-      phone: student.mobile,
-      class_name: student.class,
-      section: student.div || 'A',
-      fee_status: student.status || 'pending',
-      gr_number: student.gr,
-      aadhar_number: student.aadhar
-    });
-    if (res.error) { console.log('Save student error:', res.error); return false; }
-    return true;
-  } catch(e) { console.log('Save student error:', e); return false; }
-}
-
-async function sbSaveFee(fee) {
-  try {
-    var res = await db.from('fees').insert({
-      receipt_number: fee.id,
-      student_id: fee.student_id,
-      student_name: fee.student_name,
-      student_class: fee.student_class,
-      fee_type: fee.type,
-      amount: fee.amount,
-      payment_mode: fee.mode,
-      payment_date: fee.date,
-      status: 'paid'
-    });
-    if (res.error) { console.log('Save fee error:', res.error); return false; }
-    // Update student fee_status in DB
-    await db.from('students').update({ fee_status: 'paid' }).eq('id', fee.student_id);
-    return true;
-  } catch(e) { console.log('Save fee error:', e); return false; }
-}
-
-async function sbLoadAll() {
-  await sbLoadStudents();
-  await sbLoadFees();
-}
-</script>
 <script>
 // =====================
 // DATABASE & STATE
@@ -1261,11 +1179,6 @@ function onLoginSuccess() {
   ge('uAvatar').textContent = currentUser.name.substring(0,2).toUpperCase();
   loadSampleData();
   notify('Welcome back, ' + currentUser.name + '!', 'success');
-  sbLoadAll().then(function() {
-    if (studentsDB.length > 5) {
-      notify('✅ Database connected! ' + studentsDB.length + ' students loaded', 'success');
-    }
-  });
 }
 function doLogout() {
   currentUser = null;
@@ -1783,8 +1696,6 @@ function saveAdmission() {
   dashUpdateStats();
   ge('admissionForm').style.display = 'none';
   notify('Admission saved! ' + adm.id, 'success');
-  var stuObj = studentsDB[studentsDB.length-1];
-  sbSaveStudent(stuObj).then(function(ok){ if(ok) notify('✅ Saved to database!', 'success'); });
 }
 function renderAdmissionTable() {
   var tbody = ge('admissionTableBody');
@@ -1878,7 +1789,6 @@ function saveFee() {
   dashUpdateStats();
   showReceipt(fee);
   notify('Fee collected! ' + fee.id, 'success');
-  sbSaveFee(fee).then(function(ok){ if(ok) notify('✅ Fee saved to database!', 'success'); });
 }
 function renderFeeTable() {
   var tbody = ge('feeTableBody');
@@ -3027,4 +2937,16 @@ function getAIResponse(question) {
     '• "Total students" - Student count<br>' +
     '• "Pending fees" - Baki fee list<br>' +
     '• "Student name" - Specific student info<br>' +
-    '• "Receipt [number]" - Recei
+    '• "Receipt [number]" - Receipt details<br>' +
+    '• "[Name] ka fee" - Fee status';
+}
+
+</script>
+<style>
+@keyframes typing {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
+}
+</style>
+</body>
+</html>
