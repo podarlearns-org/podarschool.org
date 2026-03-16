@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Podar Learn School ERP</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -1098,7 +1097,30 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
 // =====================
 var SUPABASE_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
-var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Using direct Supabase REST API - no SDK needed!
+var SUPA_HEADERS = {
+  'apikey': SUPABASE_ANON_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+  'Content-Type': 'application/json',
+  'Prefer': 'return=minimal'
+};
+
+async function supaSelect(table) {
+  var r = await fetch(SUPABASE_URL+'/rest/v1/'+table+'?select=*', {headers: SUPA_HEADERS});
+  return r.ok ? await r.json() : [];
+}
+async function supaInsert(table, data) {
+  var r = await fetch(SUPABASE_URL+'/rest/v1/'+table, {
+    method:'POST', headers: SUPA_HEADERS, body: JSON.stringify(data)
+  });
+  return r.ok;
+}
+async function supaUpdate(table, id, data) {
+  var r = await fetch(SUPABASE_URL+'/rest/v1/'+table+'?id=eq.'+id, {
+    method:'PATCH', headers: SUPA_HEADERS, body: JSON.stringify(data)
+  });
+  return r.ok;
+}
 
 var RECEIPT_VIEWER_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1/object/public/receipts/receipt_viewer.html';
 
@@ -1129,19 +1151,19 @@ async function sbLoadAll() {
   try {
     notify('Loading data...', 'info');
     var [s,e,a,f,st,sal] = await Promise.all([
-      supabase.from('students').select('*'),
-      supabase.from('enquiries').select('*'),
-      supabase.from('admissions').select('*'),
-      supabase.from('fees').select('*'),
-      supabase.from('staff').select('*'),
-      supabase.from('salary_history').select('*')
+      supaSelect('students'),
+      supaSelect('enquiries'),
+      supaSelect('admissions'),
+      supaSelect('fees'),
+      supaSelect('staff'),
+      supaSelect('salary_history')
     ]);
-    if(s.data) studentsDB = s.data;
-    if(e.data) enquiryDB = e.data;
-    if(a.data) admissionDB = a.data;
-    if(f.data) feeDB = f.data;
-    if(st.data) staffDB = st.data;
-    if(sal.data) salaryHistoryDB = sal.data;
+    studentsDB = s||[];
+    enquiryDB = e||[];
+    admissionDB = a||[];
+    feeDB = f||[];
+    staffDB = st||[];
+    salaryHistoryDB = sal||[];
     if(studentsDB.length>0) counters.admission = studentsDB.length+1;
     if(feeDB.length>0){ var mx=feeDB.reduce(function(m,f){ var n=parseInt((f.id||'').replace('FEE-',''))||27000; return n>m?n:m;},27000); counters.fee=mx+1; }
     if(staffDB.length>0) counters.staff=staffDB.length+1;
@@ -1150,12 +1172,7 @@ async function sbLoadAll() {
     notify('Data loaded!', 'success');
   } catch(err) { console.error(err); loadSampleData(); notify('Using sample data', 'warning'); }
 }
-async function sbInsert(table, data) {
-  try { var r = await supabase.from(table).insert([data]); if(r.error) console.error(r.error); return !r.error; } catch(e){ console.error(e); return false; }
-}
-async function sbUpdate(table, id, data) {
-  try { var r = await supabase.from(table).update(data).eq('id',id); if(r.error) console.error(r.error); return !r.error; } catch(e){ console.error(e); return false; }
-}
+
 
 // =====================
 // INIT
@@ -1651,8 +1668,8 @@ async function saveEnquiry() {
   var id = ge('enqNo').value;
   var existing = enquiryDB.findIndex(function(x){ return x.id === id; });
   var enq = { id:id, date:ge('enqDate').value, name:name, father:ge('enqFather').value, mother:ge('enqMother').value, mobile:mobile, class:ge('enqClass').value, source:ge('enqSource').value, address:ge('enqAddress').value, status:ge('enqStatus').value, remarks:ge('enqRemarks').value };
-  if (existing > -1) { enquiryDB[existing] = enq; await sbUpdate('enquiries', id, enq); }
-  else { enquiryDB.push(enq); counters.enquiry++; await sbInsert('enquiries', enq); }
+  if (existing > -1) { enquiryDB[existing] = enq; await supaUpdate('enquiries', id, enq); }
+  else { enquiryDB.push(enq); counters.enquiry++; await supaInsert('enquiries', enq); }
   ge('convertBtn').disabled = false;
   renderEnquiryTable();
   notify('Enquiry saved! ' + enq.id, 'success');
@@ -1752,9 +1769,9 @@ async function saveAdmission() {
   var adm = { id:ge('admNo').value, enqno:ge('admEnqNo').value, gr:ge('admGR').value, name:name, father:ge('admFather').value, mother:ge('admMother').value, mobile:ge('admMobile').value, class:cls, div:ge('admDiv').value||'A', address:ge('admAddress').value, aadhar:ge('admAadhar').value, dob:ge('admDOB').value, date:ge('admDate').value, status:'pending' };
   var stuRec = { id:adm.id, name:adm.name, father:adm.father, mobile:adm.mobile, class:adm.class, div:adm.div, status:'pending', aadhar:adm.aadhar, gr:adm.gr, address:adm.address };
   admissionDB.push(adm); studentsDB.push(stuRec); counters.admission++;
-  if(adm.enqno){ var eq=enquiryDB.find(function(x){ return x.id===adm.enqno; }); if(eq){ eq.status='admitted'; await sbUpdate('enquiries',eq.id,{status:'admitted'}); } }
-  await sbInsert('admissions', adm);
-  await sbInsert('students', stuRec);
+  if(adm.enqno){ var eq=enquiryDB.find(function(x){ return x.id===adm.enqno; }); if(eq){ eq.status='admitted'; await supaUpdate('enquiries',eq.id,{status:'admitted'}); } }
+  await supaInsert('admissions', adm);
+  await supaInsert('students', stuRec);
   renderAllTables(); dashUpdateStats();
   ge('admissionForm').style.display = 'none';
   notify('Admission saved! ' + adm.id, 'success');
@@ -1843,10 +1860,10 @@ async function saveFee() {
   var fee = { id:'FEE-'+counters.fee, student_id:studentId, student_name:studentName, student_class:studentClass, type:type, amount:amount, mode:mode, date:todayStr(), status:'paid' };
   feeDB.push(fee); counters.fee++;
   var stu = studentsDB.find(function(s){ return s.id===studentId; });
-  if(stu){ stu.status='paid'; await sbUpdate('students',studentId,{status:'paid'}); }
-  await sbInsert('fees', fee);
+  if(stu){ stu.status='paid'; await supaUpdate('students',studentId,{status:'paid'}); }
+  await supaInsert('fees', fee);
   var rr = await buildReceiptRecord(fee, stu);
-  await sbInsert('fee_receipts', rr);
+  await supaInsert('fee_receipts', rr);
   closeModal('feeModal');
   renderFeeTable(); renderStudentsTable(); dashUpdateStats();
   showReceiptNew(rr);
