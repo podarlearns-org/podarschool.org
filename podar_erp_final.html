@@ -1110,8 +1110,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
 // SUPABASE CONFIG
 // =====================
 var SUPABASE_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
-// Using new Supabase publishable key format
-var SUPABASE_ANON_KEY = 'sb_publishable_RymExtvkOR20oPbHgdTf4w_-nADxz40';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
 // Using direct Supabase REST API - no SDK needed!
 var SUPA_HEADERS = {
   'apikey': SUPABASE_ANON_KEY,
@@ -1119,54 +1118,74 @@ var SUPA_HEADERS = {
   'Content-Type': 'application/json'
 };
 
-function supaXHR(method, url, data, callback) {
-  var xhr = new XMLHttpRequest();
-  xhr.open(method, url, true);
-  xhr.setRequestHeader('apikey', SUPABASE_ANON_KEY);
-  xhr.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_ANON_KEY);
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.setRequestHeader('Accept', 'application/json');
-  xhr.onreadystatechange = function() {
-    if(xhr.readyState === 4) callback(xhr.status, xhr.responseText);
-  };
-  xhr.onerror = function() { callback(0, null); };
-  xhr.send(data ? JSON.stringify(data) : null);
-}
-
-function supaSelect(table) {
-  return new Promise(function(resolve) {
-    var url = SUPABASE_URL+'/rest/v1/'+table+'?select=*';
-    supaXHR('GET', url, null, function(status, text) {
-      if(status === 200) {
-        try { resolve(JSON.parse(text)); }
-        catch(e) { console.error(table+' parse error'); resolve([]); }
-      } else {
-        console.error(table+' fetch failed: '+status+' URL: '+url);
-        if(status === 404) console.error('Table not found - check table name: '+table);
-        if(status === 401) console.error('Auth failed - check API key');
-        resolve([]);
+async function supaSelect(table) {
+  try {
+    var url = SUPABASE_URL+'/rest/v1/'+table+'?select=*&apikey='+SUPABASE_ANON_KEY;
+    var response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer '+SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       }
     });
-  });
+    if(!response.ok) {
+      console.error(table+' failed: '+response.status);
+      return [];
+    }
+    return await response.json();
+  } catch(e) {
+    console.error(table+' error:', e.message);
+    return [];
+  }
 }
 
-function supaInsert(table, data) {
-  return new Promise(function(resolve) {
-    var url = SUPABASE_URL+'/rest/v1/'+table;
-    supaXHR('POST', url, data, function(status, text) {
-      if(status >= 200 && status < 300) { resolve(true); }
-      else { console.error(table+' insert failed: '+status+' '+text); resolve(false); }
+async function supaInsert(table, data) {
+  try {
+    var url = SUPABASE_URL+'/rest/v1/'+table+'?apikey='+SUPABASE_ANON_KEY;
+    var response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer '+SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(data)
     });
-  });
+    if(!response.ok) {
+      var err = await response.text();
+      console.error(table+' insert failed:', err);
+      return false;
+    }
+    return true;
+  } catch(e) {
+    console.error(table+' insert error:', e.message);
+    return false;
+  }
 }
 
-function supaUpdate(table, id, data) {
-  return new Promise(function(resolve) {
-    var url = SUPABASE_URL+'/rest/v1/'+table+'?id=eq.'+encodeURIComponent(id);
-    supaXHR('PATCH', url, data, function(status, text) {
-      resolve(status >= 200 && status < 300);
+async function supaUpdate(table, id, data) {
+  try {
+    var url = SUPABASE_URL+'/rest/v1/'+table+'?id=eq.'+encodeURIComponent(id)+'&apikey='+SUPABASE_ANON_KEY;
+    var response = await fetch(url, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer '+SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(data)
     });
-  });
+    return response.ok;
+  } catch(e) {
+    console.error(table+' update error:', e.message);
+    return false;
+  }
 }
 
 var RECEIPT_VIEWER_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1/object/public/receipts/receipt_viewer.html';
