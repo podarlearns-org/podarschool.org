@@ -1110,7 +1110,8 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
 // SUPABASE CONFIG
 // =====================
 var SUPABASE_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
-var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
+// Using new Supabase publishable key format
+var SUPABASE_ANON_KEY = 'sb_publishable_RymExtvkOR20oPbHgdTf4w_-nADxz40';
 // Using direct Supabase REST API - no SDK needed!
 var SUPA_HEADERS = {
   'apikey': SUPABASE_ANON_KEY,
@@ -1124,7 +1125,7 @@ function supaXHR(method, url, data, callback) {
   xhr.setRequestHeader('apikey', SUPABASE_ANON_KEY);
   xhr.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_ANON_KEY);
   xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.setRequestHeader('Prefer', 'return=minimal');
+  xhr.setRequestHeader('Accept', 'application/json');
   xhr.onreadystatechange = function() {
     if(xhr.readyState === 4) callback(xhr.status, xhr.responseText);
   };
@@ -1134,13 +1135,15 @@ function supaXHR(method, url, data, callback) {
 
 function supaSelect(table) {
   return new Promise(function(resolve) {
-    var url = SUPABASE_URL+'/rest/v1/'+table+'?select=*&order=created_at.asc';
+    var url = SUPABASE_URL+'/rest/v1/'+table+'?select=*';
     supaXHR('GET', url, null, function(status, text) {
       if(status === 200) {
         try { resolve(JSON.parse(text)); }
         catch(e) { console.error(table+' parse error'); resolve([]); }
       } else {
-        console.error(table+' fetch failed: '+status);
+        console.error(table+' fetch failed: '+status+' URL: '+url);
+        if(status === 404) console.error('Table not found - check table name: '+table);
+        if(status === 401) console.error('Auth failed - check API key');
         resolve([]);
       }
     });
