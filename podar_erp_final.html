@@ -47,7 +47,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
 .nav-item { display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:10px;cursor:pointer;transition:all 0.2s;color:rgba(255,255,255,0.7);font-size:14px;font-weight:500;margin:0 16px; }
 .nav-item:hover { background:rgba(255,255,255,0.1);color:white; }
 .nav-item.active { background:linear-gradient(135deg,var(--pink),#db2777);color:white; }
-.main-content { flex:1;margin-left:280px;padding:32px;min-height:100vh; }
+.main-content { flex:1;margin-left:280px;padding:24px;min-height:100vh;overflow-x:hidden; }
 .page { display:none; }
 .page.active { display:block;animation:fadeIn 0.3s ease; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
@@ -56,7 +56,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
 @keyframes slideIn { from{transform:translateX(100%);opacity:0} to{transform:translateX(0);opacity:1} }
 
 /* CARDS */
-.card { background:white;border-radius:var(--radius);padding:24px;box-shadow:0 4px 6px rgba(0,0,0,0.05);border:1px solid var(--border); }
+.card { background:white;border-radius:var(--radius);padding:24px;box-shadow:0 4px 6px rgba(0,0,0,0.05);border:1px solid var(--border);overflow:hidden; }
 .btn { padding:10px 20px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;transition:all 0.2s;border:none;display:inline-flex;align-items:center;justify-content:center;gap:8px; }
 .btn-primary { background:linear-gradient(135deg,var(--pink),#db2777);color:white; }
 .btn-primary:hover { transform:translateY(-1px);box-shadow:0 4px 12px rgba(236,72,153,0.3); }
@@ -71,7 +71,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
 .badge-warning { background:var(--warning-light);color:var(--warning); }
 .badge-danger { background:var(--danger-light);color:var(--danger); }
 .badge-info { background:var(--blue-light);color:var(--blue); }
-.table { width:100%;border-collapse:collapse; }
+.table { width:100%;border-collapse:collapse;min-width:600px; }
 .table th { text-align:left;padding:12px 16px;background:var(--grey-light);font-weight:600;font-size:12px;color:var(--grey);text-transform:uppercase;letter-spacing:0.5px;border-bottom:2px solid var(--border); }
 .table td { padding:16px;border-bottom:1px solid var(--border);font-size:14px; }
 .table tr:hover { background:var(--grey-light); }
@@ -565,7 +565,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
       </div>
       <div id="payroll-staff" class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;"><h3 style="font-size:18px;font-weight:700;">Staff List</h3><button class="btn btn-primary" onclick="newStaff()">+ Add Staff</button></div>
-        <div style="overflow-x:auto;"><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Designation</th><th>Department</th><th>Mobile</th><th>Status</th><th>Action</th></tr></thead><tbody id="staffTableBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No staff added</td></tr></tbody></table></div>
+        <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>ID</th><th>Name</th><th>Designation</th><th>Department</th><th>Mobile</th><th>Status</th><th>Action</th></tr></thead><tbody id="staffTableBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No staff added</td></tr></tbody></table></div>
       </div>
       <div id="payroll-attendance" class="card" style="display:none;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
@@ -604,7 +604,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
           </div>
         </div>
         <!-- Calendar Grid -->
-        <div style="overflow-x:auto;"><table class="table"><thead><tr><th>Staff</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>...</th><th>Summary</th></tr></thead><tbody id="attendanceTableBody"><tr><td colspan="12" style="text-align:center;padding:30px;color:var(--grey);">Click Auto-Generate to create attendance</td></tr></tbody></table></div>
+        <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>Staff</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>...</th><th>Summary</th></tr></thead><tbody id="attendanceTableBody"><tr><td colspan="12" style="text-align:center;padding:30px;color:var(--grey);">Click Auto-Generate to create attendance</td></tr></tbody></table></div>
       </div>
       <div id="payroll-salary" class="card" style="display:none;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
@@ -622,7 +622,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
             <button class="btn btn-success" onclick="processAllSalaries()">✅ Process Salaries</button>
           </div>
         </div>
-        <div style="overflow-x:auto;"><table class="table"><thead><tr><th>Staff</th><th>Basic</th><th>Allowances</th><th>Deductions</th><th>Net Salary</th><th>Status</th><th>Action</th></tr></thead><tbody id="salaryTableBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No salary records</td></tr></table></div>
+        <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>Staff</th><th>Basic</th><th>Allowances</th><th>Deductions</th><th>Net Salary</th><th>Status</th><th>Action</th></tr></thead><tbody id="salaryTableBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No salary records</td></tr></table></div>
       </div>
       <div id="payroll-history" class="card" style="display:none;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
@@ -639,7 +639,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
             </select>
           </div>
         </div>
-        <div style="overflow-x:auto;"><table class="table"><thead><tr><th>Month</th><th>Staff</th><th>Basic</th><th>Net</th><th>Paid On</th><th>Mode</th><th>Action</th></tr></thead><tbody id="salaryHistoryBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No salary history</td></tr></tbody></table></div>
+        <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>Month</th><th>Staff</th><th>Basic</th><th>Net</th><th>Paid On</th><th>Mode</th><th>Action</th></tr></thead><tbody id="salaryHistoryBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No salary history</td></tr></tbody></table></div>
       </div>
       <div id="payroll-analytics" class="card" style="display:none;">
         <h3 style="font-size:18px;font-weight:700;margin-bottom:20px;">📊 Salary Analytics</h3>
@@ -655,7 +655,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
         </div>
         <div class="card" style="margin-top:20px;">
           <h4 style="font-size:16px;font-weight:700;margin-bottom:16px;">Department-wise Summary</h4>
-          <div style="overflow-x:auto;"><table class="table"><thead><tr><th>Department</th><th>Staff Count</th><th>Total Salary</th><th>Avg Salary</th></tr></thead><tbody id="deptSummaryBody"></tbody></table></div>
+          <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>Department</th><th>Staff Count</th><th>Total Salary</th><th>Avg Salary</th></tr></thead><tbody id="deptSummaryBody"></tbody></table></div>
         </div>
       </div>
       <div id="payroll-leaves" class="card" style="display:none;">
@@ -694,7 +694,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
           <button class="payroll-tab" onclick="showLeaveTab('balance',this)">📊 Balance</button>
         </div>
         <div id="leaveContent">
-          <div style="overflow-x:auto;"><table class="table"><thead><tr><th>Staff</th><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Action</th></tr></thead><tbody id="leaveTableBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No leave requests</td></tr></tbody></table></div>
+          <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>Staff</th><th>Type</th><th>From</th><th>To</th><th>Days</th><th>Reason</th><th>Action</th></tr></thead><tbody id="leaveTableBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No leave requests</td></tr></tbody></table></div>
         </div>
       </div>
     </div>
@@ -768,7 +768,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
               <option>January 2026</option><option>February 2026</option><option>March 2026</option>
             </select>
           </div>
-          <div style="overflow-x:auto;"><table class="table"><thead><tr><th>Receipt No</th><th>Student</th><th>Class</th><th>Amount</th><th>Mode</th><th>Date</th></tr></thead><tbody id="rptColTBody"></tbody></table></div>
+          <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>Receipt No</th><th>Student</th><th>Class</th><th>Amount</th><th>Mode</th><th>Date</th></tr></thead><tbody id="rptColTBody"></tbody></table></div>
         </div>
       </div>
 
@@ -779,7 +779,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
             <h3 style="font-size:18px;font-weight:700;">Defaulter List</h3>
             <span class="badge badge-danger" id="rptDefCount">0 defaulters</span>
           </div>
-          <div style="overflow-x:auto;"><table class="table"><thead><tr><th>Student ID</th><th>Name</th><th>Class</th><th>Father</th><th>Mobile</th><th>Pending Amount</th></tr></thead><tbody id="rptDefTBody"></tbody></table></div>
+          <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>Student ID</th><th>Name</th><th>Class</th><th>Father</th><th>Mobile</th><th>Pending Amount</th></tr></thead><tbody id="rptDefTBody"></tbody></table></div>
         </div>
       </div>
 
@@ -798,7 +798,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
               <span class="badge badge-info" id="rptStuCount">0 students</span>
             </div>
           </div>
-          <div style="overflow-x:auto;"><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Class</th><th>Father</th><th>Mobile</th><th>Fee Status</th></tr></thead><tbody id="rptStuTBody"></tbody></table></div>
+          <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>ID</th><th>Name</th><th>Class</th><th>Father</th><th>Mobile</th><th>Fee Status</th></tr></thead><tbody id="rptStuTBody"></tbody></table></div>
         </div>
       </div>
 
@@ -812,7 +812,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
               <button class="btn btn-secondary" onclick="rptExportCSV()" style="padding:8px 16px;font-size:13px;">⬇ Export CSV</button>
             </div>
           </div>
-          <div style="overflow-x:auto;"><table class="table"><thead><tr><th>ID</th><th>Name</th><th>Class</th><th>Div</th><th>Father</th><th>Mobile</th><th>GR No</th></tr></thead><tbody id="rptActTBody"></tbody></table></div>
+          <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>ID</th><th>Name</th><th>Class</th><th>Div</th><th>Father</th><th>Mobile</th><th>GR No</th></tr></thead><tbody id="rptActTBody"></tbody></table></div>
         </div>
       </div>
     </div>
@@ -927,7 +927,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
               <option>Other</option>
             </select>
           </div>
-          <div><label class="label">Father's Name</label><input type="text" id="staffFather" class="input" placeholder="Father's name"></div>
+          <div><label class="label">Father Name</label><input type="text" id="staffFather" class="input" placeholder="Father's name"></div>
           <div><label class="label">Mother's Name</label><input type="text" id="staffMother" class="input" placeholder="Mother's name"></div>
           <div style="grid-column:span 2;"><label class="label">Address</label><textarea id="staffAddress" class="input" rows="2" placeholder="Full address"></textarea></div>
           <div><label class="label">Aadhar Number</label><input type="text" id="staffAadhar" class="input" placeholder="1234-5678-9012" maxlength="14" oninput="formatAadhar(this)"></div>
@@ -1038,8 +1038,13 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
   </div>
 </div>
 
-<div id="receiptModal" class="modal-overlay">
-  <div class="modal" style="max-width:500px;"><div class="modal-body" id="receiptContent" style="padding:32px;"></div></div>
+<div id="receiptModal" class="modal-overlay" style="padding:10px;">
+  <div class="modal" style="max-width:620px;width:100%;border-radius:16px;padding:0;overflow:visible;">
+    <div style="display:flex;justify-content:flex-end;padding:8px 8px 0;">
+      <button onclick="closeModal('receiptModal')" style="background:#ef4444;color:white;border:none;border-radius:50%;width:32px;height:32px;font-size:18px;cursor:pointer;font-weight:bold;">×</button>
+    </div>
+    <div class="modal-body" id="receiptContent" style="padding:0;"></div>
+  </div>
 </div>
 
 <!-- AI Assistant Modal -->
@@ -1110,25 +1115,55 @@ var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 var SUPA_HEADERS = {
   'apikey': SUPABASE_ANON_KEY,
   'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-  'Content-Type': 'application/json',
-  'Prefer': 'return=minimal'
+  'Content-Type': 'application/json'
 };
 
-async function supaSelect(table) {
-  var r = await fetch(SUPABASE_URL+'/rest/v1/'+table+'?select=*', {headers: SUPA_HEADERS});
-  return r.ok ? await r.json() : [];
+function supaXHR(method, url, data, callback) {
+  var xhr = new XMLHttpRequest();
+  xhr.open(method, url, true);
+  xhr.setRequestHeader('apikey', SUPABASE_ANON_KEY);
+  xhr.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_ANON_KEY);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('Prefer', 'return=minimal');
+  xhr.onreadystatechange = function() {
+    if(xhr.readyState === 4) callback(xhr.status, xhr.responseText);
+  };
+  xhr.onerror = function() { callback(0, null); };
+  xhr.send(data ? JSON.stringify(data) : null);
 }
-async function supaInsert(table, data) {
-  var r = await fetch(SUPABASE_URL+'/rest/v1/'+table, {
-    method:'POST', headers: SUPA_HEADERS, body: JSON.stringify(data)
+
+function supaSelect(table) {
+  return new Promise(function(resolve) {
+    var url = SUPABASE_URL+'/rest/v1/'+table+'?select=*&order=created_at.asc';
+    supaXHR('GET', url, null, function(status, text) {
+      if(status === 200) {
+        try { resolve(JSON.parse(text)); }
+        catch(e) { console.error(table+' parse error'); resolve([]); }
+      } else {
+        console.error(table+' fetch failed: '+status);
+        resolve([]);
+      }
+    });
   });
-  return r.ok;
 }
-async function supaUpdate(table, id, data) {
-  var r = await fetch(SUPABASE_URL+'/rest/v1/'+table+'?id=eq.'+id, {
-    method:'PATCH', headers: SUPA_HEADERS, body: JSON.stringify(data)
+
+function supaInsert(table, data) {
+  return new Promise(function(resolve) {
+    var url = SUPABASE_URL+'/rest/v1/'+table;
+    supaXHR('POST', url, data, function(status, text) {
+      if(status >= 200 && status < 300) { resolve(true); }
+      else { console.error(table+' insert failed: '+status+' '+text); resolve(false); }
+    });
   });
-  return r.ok;
+}
+
+function supaUpdate(table, id, data) {
+  return new Promise(function(resolve) {
+    var url = SUPABASE_URL+'/rest/v1/'+table+'?id=eq.'+encodeURIComponent(id);
+    supaXHR('PATCH', url, data, function(status, text) {
+      resolve(status >= 200 && status < 300);
+    });
+  });
 }
 
 var RECEIPT_VIEWER_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1/object/public/receipts/receipt_viewer.html';
@@ -1178,8 +1213,12 @@ async function sbLoadAll() {
     if(staffDB.length>0) counters.staff=staffDB.length+1;
     if(enquiryDB.length>0){ var mq=enquiryDB.reduce(function(m,e){ var n=parseInt((e.id||'').replace('ENQ-',''))||1000; return n>m?n:m;},1000); counters.enquiry=mq+1; }
     renderAllTables(); dashUpdateStats();
-    notify('Data loaded!', 'success');
-  } catch(err) { console.error(err); loadSampleData(); notify('Using sample data', 'warning'); }
+    notify('✅ Data loaded successfully!', 'success');
+  } catch(err) {
+    console.error('Supabase error:', err);
+    notify('⚠️ Database connection issue - check internet', 'warning');
+    renderAllTables(); dashUpdateStats();
+  }
 }
 
 
@@ -1371,237 +1410,167 @@ function dashUpdateStats() {
     }).join('');
   if(ge('recentActivity')) ge('recentActivity').innerHTML = html;
   
-  // Initialize Dashboard Charts with Animations
+  // Re-initialize Dashboard Charts with live data
+  dashCharts = { fee: null, pie: null, admission: null, status: null };
   initDashboardCharts();
 }
 
 // Dashboard Charts with Beautiful 3D Animations using ECharts
 var dashCharts = { fee: null, pie: null, admission: null, status: null };
 function initDashboardCharts() {
-  // 3D Fee Collection Bar Chart with Gradient
+  if(typeof echarts === 'undefined') {
+    setTimeout(initDashboardCharts, 500);
+    return;
+  }
+
+  // ===== LIVE DATA from Supabase =====
+
+  // 1. Monthly Fee Collection - from feeDB
+  var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var feeByMonth = new Array(12).fill(0);
+  var currentYear = new Date().getFullYear();
+  feeDB.forEach(function(f) {
+    if(f.date && f.date.startsWith(String(currentYear))) {
+      var m = parseInt(f.date.split('-')[1]) - 1;
+      if(m >= 0 && m < 12) feeByMonth[m] += (f.amount || 0);
+    }
+  });
+
+  // 2. Class Distribution - from studentsDB
+  var classCounts = {};
+  studentsDB.forEach(function(s) {
+    var cls = s.class || 'Other';
+    classCounts[cls] = (classCounts[cls] || 0) + 1;
+  });
+  var classData = Object.keys(classCounts).map(function(k) {
+    return { value: classCounts[k], name: k };
+  });
+  if(classData.length === 0) classData = [{ value: 0, name: 'No Students' }];
+
+  // 3. Admission Trend - last 6 months from studentsDB
+  var admByMonth = new Array(6).fill(0);
+  var last6Months = [];
+  for(var x = 5; x >= 0; x--) {
+    var d = new Date();
+    d.setMonth(d.getMonth() - x);
+    last6Months.push(d.toLocaleString('en-US',{month:'short'}));
+  }
+  studentsDB.forEach(function(s) {
+    if(s.created_at) {
+      var d = new Date(s.created_at);
+      var monthsAgo = (new Date().getFullYear() - d.getFullYear()) * 12 + (new Date().getMonth() - d.getMonth());
+      if(monthsAgo >= 0 && monthsAgo < 6) {
+        admByMonth[5 - monthsAgo]++;
+      }
+    }
+  });
+
+  // 4. Fee Status - paid vs pending vs partial
+  var paidCount = 0, pendingCount = 0, partialCount = 0;
+  var annualFee = 25000;
+  studentsDB.forEach(function(s) {
+    var studentFees = feeDB.filter(function(f){ return f.student_id === s.id; });
+    var totalPaid = studentFees.reduce(function(sum,f){ return sum + (f.amount||0); }, 0);
+    if(totalPaid >= annualFee) paidCount++;
+    else if(totalPaid > 0) partialCount++;
+    else pendingCount++;
+  });
+
+  // ===== CHART 1: Monthly Fee Collection =====
   var feeEl = ge('dashFeeChart');
-  if (feeEl && !dashCharts.fee) {
+  if(feeEl) {
+    if(dashCharts.fee) dashCharts.fee.dispose();
     dashCharts.fee = echarts.init(feeEl);
-    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    var feeData = [285000, 320000, 410000, 380000, 450000, 520000, 480000, 390000, 420000, 510000, 460000, 380000];
     dashCharts.fee.setOption({
       tooltip: {
-        trigger: 'axis',
-        backgroundColor: 'rgba(30, 27, 75, 0.95)',
-        borderColor: '#667eea',
-        borderWidth: 1,
-        textStyle: { color: '#fff' },
-        formatter: function(params) {
-          return '<strong>' + params[0].name + '</strong><br/>₹' + params[0].value.toLocaleString();
-        }
+        trigger:'axis',
+        backgroundColor:'rgba(30,27,75,.95)',
+        borderColor:'#667eea',
+        borderWidth:1,
+        textStyle:{color:'#fff'},
+        formatter:function(p){ return '<strong>'+p[0].name+'</strong><br>&#8377;'+p[0].value.toLocaleString('en-IN'); }
       },
-      grid: { left: '3%', right: '4%', bottom: '3%', top: '10%', containLabel: true },
-      xAxis: {
-        type: 'category',
-        data: months,
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { color: '#64748b', fontSize: 11 }
-      },
-      yAxis: {
-        type: 'value',
-        axisLine: { show: false },
-        axisTick: { show: false },
-        splitLine: { lineStyle: { color: '#f1f5f9' } },
-        axisLabel: {
-          color: '#64748b',
-          fontSize: 11,
-          formatter: function(v) { return '₹' + (v/1000) + 'K'; }
-        }
-      },
-      series: [{
-        type: 'bar',
-        data: feeData,
-        barWidth: '50%',
-        itemStyle: {
-          borderRadius: [8, 8, 0, 0],
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: '#667eea' },
-            { offset: 0.5, color: '#764ba2' },
-            { offset: 1, color: '#5a3f9f' }
-          ]),
-          shadowColor: 'rgba(102, 126, 234, 0.4)',
-          shadowBlur: 10,
-          shadowOffsetY: 5
-        },
-        emphasis: {
-          itemStyle: {
-            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-              { offset: 0, color: '#764ba2' },
-              { offset: 1, color: '#667eea' }
-            ])
-          }
-        },
-        animationDuration: 2000,
-        animationEasing: 'elasticOut'
+      grid:{left:'3%',right:'4%',bottom:'3%',top:'10%',containLabel:true},
+      xAxis:{type:'category',data:months,axisLine:{show:false},axisTick:{show:false},axisLabel:{color:'#64748b',fontSize:11}},
+      yAxis:{type:'value',axisLine:{show:false},axisTick:{show:false},splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#64748b',fontSize:11,formatter:function(v){return v>=100000?'&#8377;'+(v/100000).toFixed(1)+'L':'&#8377;'+(v/1000)+'K';}}},
+      series:[{
+        type:'bar',data:feeByMonth,barWidth:'50%',
+        itemStyle:{borderRadius:[8,8,0,0],color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#667eea'},{offset:1,color:'#5a3f9f'}]),shadowColor:'rgba(102,126,234,.4)',shadowBlur:10,shadowOffsetY:5},
+        animationDuration:2000,animationEasing:'elasticOut'
       }]
     });
   }
 
-  // 3D Class Distribution Pie Chart
+  // ===== CHART 2: Class Distribution =====
   var pieEl = ge('dashPieChart');
-  if (pieEl && !dashCharts.pie) {
+  if(pieEl) {
+    if(dashCharts.pie) dashCharts.pie.dispose();
     dashCharts.pie = echarts.init(pieEl);
+    var colors = ['#667eea','#11998e','#f093fb','#4facfe','#f5576c','#38ef7d','#fee140','#fa709a'];
     dashCharts.pie.setOption({
-      tooltip: {
-        trigger: 'item',
-        backgroundColor: 'rgba(30, 27, 75, 0.95)',
-        borderColor: '#11998e',
-        borderWidth: 1,
-        textStyle: { color: '#fff' },
-        formatter: '{b}: {c} ({d}%)'
-      },
-      legend: {
-        orient: 'horizontal',
-        bottom: '5%',
-        itemWidth: 12,
-        itemHeight: 12,
-        textStyle: { fontSize: 11, fontWeight: 600 }
-      },
-      series: [{
-        type: 'pie',
-        radius: ['45%', '75%'],
-        center: ['50%', '45%'],
-        avoidLabelOverlap: false,
-        itemStyle: {
-          borderRadius: 8,
-          borderColor: '#fff',
-          borderWidth: 3,
-          shadowColor: 'rgba(0,0,0,0.2)',
-          shadowBlur: 15
-        },
-        label: {
-          show: true,
-          position: 'center',
-          formatter: function() { return '310\nStudents'; },
-          fontSize: 18,
-          fontWeight: 'bold',
-          color: '#1e1b4b'
-        },
-        emphasis: {
-          label: { show: true, fontSize: 20, fontWeight: 'bold' },
-          itemStyle: {
-            shadowBlur: 20,
-            shadowColor: 'rgba(0, 0, 0, 0.3)'
-          }
-        },
-        labelLine: { show: false },
-        data: [
-          { value: 45, name: 'Nursery', itemStyle: { color: '#667eea' } },
-          { value: 120, name: 'Primary', itemStyle: { color: '#11998e' } },
-          { value: 85, name: 'Middle', itemStyle: { color: '#f093fb' } },
-          { value: 60, name: 'Secondary', itemStyle: { color: '#4facfe' } }
-        ],
-        animationType: 'scale',
-        animationDuration: 2000,
-        animationEasing: 'elasticOut'
+      tooltip:{trigger:'item',backgroundColor:'rgba(30,27,75,.95)',borderColor:'#11998e',borderWidth:1,textStyle:{color:'#fff'},formatter:'{b}: {c} ({d}%)'},
+      legend:{orient:'horizontal',bottom:'5%',itemWidth:12,itemHeight:12,textStyle:{fontSize:11,fontWeight:600}},
+      series:[{
+        type:'pie',radius:['45%','75%'],center:['50%','45%'],
+        avoidLabelOverlap:false,
+        itemStyle:{borderRadius:8,borderColor:'#fff',borderWidth:3,shadowColor:'rgba(0,0,0,.2)',shadowBlur:15},
+        label:{show:true,position:'center',formatter:function(){return studentsDB.length+'\nStudents';},fontSize:18,fontWeight:'bold',color:'#1e1b4b'},
+        emphasis:{label:{show:true,fontSize:20,fontWeight:'bold'}},
+        labelLine:{show:false},
+        data:classData.map(function(d,i){return {value:d.value,name:d.name,itemStyle:{color:colors[i%colors.length]}}}),
+        animationType:'scale',animationDuration:2000,animationEasing:'elasticOut'
       }]
     });
   }
 
-  // 3D Admission Trend Bar Chart
+  // ===== CHART 3: Admission Trend =====
   var admEl = ge('dashAdmissionChart');
-  if (admEl && !dashCharts.admission) {
+  if(admEl) {
+    if(dashCharts.admission) dashCharts.admission.dispose();
     dashCharts.admission = echarts.init(admEl);
+    var barColors = ['#f093fb','#f5576c','#4facfe','#00f2fe','#11998e','#38ef7d'];
     dashCharts.admission.setOption({
-      tooltip: {
-        trigger: 'axis',
-        backgroundColor: 'rgba(30, 27, 75, 0.95)',
-        borderColor: '#f093fb',
-        borderWidth: 1,
-        textStyle: { color: '#fff' }
-      },
-      grid: { left: '3%', right: '4%', bottom: '3%', top: '10%', containLabel: true },
-      xAxis: {
-        type: 'category',
-        data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: { color: '#64748b', fontSize: 11 }
-      },
-      yAxis: {
-        type: 'value',
-        axisLine: { show: false },
-        axisTick: { show: false },
-        splitLine: { lineStyle: { color: '#f1f5f9' } },
-        axisLabel: { color: '#64748b', fontSize: 11 }
-      },
-      series: [{
-        type: 'bar',
-        data: [
-          { value: 12, itemStyle: { color: '#f093fb', borderRadius: [8, 8, 0, 0], shadowColor: 'rgba(240, 147, 251, 0.4)', shadowBlur: 10 } },
-          { value: 19, itemStyle: { color: '#f5576c', borderRadius: [8, 8, 0, 0], shadowColor: 'rgba(245, 87, 108, 0.4)', shadowBlur: 10 } },
-          { value: 15, itemStyle: { color: '#4facfe', borderRadius: [8, 8, 0, 0], shadowColor: 'rgba(79, 172, 254, 0.4)', shadowBlur: 10 } },
-          { value: 25, itemStyle: { color: '#00f2fe', borderRadius: [8, 8, 0, 0], shadowColor: 'rgba(0, 242, 254, 0.4)', shadowBlur: 10 } },
-          { value: 22, itemStyle: { color: '#11998e', borderRadius: [8, 8, 0, 0], shadowColor: 'rgba(17, 153, 142, 0.4)', shadowBlur: 10 } },
-          { value: 18, itemStyle: { color: '#38ef7d', borderRadius: [8, 8, 0, 0], shadowColor: 'rgba(56, 239, 125, 0.4)', shadowBlur: 10 } }
-        ],
-        barWidth: '40%',
-        animationDuration: 1800,
-        animationEasing: 'elasticOut'
+      tooltip:{trigger:'axis',backgroundColor:'rgba(30,27,75,.95)',borderColor:'#f093fb',borderWidth:1,textStyle:{color:'#fff'}},
+      grid:{left:'3%',right:'4%',bottom:'3%',top:'10%',containLabel:true},
+      xAxis:{type:'category',data:last6Months,axisLine:{show:false},axisTick:{show:false},axisLabel:{color:'#64748b',fontSize:11}},
+      yAxis:{type:'value',axisLine:{show:false},axisTick:{show:false},splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#64748b',fontSize:11}},
+      series:[{
+        type:'bar',
+        data:admByMonth.map(function(v,i){return {value:v,itemStyle:{color:barColors[i],borderRadius:[8,8,0,0],shadowColor:'rgba(0,0,0,.2)',shadowBlur:8}};}),
+        barWidth:'40%',animationDuration:1800,animationEasing:'elasticOut'
       }]
     });
   }
 
-  // 3D Fee Status Polar Chart
+  // ===== CHART 4: Fee Status Overview =====
   var statusEl = ge('dashStatusChart');
-  if (statusEl && !dashCharts.status) {
+  if(statusEl) {
+    if(dashCharts.status) dashCharts.status.dispose();
     dashCharts.status = echarts.init(statusEl);
     dashCharts.status.setOption({
-      tooltip: {
-        trigger: 'item',
-        backgroundColor: 'rgba(30, 27, 75, 0.95)',
-        borderColor: '#4facfe',
-        borderWidth: 1,
-        textStyle: { color: '#fff' },
-        formatter: '{b}: {c} students'
-      },
-      legend: {
-        orient: 'horizontal',
-        bottom: '5%',
-        itemWidth: 12,
-        itemHeight: 12,
-        textStyle: { fontSize: 11, fontWeight: 600 }
-      },
-      series: [{
-        type: 'pie',
-        radius: ['30%', '70%'],
-        center: ['50%', '42%'],
-        roseType: 'area',
-        itemStyle: {
-          borderRadius: 6,
-          borderColor: '#fff',
-          borderWidth: 2,
-          shadowColor: 'rgba(0,0,0,0.15)',
-          shadowBlur: 10
-        },
-        label: { show: false },
-        emphasis: {
-          label: { show: true, fontSize: 14, fontWeight: 'bold' }
-        },
-        data: [
-          { value: 180, name: 'Fully Paid', itemStyle: { color: '#11998e' } },
-          { value: 45, name: 'Pending', itemStyle: { color: '#f093fb' } },
-          { value: 25, name: 'Partial', itemStyle: { color: '#4facfe' } }
+      tooltip:{trigger:'item',backgroundColor:'rgba(30,27,75,.95)',borderColor:'#4facfe',borderWidth:1,textStyle:{color:'#fff'},formatter:'{b}: {c} students'},
+      legend:{orient:'horizontal',bottom:'5%',itemWidth:12,itemHeight:12,textStyle:{fontSize:11,fontWeight:600}},
+      series:[{
+        type:'pie',radius:['30%','70%'],center:['50%','42%'],roseType:'area',
+        itemStyle:{borderRadius:6,borderColor:'#fff',borderWidth:2,shadowColor:'rgba(0,0,0,.15)',shadowBlur:10},
+        label:{show:false},
+        emphasis:{label:{show:true,fontSize:14,fontWeight:'bold'}},
+        data:[
+          {value:paidCount,name:'Fully Paid',itemStyle:{color:'#11998e'}},
+          {value:pendingCount,name:'Pending',itemStyle:{color:'#f093fb'}},
+          {value:partialCount,name:'Partial',itemStyle:{color:'#4facfe'}}
         ],
-        animationType: 'scale',
-        animationDuration: 2000,
-        animationEasing: 'elasticOut'
+        animationType:'scale',animationDuration:2000,animationEasing:'elasticOut'
       }]
     });
   }
 
-  // Resize charts on window resize
-  window.addEventListener('resize', function() {
-    if (dashCharts.fee) dashCharts.fee.resize();
-    if (dashCharts.pie) dashCharts.pie.resize();
-    if (dashCharts.admission) dashCharts.admission.resize();
-    if (dashCharts.status) dashCharts.status.resize();
+  // Resize on window resize
+  window.addEventListener('resize',function(){
+    if(dashCharts.fee) dashCharts.fee.resize();
+    if(dashCharts.pie) dashCharts.pie.resize();
+    if(dashCharts.admission) dashCharts.admission.resize();
+    if(dashCharts.status) dashCharts.status.resize();
   });
 }
 function handleDashboardSearch(q) {
@@ -1933,8 +1902,8 @@ function showReceiptNew(r) {
   var t2bal = r.term2_amount - r.term2_paid;
   var totalPaid = r.total_paid;
   var qrData = RECEIPT_VIEWER_URL + '?id=' + encodeURIComponent(r.id) + '&token=' + encodeURIComponent(r.token);
-  console.log('QR URL:', qrData);
-  var dt = new Date(r.date).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  var dt = new Date(r.date).toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
+  var LOGO = document.getElementById('schoolLogoData').src;
 
   function numW(n){
     var o=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
@@ -1946,88 +1915,164 @@ function showReceiptNew(r) {
     return numW(Math.floor(n/100000))+' Lakh'+(n%100000?' '+numW(n%100000):'');
   }
 
-  var LOGO = document.getElementById("schoolLogoData").src;  var t1s = t1bal===0?'<span style="background:#dcfce7;color:#15803d;padding:1px 5px;border-radius:5px;font-size:5.5px;font-weight:700;">PAID</span>':'<span style="background:#fee2e2;color:#dc2626;padding:1px 5px;border-radius:5px;font-size:5.5px;font-weight:700;">DUE</span>';
-  var t2s = t2bal===0?'<span style="background:#dcfce7;color:#15803d;padding:1px 5px;border-radius:5px;font-size:5.5px;font-weight:700;">PAID</span>':'<span style="background:#fee2e2;color:#dc2626;padding:1px 5px;border-radius:5px;font-size:5.5px;font-weight:700;">DUE</span>';
-
   var html = '';
-  html += '<div style="display:flex;flex-direction:column;gap:10px;align-items:center;">';
-  html += '<div style="display:flex;gap:8px;background:#f8fafc;padding:10px 16px;border-radius:10px;border:1px solid #e2e8f0;width:559px;align-items:center;">';
-  html += '<button onclick="window.print()" style="padding:7px 14px;background:linear-gradient(135deg,#6b21a8,#7c3aed);color:white;border:none;border-radius:7px;font-weight:600;font-size:11px;cursor:pointer;font-family:inherit;">Print</button>';
-  html += '<button id="rcptWaBtn" style="padding:7px 14px;background:linear-gradient(135deg,#15803d,#22c55e);color:white;border:none;border-radius:7px;font-weight:600;font-size:11px;cursor:pointer;font-family:inherit;">WhatsApp</button>';
-  html += '<span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:600;">Saved to Supabase</span>';
+
+  // Action buttons
+  html += '<div style="display:flex;gap:8px;padding:10px 16px;background:#f8fafc;border-radius:10px 10px 0 0;border-bottom:1px solid #e2e8f0;flex-wrap:wrap;align-items:center;">';
+  html += '<button onclick="window.print()" style="padding:8px 16px;background:linear-gradient(135deg,#6b21a8,#7c3aed);color:white;border:none;border-radius:7px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;">&#128424; Print</button>';
+  html += '<button id="rcptWaBtn" style="padding:8px 16px;background:linear-gradient(135deg,#15803d,#22c55e);color:white;border:none;border-radius:7px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;">&#128154; WhatsApp</button>';
+  html += '<span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:600;border:1px solid #86efac;">&#10003; Saved</span>';
+  html += '<button onclick="closeModal(&quot;receiptModal&quot;)" style="margin-left:auto;padding:8px 16px;background:#ef4444;color:white;border:none;border-radius:7px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;">&#10005; Close</button>';
   html += '</div>';
-  html += '<div id="newRcptCard" style="width:559px;height:397px;background:white;position:relative;overflow:hidden;box-shadow:0 8px 30px rgba(0,0,0,.15);">';
-  html += '<div style="position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(107,33,168,.015) 0,rgba(107,33,168,.015) 1px,transparent 1px,transparent 9px),repeating-linear-gradient(-45deg,rgba(107,33,168,.015) 0,rgba(107,33,168,.015) 1px,transparent 1px,transparent 9px);z-index:0;"></div>';
-  html += '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:240px;height:240px;background-image:url('+LOGO+');background-size:contain;background-repeat:no-repeat;background-position:center;opacity:.05;z-index:0;"></div>';
-  html += '<div style="position:absolute;left:0;top:0;bottom:0;width:148px;background:linear-gradient(180deg,#2e0650,#6b21a8 55%,#7c3aed);padding:12px 10px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;z-index:1;">';
-  html += '<div style="position:absolute;top:0;right:0;bottom:0;width:3px;background:linear-gradient(180deg,#f59e0b,#ec4899,#7c3aed,#ec4899,#f59e0b);"></div>';
-  html += '<img src="'+LOGO+'" style="width:60px;height:60px;object-fit:contain;filter:drop-shadow(0 2px 5px rgba(0,0,0,.3));">';
-  html += '<div style="color:white;text-align:center;"><p style="font-size:8px;font-weight:800;line-height:1.3;">Matoshree Vitthai Podar Learn School</p><p style="font-size:5.5px;opacity:.7;margin-top:2px;font-style:italic;">Niphad, Nashik</p></div>';
-  html += '<div style="color:rgba(255,255,255,.8);font-size:5.5px;text-align:center;line-height:1.8;">9309042265<br>8767021833<br>Ide.matoshreevitthaiPls@podar.org</div>';
-  html += '<div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:3px 8px;border-radius:8px;font-size:6px;font-weight:700;text-align:center;">Official Receipt</div>';
-  html += '<div style="display:flex;flex-direction:column;align-items:center;gap:3px;">';
-  html += '<div id="rcptQR" style="width:66px;height:66px;background:white;border-radius:6px;display:flex;align-items:center;justify-content:center;padding:3px;"></div>';
-  html += '<div style="font-size:5px;color:rgba(255,255,255,.6);">Scan to Verify</div>';
-  html += '<div style="font-size:4.5px;color:rgba(255,255,255,.45);">'+r.student_id+'</div>';
+
+  // RECEIPT CARD - A5 Landscape style
+  html += '<div id="newRcptCard" style="background:white;position:relative;overflow:hidden;">';
+
+  // Security background pattern
+  html += '<div style="position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(107,33,168,.012) 0,rgba(107,33,168,.012) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(107,33,168,.012) 0,rgba(107,33,168,.012) 1px,transparent 1px,transparent 10px);pointer-events:none;z-index:0;"></div>';
+
+  // Watermark
+  html += '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background-image:url('+LOGO+');background-size:contain;background-repeat:no-repeat;background-position:center;opacity:.04;pointer-events:none;z-index:0;"></div>';
+
+  // HEADER
+  html += '<div style="background:linear-gradient(135deg,#2e0650,#6b21a8 60%,#7c3aed);padding:16px 24px;position:relative;z-index:1;">';
+  html += '<div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#f59e0b,#ec4899,#7c3aed,#ec4899,#f59e0b);"></div>';
+  html += '<div style="display:flex;align-items:center;gap:16px;">';
+  html += '<img src="'+LOGO+'" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));border-radius:50%;background:white;padding:4px;">';
+  html += '<div style="flex:1;">';
+  html += '<h1 style="color:white;font-size:18px;font-weight:800;margin:0;line-height:1.2;">Matoshree Vitthai Podar Learn School</h1>';
+  html += '<p style="color:rgba(255,255,255,.8);font-size:11px;margin:3px 0 0;">Niphad, Nashik District, Maharashtra</p>';
+  html += '<p style="color:rgba(255,255,255,.75);font-size:10px;margin:2px 0 0;">&#128222; 9309042265 | 8767021833 &nbsp;|&nbsp; &#9993; Ide.matoshreevitthaiPls@podar.org</p>';
+  html += '</div>';
+  html += '<div style="text-align:right;">';
+  html += '<div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:4px 12px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:6px;">&#10022; OFFICIAL FEE RECEIPT &#10022;</div>';
+  html += '<div style="color:white;font-size:16px;font-weight:800;">'+r.id+'</div>';
+  html += '<div style="color:rgba(255,255,255,.75);font-size:10px;margin-top:2px;">Date: '+dt+'</div>';
+  html += '<div style="background:rgba(255,255,255,.15);color:white;padding:2px 8px;border-radius:6px;font-size:10px;margin-top:4px;display:inline-block;">AY: '+(r.academic_year||'2025-26')+'</div>';
+  html += '</div>';
   html += '</div></div>';
-  html += '<div style="position:absolute;left:151px;top:0;right:0;bottom:22px;padding:10px 12px;z-index:1;display:flex;flex-direction:column;gap:5px;">';
-  html += '<div style="display:flex;justify-content:space-between;padding-bottom:5px;border-bottom:1.5px solid #e9d5ff;">';
-  html += '<div><div style="font-size:9px;font-weight:700;color:#3b0764;text-transform:uppercase;">Fee Receipt</div><span style="background:#f3e8ff;color:#6b21a8;padding:1px 6px;border-radius:5px;font-size:6px;font-weight:700;">AY: '+(r.academic_year||'2025-26')+'</span></div>';
-  html += '<div style="text-align:right;"><div style="font-size:12px;font-weight:800;color:#6b21a8;">'+r.id+'</div><div style="font-size:6.5px;color:#94a3b8;">'+dt+'</div></div></div>';
-  html += '<div style="font-size:6.5px;font-weight:700;color:#6b21a8;border-bottom:1px solid #e9d5ff;padding-bottom:2px;">Student Information</div>';
-  html += '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:3px 5px;">';
-  html += '<div><div style="font-size:5px;color:#94a3b8;">STUDENT</div><div style="font-size:8px;font-weight:700;">'+r.student_name+'</div></div>';
-  html += '<div><div style="font-size:5px;color:#94a3b8;">GR NO</div><div style="font-size:8px;font-weight:700;">'+(r.gr_no||'N/A')+'</div></div>';
-  html += '<div><div style="font-size:5px;color:#94a3b8;">CLASS</div><div style="font-size:8px;font-weight:700;">'+r.student_class+'-'+(r.student_div||'A')+'</div></div>';
-  html += '<div><div style="font-size:5px;color:#94a3b8;">ID</div><div style="font-size:6.5px;font-weight:700;">'+r.student_id+'</div></div>';
-  html += '<div><div style="font-size:5px;color:#94a3b8;">FATHER</div><div style="font-size:8px;font-weight:700;">'+(r.father_name||'N/A')+'</div></div>';
-  html += '<div><div style="font-size:5px;color:#94a3b8;">MOBILE</div><div style="font-size:8px;font-weight:700;">'+(r.mobile||'N/A')+'</div></div>';
-  html += '<div style="grid-column:span 2;"><div style="font-size:5px;color:#94a3b8;">ADDRESS</div><div style="font-size:6.5px;font-weight:700;">'+(r.address||'Niphad, Nashik')+'</div></div>';
-  html += '</div>';
-  html += '<div style="font-size:6.5px;font-weight:700;color:#6b21a8;border-bottom:1px solid #e9d5ff;padding-bottom:2px;">Fee Details</div>';
-  html += '<table style="width:100%;border-collapse:collapse;font-size:7px;">';
+
+  // BODY
+  html += '<div style="padding:16px 24px;position:relative;z-index:1;">';
+
+  // Student Info Section
+  html += '<div style="background:linear-gradient(135deg,#faf5ff,#f3e8ff);border-radius:10px;padding:12px 16px;margin-bottom:14px;border:1px solid #e9d5ff;">';
+  html += '<div style="font-size:11px;font-weight:700;color:#6b21a8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e9d5ff;">&#128106; Student Information</div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">';
+  html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Student Name</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+r.student_name+'</div></div>';
+  html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">GR Number</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+(r.gr_no||'N/A')+'</div></div>';
+  html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Student ID</div><div style="font-size:11px;font-weight:700;color:#1e293b;">'+r.student_id+'</div></div>';
+  html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Class & Division</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+r.student_class+' - '+(r.student_div||'A')+'</div></div>';
+  html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Father Name</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+(r.father_name||'N/A')+'</div></div>';
+  html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Mobile</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+(r.mobile||'N/A')+'</div></div>';
+  html += '</div></div>';
+
+  // Fee Table
+  html += '<div style="margin-bottom:14px;">';
+  html += '<div style="font-size:11px;font-weight:700;color:#6b21a8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:6px;border-bottom:1.5px solid #e9d5ff;">&#128179; Fee Details</div>';
+  html += '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
   html += '<thead><tr style="background:linear-gradient(135deg,#6b21a8,#7c3aed);">';
-  html += '<th style="padding:3px 4px;color:white;font-size:5.5px;text-align:left;">#</th><th style="padding:3px 4px;color:white;font-size:5.5px;text-align:left;">Description</th><th style="padding:3px 4px;color:white;font-size:5.5px;text-align:left;">Term</th><th style="padding:3px 4px;color:white;font-size:5.5px;text-align:left;">Total</th><th style="padding:3px 4px;color:white;font-size:5.5px;text-align:left;">Paid</th><th style="padding:3px 4px;color:white;font-size:5.5px;text-align:left;">Balance</th><th style="padding:3px 4px;color:white;font-size:5.5px;text-align:left;">Status</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:left;border-radius:6px 0 0 0;">#</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:left;">Description</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:center;">Term</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:right;">Total Fee</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:right;">Amount Paid</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:right;">Balance</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:center;border-radius:0 6px 0 0;">Status</th>';
   html += '</tr></thead><tbody>';
-  html += '<tr style="border-bottom:1px solid #f1f5f9;"><td style="padding:3px 4px;">1</td><td style="padding:3px 4px;font-weight:600;">Tuition Fee</td><td style="padding:3px 4px;"><span style="background:#dbeafe;color:#1d4ed8;padding:1px 5px;border-radius:5px;font-size:5.5px;font-weight:700;">Term 1</span></td><td style="padding:3px 4px;font-weight:700;">&#8377;'+r.term1_amount.toLocaleString('en-IN')+'</td><td style="padding:3px 4px;color:#15803d;font-weight:700;">&#8377;'+r.term1_paid.toLocaleString('en-IN')+'</td><td style="padding:3px 4px;color:'+(t1bal>0?'#dc2626':'#15803d')+';">&#8377;'+t1bal.toLocaleString('en-IN')+'</td><td style="padding:3px 4px;">'+t1s+'</td></tr>';
-  html += '<tr style="background:#faf5ff;"><td style="padding:3px 4px;">2</td><td style="padding:3px 4px;font-weight:600;">Tuition Fee</td><td style="padding:3px 4px;"><span style="background:#fce7f3;color:#be185d;padding:1px 5px;border-radius:5px;font-size:5.5px;font-weight:700;">Term 2</span></td><td style="padding:3px 4px;font-weight:700;">&#8377;'+r.term2_amount.toLocaleString('en-IN')+'</td><td style="padding:3px 4px;color:'+(r.term2_paid>0?'#15803d':'#dc2626')+';font-weight:700;">&#8377;'+r.term2_paid.toLocaleString('en-IN')+'</td><td style="padding:3px 4px;color:'+(t2bal>0?'#dc2626':'#15803d')+';">&#8377;'+t2bal.toLocaleString('en-IN')+'</td><td style="padding:3px 4px;">'+t2s+'</td></tr>';
-  html += '</tbody><tfoot><tr style="background:#f3e8ff;border-top:1.5px solid #6b21a8;"><td colspan="3" style="padding:3px 4px;font-weight:600;color:#3b0764;text-align:right;">Total</td><td style="padding:3px 4px;font-weight:700;color:#3b0764;">&#8377;'+r.annual_fee.toLocaleString('en-IN')+'</td><td style="padding:3px 4px;font-weight:700;color:#15803d;">&#8377;'+totalPaid.toLocaleString('en-IN')+'</td><td style="padding:3px 4px;font-weight:700;color:'+(totalBal>0?'#dc2626':'#15803d')+';">&#8377;'+totalBal.toLocaleString('en-IN')+'</td><td></td></tr></tfoot></table>';
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;">';
-  html += '<div style="padding:5px;border-radius:6px;text-align:center;background:linear-gradient(135deg,#6b21a8,#7c3aed);color:white;"><div style="font-size:5px;opacity:.85;">ANNUAL FEE</div><div style="font-size:11px;font-weight:800;">&#8377;'+r.annual_fee.toLocaleString('en-IN')+'</div></div>';
-  html += '<div style="padding:5px;border-radius:6px;text-align:center;background:linear-gradient(135deg,#15803d,#22c55e);color:white;"><div style="font-size:5px;opacity:.85;">PAID</div><div style="font-size:11px;font-weight:800;">&#8377;'+totalPaid.toLocaleString('en-IN')+'</div></div>';
-  html += '<div style="padding:5px;border-radius:6px;text-align:center;background:linear-gradient(135deg,#c2410c,#ef4444);color:white;"><div style="font-size:5px;opacity:.85;">BALANCE</div><div style="font-size:11px;font-weight:800;">&#8377;'+totalBal.toLocaleString('en-IN')+'</div></div>';
+
+  // Term 1
+  html += '<tr style="border-bottom:1px solid #f1f5f9;">';
+  html += '<td style="padding:8px 10px;">1</td>';
+  html += '<td style="padding:8px 10px;font-weight:600;">Tuition Fee<br><span style="font-size:10px;color:#94a3b8;">Academic Year '+(r.academic_year||'2025-26')+'</span></td>';
+  html += '<td style="padding:8px 10px;text-align:center;"><span style="background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">Term 1</span></td>';
+  html += '<td style="padding:8px 10px;text-align:right;font-weight:700;">&#8377;'+r.term1_amount.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;color:#15803d;font-weight:700;">&#8377;'+r.term1_paid.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;color:'+(t1bal>0?'#dc2626':'#15803d')+';">&#8377;'+t1bal.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:center;"><span style="background:'+(t1bal===0?'#dcfce7':'#fee2e2')+';color:'+(t1bal===0?'#15803d':'#dc2626')+';padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">'+(t1bal===0?'&#10003; PAID':'&#9203; DUE')+'</span></td>';
+  html += '</tr>';
+
+  // Term 2
+  html += '<tr style="background:#faf5ff;border-bottom:1px solid #f1f5f9;">';
+  html += '<td style="padding:8px 10px;">2</td>';
+  html += '<td style="padding:8px 10px;font-weight:600;">Tuition Fee<br><span style="font-size:10px;color:#94a3b8;">Academic Year '+(r.academic_year||'2025-26')+'</span></td>';
+  html += '<td style="padding:8px 10px;text-align:center;"><span style="background:#fce7f3;color:#be185d;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">Term 2</span></td>';
+  html += '<td style="padding:8px 10px;text-align:right;font-weight:700;">&#8377;'+r.term2_amount.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;color:'+(r.term2_paid>0?'#15803d':'#dc2626')+';font-weight:700;">&#8377;'+r.term2_paid.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;color:'+(t2bal>0?'#dc2626':'#15803d')+';">&#8377;'+t2bal.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:center;"><span style="background:'+(t2bal===0?'#dcfce7':'#fee2e2')+';color:'+(t2bal===0?'#15803d':'#dc2626')+';padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">'+(t2bal===0?'&#10003; PAID':'&#9203; DUE')+'</span></td>';
+  html += '</tr>';
+
+  // Total row
+  html += '<tr style="background:#f3e8ff;border-top:2px solid #6b21a8;">';
+  html += '<td colspan="3" style="padding:8px 10px;font-weight:700;color:#3b0764;text-align:right;">TOTAL</td>';
+  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:#3b0764;">&#8377;'+r.annual_fee.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:#15803d;">&#8377;'+totalPaid.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:'+(totalBal>0?'#dc2626':'#15803d')+';">&#8377;'+totalBal.toLocaleString('en-IN')+'</td>';
+  html += '<td></td></tr>';
+  html += '</tbody></table></div>';
+
+  // Amount boxes + QR + Sign
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto auto;gap:10px;align-items:start;">';
+
+  // Amount boxes
+  html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,#6b21a8,#7c3aed);color:white;">';
+  html += '<div style="font-size:9px;opacity:.85;font-weight:600;text-transform:uppercase;">Annual Fee</div>';
+  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">&#8377;'+r.annual_fee.toLocaleString('en-IN')+'</div></div>';
+
+  html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,#15803d,#22c55e);color:white;">';
+  html += '<div style="font-size:9px;opacity:.85;font-weight:600;text-transform:uppercase;">Amount Paid</div>';
+  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">&#8377;'+totalPaid.toLocaleString('en-IN')+'</div></div>';
+
+  html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,'+(totalBal>0?'#c2410c,#ef4444':'#15803d,#22c55e')+');color:white;">';
+  html += '<div style="font-size:9px;opacity:.85;font-weight:600;text-transform:uppercase;">Balance Due</div>';
+  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">&#8377;'+totalBal.toLocaleString('en-IN')+'</div></div>';
+
+  // QR Code
+  html += '<div style="text-align:center;">';
+  html += '<div id="rcptQR" style="width:80px;height:80px;background:white;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:4px;border:2px solid #e9d5ff;margin:0 auto;"></div>';
+  html += '<div style="font-size:8px;color:#64748b;margin-top:3px;font-weight:600;">Scan to Verify</div></div>';
+
+  // Sign
+  html += '<div style="text-align:center;">';
+  html += '<img src="'+LOGO+'" style="width:50px;height:50px;object-fit:contain;opacity:.5;display:block;margin:0 auto;">';
+  html += '<div style="border-top:1px solid #334155;padding-top:4px;font-size:9px;color:#64748b;font-weight:600;margin-top:16px;width:100px;">Authorized Signatory</div>';
   html += '</div>';
-  html += '<div style="display:flex;justify-content:space-between;align-items:flex-end;padding-top:4px;border-top:1px dashed #cbd5e1;">';
-  html += '<div><div style="font-size:5.5px;color:#6b21a8;font-weight:600;">AMOUNT IN WORDS</div><div style="font-size:7.5px;font-weight:700;">'+numW(totalPaid)+' Only</div><div style="font-size:5.5px;color:#64748b;">Mode: '+r.pay_mode+' | By: Admin</div></div>';
-  html += '<div style="font-size:5.5px;color:#78350f;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:4px;line-height:1.5;max-width:130px;">Official receipt. Term-2 due: 15 Jun 2026. Alteration is illegal.</div>';
-  html += '<div style="display:flex;flex-direction:column;align-items:center;gap:3px;"><img src="'+LOGO+'" style="width:28px;height:28px;object-fit:contain;opacity:.5;"><div style="border-top:1px solid #64748b;padding-top:2px;font-size:5.5px;color:#64748b;text-align:center;width:68px;">Authorized Signatory</div></div>';
-  html += '</div></div>';
-  html += '<div style="position:absolute;bottom:0;left:151px;right:0;background:linear-gradient(135deg,#2e0650,#6b21a8);padding:3px 10px;display:flex;justify-content:space-between;z-index:2;">';
-  html += '<div style="color:rgba(255,255,255,.6);font-size:5px;">Matoshree Vitthai Podar Learn School, Niphad | System generated</div>';
-  html += '<div style="background:rgba(255,255,255,.12);padding:2px 7px;border-radius:6px;color:white;font-size:5px;">Supabase Verified</div>';
   html += '</div>';
-  html += (totalBal===0?'<div style="position:absolute;bottom:38px;right:55px;width:50px;height:50px;border:2.5px solid #22c55e;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#22c55e;font-weight:800;font-size:8px;transform:rotate(-18deg);opacity:.7;z-index:3;">PAID</div>':'');
-  html += '</div></div>';
+
+  // Amount in words
+  html += '<div style="background:#f8f4ff;border:1px solid #e9d5ff;border-radius:8px;padding:8px 12px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;">';
+  html += '<div><span style="font-size:9px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Amount in Words: </span>';
+  html += '<span style="font-size:12px;font-weight:700;color:#1e293b;">'+numW(totalPaid)+' Rupees Only</span></div>';
+  html += '<div style="font-size:10px;color:#64748b;">Mode: <strong>'+r.pay_mode+'</strong> &nbsp;|&nbsp; Received by: <strong>Admin</strong></div>';
+  html += '</div>';
+
+  html += '</div>'; // end body
+
+  // FOOTER
+  html += '<div style="background:linear-gradient(135deg,#2e0650,#6b21a8);padding:8px 24px;display:flex;justify-content:space-between;align-items:center;position:relative;">';
+  html += '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#f59e0b,#ec4899,#7c3aed,#ec4899,#f59e0b);"></div>';
+  html += '<div style="color:rgba(255,255,255,.65);font-size:9px;">Matoshree Vitthai Podar Learn School, Niphad | Computer generated receipt | Valid without signature</div>';
+  html += '<div style="background:rgba(255,255,255,.15);padding:3px 10px;border-radius:8px;color:white;font-size:9px;font-weight:600;">&#128274; QR Verified | Tamper-Proof</div>';
+  html += '</div>';
+
+  html += '</div>'; // end receipt card
 
   ge('receiptContent').innerHTML = html;
-  openModal('receiptModal');
+
   setTimeout(function(){
     var qrEl = document.getElementById('rcptQR');
-    console.log('QR element:', qrEl);
-    console.log('QR URL to encode:', qrData);
     if(window.QRCode && qrEl){
       qrEl.innerHTML = '';
-      new window.QRCode(qrEl, {text:qrData, width:70, height:70, colorDark:'#3b0764', colorLight:'#ffffff', correctLevel:window.QRCode.CorrectLevel.L});
-      console.log('QR generated successfully!');
-    } else {
-      console.error('QR failed - QRCode:', !!window.QRCode, 'element:', !!qrEl);
+      new window.QRCode(qrEl,{text:qrData,width:72,height:72,colorDark:'#3b0764',colorLight:'#ffffff',correctLevel:window.QRCode.CorrectLevel.L});
     }
     var wb = document.getElementById('rcptWaBtn');
     if(wb){ wb.onclick = function(){
-      var msg='Matoshree Vitthai Podar Learn School, Niphad\n9309042265 | 8767021833\n\nReceipt: '+r.id+'\nStudent: '+r.student_name+' | GR: '+(r.gr_no||'N/A')+'\nClass: '+r.student_class+'-'+(r.student_div||'A')+'\nFather: '+(r.father_name||'N/A')+'\n\nTerm-1: Rs.'+r.term1_amount+' Paid: Rs.'+r.term1_paid+'\nTerm-2: Rs.'+r.term2_amount+' Paid: Rs.'+r.term2_paid+'\nTotal Paid: Rs.'+totalPaid+'\nBalance: Rs.'+totalBal+'\n\nView: '+qrData;
+      var msg='Matoshree Vitthai Podar Learn School, Niphad\n9309042265 | 8767021833\n\nReceipt: '+r.id+'\nDate: '+dt+'\n\nStudent: '+r.student_name+' | GR: '+(r.gr_no||'N/A')+'\nClass: '+r.student_class+'-'+(r.student_div||'A')+'\nFather: '+(r.father_name||'N/A')+'\n\nTerm-1: Rs.'+r.term1_amount+' Paid: Rs.'+r.term1_paid+'\nTerm-2: Rs.'+r.term2_amount+' Paid: Rs.'+r.term2_paid+'\nTotal Paid: Rs.'+totalPaid+'\nBalance: Rs.'+totalBal+'\n\nView: '+qrData;
       window.open('https://wa.me/91'+(r.mobile||'').replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
     };}
-  },300);
+  },400);
+  openModal('receiptModal');
 }
 
 // =====================
