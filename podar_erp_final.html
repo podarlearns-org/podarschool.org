@@ -1001,31 +1001,31 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
         <div style="background:linear-gradient(135deg,#f3e8ff,#fce7f3);padding:20px;border-radius:12px;margin-bottom:20px;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
             <div><label class="label">Basic Salary *</label><input type="number" id="staffBasic" class="input" placeholder="₹ Basic" oninput="calculateSalary()"></div>
-            <div><label class="label">Dearness Allowance (DA)</label><input type="number" id="staffDA" class="input" placeholder="Auto calculated" readonly style="background:var(--grey-light);"></div>
-            <div><label class="label">House Rent Allowance (HRA)</label><input type="number" id="staffHRA" class="input" placeholder="Auto calculated" readonly style="background:var(--grey-light);"></div>
+            <div><label class="label">Dearness Allowance (DA)</label><input type="number" id="staffDA" class="input" placeholder="Enter DA amount" style="background:white);"></div>
+            <div><label class="label">House Rent Allowance (HRA)</label><input type="number" id="staffHRA" class="input" placeholder="Enter HRA amount" style="background:white);"></div>
             <div><label class="label">Special Allowance</label><input type="number" id="staffSpecialAllow" class="input" placeholder="₹0" value="0" oninput="calculateSalary()"></div>
           </div>
           <div style="border-top:2px dashed white;margin-top:16px;padding-top:16px;">
-            <p style="font-size:14px;font-weight:600;margin-bottom:8px;">📊 Gross Salary: <span id="staffGross" style="color:var(--success);font-size:18px;">₹0</span></p>
+            <p style="font-size:14px;font-weight:600;margin-bottom:8px;">📊 Gross Salary: <input type="number" id="staffGross" class="input" placeholder="Enter Gross Salary" style="display:inline-block;width:200px;margin-left:8px;"></p>
           </div>
         </div>
         
         <h4 style="font-size:16px;font-weight:700;margin-bottom:16px;color:var(--danger);">➖ Deductions</h4>
         <div style="background:#fee2e2;padding:20px;border-radius:12px;margin-bottom:20px;">
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-            <div><label class="label">PF (12% of Basic)</label><input type="number" id="staffPF" class="input" placeholder="Auto" readonly style="background:var(--grey-light);"></div>
-            <div><label class="label">ESI (0.75%)</label><input type="number" id="staffESI" class="input" placeholder="Auto" readonly style="background:var(--grey-light);"></div>
+            <div><label class="label">PF (12% of Basic)</label><input type="number" id="staffPF" class="input" placeholder="Enter PF amount"></div>
+            <div><label class="label">ESI (0.75%)</label><input type="number" id="staffESI" class="input" placeholder="Enter ESI amount"></div>
             <div><label class="label">Professional Tax</label><input type="number" id="staffPT" class="input" placeholder="₹200" value="200" oninput="calculateSalary()"></div>
             <div><label class="label">TDS</label><input type="number" id="staffTDS" class="input" placeholder="₹0" value="0" oninput="calculateSalary()"></div>
           </div>
           <div style="border-top:2px dashed white;margin-top:16px;padding-top:16px;">
-            <p style="font-size:14px;font-weight:600;margin-bottom:8px;">Total Deductions: <span id="staffTotalDed" style="color:var(--danger);font-size:18px;">₹0</span></p>
+            <p style="font-size:14px;font-weight:600;margin-bottom:8px;">Total Deductions: <input type="number" id="staffTotalDed" class="input" placeholder="Total Deductions" style="display:inline-block;width:180px;margin-left:8px;" x-span id="staffTotalDed-old" style="color:var(--danger);font-size:18px;">₹0</span></p>
           </div>
         </div>
         
         <div style="background:linear-gradient(135deg,var(--primary),var(--pink));padding:20px;border-radius:12px;text-align:center;color:white;">
           <p style="font-size:14px;opacity:0.9;">🎉 NET SALARY (Monthly)</p>
-          <p style="font-size:32px;font-weight:800;" id="staffNetSalary">₹0</p>
+          <input type="number" id="staffNetSalary" class="input" placeholder="Enter Net Salary" style="font-size:24px;font-weight:800;text-align:center;width:100%;background:rgba(255,255,255,0.2);color:white;border:2px solid rgba(255,255,255,0.4);">
           <p style="font-size:12px;opacity:0.8;margin-top:8px;">This will be auto-credited to bank account every month</p>
         </div>
       </div>
@@ -1140,48 +1140,52 @@ var currentUser = null;
 var rptCharts = { bar: null, donut: null };
 var payrollCharts = { dept: null, trend: null };
 var dashCharts = { fee: null, pie: null, admission: null, status: null };
-// Supabase via Vercel Proxy (no CORS issues!)
-var PROXY = '/api/supabase';
+// Direct Supabase REST API
+var SUPA_URL = SUPABASE_URL + '/rest/v1/';
+var SUPA_H = {
+  'apikey': SUPABASE_ANON_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+  'Content-Type': 'application/json',
+  'Accept': 'application/json'
+};
 
 async function supaSelect(table) {
   try {
-    var res = await fetch(PROXY + '?table=' + table + '&filter=select%3D*', {
-      method: 'GET'
-    });
-    if(!res.ok) { console.error(table + ' select failed: ' + res.status); return []; }
-    return await res.json();
-  } catch(e) { console.error(table + ' select error: ' + e); return []; }
+    var r = await fetch(SUPA_URL + table + '?select=*', { headers: SUPA_H });
+    return r.ok ? await r.json() : [];
+  } catch(e) { return []; }
 }
 
 async function supaInsert(table, data) {
   try {
-    var res = await fetch(PROXY + '?table=' + table, {
+    var r = await fetch(SUPA_URL + table, {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: Object.assign({}, SUPA_H, {'Prefer':'return=minimal'}),
       body: JSON.stringify(data)
     });
-    return res.ok;
-  } catch(e) { console.error(table + ' insert error: ' + e); return false; }
+    return r.ok;
+  } catch(e) { return false; }
 }
 
 async function supaUpdate(table, id, data) {
   try {
-    var res = await fetch(PROXY + '?table=' + table + '&filter=id%3Deq.' + encodeURIComponent(id), {
+    var r = await fetch(SUPA_URL + table + '?id=eq.' + encodeURIComponent(id), {
       method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
+      headers: Object.assign({}, SUPA_H, {'Prefer':'return=minimal'}),
       body: JSON.stringify(data)
     });
-    return res.ok;
-  } catch(e) { console.error(table + ' update error: ' + e); return false; }
+    return r.ok;
+  } catch(e) { return false; }
 }
 
 async function supaDelete(table, id) {
   try {
-    var res = await fetch(PROXY + '?table=' + table + '&filter=id%3Deq.' + encodeURIComponent(id), {
-      method: 'DELETE'
+    var r = await fetch(SUPA_URL + table + '?id=eq.' + encodeURIComponent(id), {
+      method: 'DELETE',
+      headers: SUPA_H
     });
-    return res.ok;
-  } catch(e) { console.error(table + ' delete error: ' + e); return false; }
+    return r.ok;
+  } catch(e) { return false; }
 }
 
 
@@ -1329,6 +1333,8 @@ function onLoginSuccess() {
   ge('uName').textContent = currentUser.name;
   ge('uEmail').textContent = currentUser.email;
   ge('uAvatar').textContent = currentUser.name.substring(0,2).toUpperCase();
+  updateDashboardWidget();
+  setInterval(updateDashboardWidget, 1000);
   notify('Welcome back, ' + currentUser.name + '!', 'success');
   sbLoadAll();
 }
@@ -1514,11 +1520,11 @@ function initDashboardCharts() {
         borderColor:'#667eea',
         borderWidth:1,
         textStyle:{color:'#fff'},
-        formatter:function(p){ return '<strong>'+p[0].name+'</strong><br>&#8377;'+p[0].value.toLocaleString('en-IN'); }
+        formatter:function(p){ return '<strong>'+p[0].name+'</strong><br>₹'+p[0].value.toLocaleString('en-IN'); }
       },
       grid:{left:'3%',right:'4%',bottom:'3%',top:'10%',containLabel:true},
       xAxis:{type:'category',data:months,axisLine:{show:false},axisTick:{show:false},axisLabel:{color:'#64748b',fontSize:11}},
-      yAxis:{type:'value',axisLine:{show:false},axisTick:{show:false},splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#64748b',fontSize:11,formatter:function(v){return v>=100000?'&#8377;'+(v/100000).toFixed(1)+'L':'&#8377;'+(v/1000)+'K';}}},
+      yAxis:{type:'value',axisLine:{show:false},axisTick:{show:false},splitLine:{lineStyle:{color:'#f1f5f9'}},axisLabel:{color:'#64748b',fontSize:11,formatter:function(v){return v>=100000?'₹'+(v/100000).toFixed(1)+'L':'₹'+(v/1000)+'K';}}},
       series:[{
         type:'bar',data:feeByMonth,barWidth:'50%',
         itemStyle:{borderRadius:[8,8,0,0],color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'#667eea'},{offset:1,color:'#5a3f9f'}]),shadowColor:'rgba(102,126,234,.4)',shadowBlur:10,shadowOffsetY:5},
@@ -2053,9 +2059,9 @@ function showReceiptNew(r) {
   html += '<td style="padding:8px 10px;">1</td>';
   html += '<td style="padding:8px 10px;font-weight:600;">Tuition Fee<br><span style="font-size:10px;color:#94a3b8;">Academic Year '+(r.academic_year||'2025-26')+'</span></td>';
   html += '<td style="padding:8px 10px;text-align:center;"><span style="background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">Term 1</span></td>';
-  html += '<td style="padding:8px 10px;text-align:right;font-weight:700;">&#8377;'+r.term1_amount.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;color:#15803d;font-weight:700;">&#8377;'+r.term1_paid.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;color:'+(t1bal>0?'#dc2626':'#15803d')+';">&#8377;'+t1bal.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;font-weight:700;">₹'+r.term1_amount.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;color:#15803d;font-weight:700;">₹'+r.term1_paid.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;color:'+(t1bal>0?'#dc2626':'#15803d')+';">₹'+t1bal.toLocaleString('en-IN')+'</td>';
   html += '<td style="padding:8px 10px;text-align:center;"><span style="background:'+(t1bal===0?'#dcfce7':'#fee2e2')+';color:'+(t1bal===0?'#15803d':'#dc2626')+';padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">'+(t1bal===0?'&#10003; PAID':'&#9203; DUE')+'</span></td>';
   html += '</tr>';
 
@@ -2064,18 +2070,18 @@ function showReceiptNew(r) {
   html += '<td style="padding:8px 10px;">2</td>';
   html += '<td style="padding:8px 10px;font-weight:600;">Tuition Fee<br><span style="font-size:10px;color:#94a3b8;">Academic Year '+(r.academic_year||'2025-26')+'</span></td>';
   html += '<td style="padding:8px 10px;text-align:center;"><span style="background:#fce7f3;color:#be185d;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">Term 2</span></td>';
-  html += '<td style="padding:8px 10px;text-align:right;font-weight:700;">&#8377;'+r.term2_amount.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;color:'+(r.term2_paid>0?'#15803d':'#dc2626')+';font-weight:700;">&#8377;'+r.term2_paid.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;color:'+(t2bal>0?'#dc2626':'#15803d')+';">&#8377;'+t2bal.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;font-weight:700;">₹'+r.term2_amount.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;color:'+(r.term2_paid>0?'#15803d':'#dc2626')+';font-weight:700;">₹'+r.term2_paid.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;color:'+(t2bal>0?'#dc2626':'#15803d')+';">₹'+t2bal.toLocaleString('en-IN')+'</td>';
   html += '<td style="padding:8px 10px;text-align:center;"><span style="background:'+(t2bal===0?'#dcfce7':'#fee2e2')+';color:'+(t2bal===0?'#15803d':'#dc2626')+';padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">'+(t2bal===0?'&#10003; PAID':'&#9203; DUE')+'</span></td>';
   html += '</tr>';
 
   // Total row
   html += '<tr style="background:#f3e8ff;border-top:2px solid #6b21a8;">';
   html += '<td colspan="3" style="padding:8px 10px;font-weight:700;color:#3b0764;text-align:right;">TOTAL</td>';
-  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:#3b0764;">&#8377;'+r.annual_fee.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:#15803d;">&#8377;'+totalPaid.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:'+(totalBal>0?'#dc2626':'#15803d')+';">&#8377;'+totalBal.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:#3b0764;">₹'+r.annual_fee.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:#15803d;">₹'+totalPaid.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:'+(totalBal>0?'#dc2626':'#15803d')+';">₹'+totalBal.toLocaleString('en-IN')+'</td>';
   html += '<td></td></tr>';
   html += '</tbody></table></div>';
 
@@ -2085,15 +2091,15 @@ function showReceiptNew(r) {
   // Amount boxes
   html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,#6b21a8,#7c3aed);color:white;">';
   html += '<div style="font-size:9px;opacity:.85;font-weight:600;text-transform:uppercase;">Annual Fee</div>';
-  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">&#8377;'+r.annual_fee.toLocaleString('en-IN')+'</div></div>';
+  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">₹'+r.annual_fee.toLocaleString('en-IN')+'</div></div>';
 
   html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,#15803d,#22c55e);color:white;">';
   html += '<div style="font-size:9px;opacity:.85;font-weight:600;text-transform:uppercase;">Amount Paid</div>';
-  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">&#8377;'+totalPaid.toLocaleString('en-IN')+'</div></div>';
+  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">₹'+totalPaid.toLocaleString('en-IN')+'</div></div>';
 
   html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,'+(totalBal>0?'#c2410c,#ef4444':'#15803d,#22c55e')+');color:white;">';
   html += '<div style="font-size:9px;opacity:.85;font-weight:600;text-transform:uppercase;">Balance Due</div>';
-  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">&#8377;'+totalBal.toLocaleString('en-IN')+'</div></div>';
+  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">₹'+totalBal.toLocaleString('en-IN')+'</div></div>';
 
   // QR Code
   html += '<div style="text-align:center;">';
@@ -2289,15 +2295,15 @@ async function saveStaff() {
     notify('Please fill all required fields!', 'error'); return;
   }
   
-  var da = Math.round(basic * 0.40);
-  var hra = Math.round(basic * 0.20);
+  var da = parseInt(ge('staffDA').value) || 0;
+  var hra = parseInt(ge('staffHRA').value) || 0;
   var specialAllow = parseInt(ge('staffSpecialAllow').value) || 0;
-  var gross = basic + da + hra + specialAllow;
-  var pf = Math.round(basic * 0.12);
-  var esi = gross <= 21000 ? Math.round(gross * 0.0075) : 0;
-  var pt = parseInt(ge('staffPT').value) || 200;
+  var gross = parseInt(ge('staffGross').value) || (basic + da + hra + specialAllow);
+  var pf = parseInt(ge('staffPF').value) || 0;
+  var esi = parseInt(ge('staffESI').value) || 0;
+  var pt = parseInt(ge('staffPT').value) || 0;
   var tds = parseInt(ge('staffTDS').value) || 0;
-  var net = gross - pf - esi - pt - tds;
+  var net = parseInt(ge('staffNetSalary').value) || (gross - pf - esi - pt - tds);
   
   var staff = {
     id: ge('staffID').value,
@@ -2414,15 +2420,15 @@ async function updateStaff(staffId) {
   var name = ge('staffName').value.trim();
   if(!name) { notify('Name required!', 'error'); return; }
   var basic = parseInt(ge('staffBasic').value) || 25000;
-  var da = Math.round(basic * 0.40);
-  var hra = Math.round(basic * 0.20);
+  var da = parseInt(ge('staffDA').value) || 0;
+  var hra = parseInt(ge('staffHRA').value) || 0;
   var specialAllow = parseInt(ge('staffSpecialAllow').value) || 0;
-  var gross = basic + da + hra + specialAllow;
-  var pf = Math.round(basic * 0.12);
-  var esi = gross <= 21000 ? Math.round(gross * 0.0075) : 0;
-  var pt = parseInt(ge('staffPT').value) || 200;
+  var gross = parseInt(ge('staffGross').value) || (basic + da + hra + specialAllow);
+  var pf = parseInt(ge('staffPF').value) || 0;
+  var esi = parseInt(ge('staffESI').value) || 0;
+  var pt = parseInt(ge('staffPT').value) || 0;
   var tds = parseInt(ge('staffTDS').value) || 0;
-  var net = gross - pf - esi - pt - tds;
+  var net = parseInt(ge('staffNetSalary').value) || (gross - pf - esi - pt - tds);
 
   var updates = {
     name: name,
@@ -2492,7 +2498,7 @@ function renderStaffTable() {
       '<td>' + (s.designation||'-') + '</td>' +
       '<td>' + (s.department||'-') + '</td>' +
       '<td>' + (s.mobile||'-') + '</td>' +
-      '<td style="color:var(--success);font-weight:700;">&#8377;' + (s.net||0).toLocaleString('en-IN') + '</td>' +
+      '<td style="color:var(--success);font-weight:700;">₹' + (s.net||0).toLocaleString('en-IN') + '</td>' +
       '<td><span class="badge ' + (s.status==='active'?'badge-success':'badge-danger') + '">' + (s.status||'active') + '</span></td>' +
       '<td style="display:flex;gap:4px;">' +
         '<button class="btn btn-secondary" data-sid="' + s.id + '" onclick="editStaffBtn(this)" style="padding:6px 10px;font-size:11px;">&#9998; Edit</button>' +
@@ -2567,9 +2573,9 @@ function renderSalaryTable() {
     rows += '<tr>' +
       '<td style="font-weight:600;">' + s.name + '<br><span style="font-size:11px;color:var(--grey);">' + (s.designation||'') + '</span></td>' +
       '<td><input type="number" value="' + basic + '" data-staffid="' + s.id + '" style="width:90px;padding:4px 6px;border:1px solid #e2e8f0;border-radius:6px;font-size:12px;" onchange="updateStaffSalaryField(this)"></td>' +
-      '<td style="color:#22c55e;">+&#8377;' + totalAllow.toLocaleString('en-IN') + '<br><span style="font-size:10px;color:#94a3b8;">DA+HRA+Spl</span></td>' +
+      '<td style="color:#22c55e;">+₹' + totalAllow.toLocaleString('en-IN') + '<br><span style="font-size:10px;color:#94a3b8;">DA+HRA+Spl</span></td>' +
       '<td style="color:#ef4444;">-&#8377;' + totalDed.toLocaleString('en-IN') + '<br><span style="font-size:10px;color:#94a3b8;">PF+ESI+PT+TDS</span></td>' +
-      '<td style="font-weight:700;font-size:15px;">&#8377;' + net.toLocaleString('en-IN') + '</td>' +
+      '<td style="font-weight:700;font-size:15px;">₹' + net.toLocaleString('en-IN') + '</td>' +
       '<td><span class="badge ' + (status === 'paid' ? 'badge-success' : 'badge-warning') + '">' + status + '</span></td>' +
       '<td style="display:flex;gap:4px;">' +
         '<button class="btn btn-primary" data-sid="' + s.id + '" data-month="' + month + '" data-net="' + net + '" onclick="markSalaryPaidBtn(this)" style="padding:6px 10px;font-size:11px;">&#128176; Pay</button>' +
@@ -2850,24 +2856,24 @@ function showPayslipModal(staff, month) {
     '<tr style="border-bottom:1px solid #f1f5f9;">' +
     '<td style="padding:7px 12px;font-weight:600;">Basic Pay</td>' +
     '<td style="padding:7px 12px;text-align:center;"></td>' +
-    '<td style="padding:7px 12px;text-align:right;">&#8377; <input id="ps_basic_rate" type="number" value="'+basic+'" onchange="recalcPayslip()" style="width:80px;border:1px solid #e2e8f0;border-radius:4px;padding:2px 4px;text-align:right;font-size:12px;"></td>' +
-    '<td style="padding:7px 12px;text-align:right;font-weight:600;" id="ps_basic_amt">&#8377; '+basic.toLocaleString('en-IN', {minimumFractionDigits:2})+'</td>' +
+    '<td style="padding:7px 12px;text-align:right;">₹ <input id="ps_basic_rate" type="number" value="'+basic+'" onchange="recalcPayslip()" style="width:80px;border:1px solid #e2e8f0;border-radius:4px;padding:2px 4px;text-align:right;font-size:12px;"></td>' +
+    '<td style="padding:7px 12px;text-align:right;font-weight:600;" id="ps_basic_amt">₹ '+basic.toLocaleString('en-IN', {minimumFractionDigits:2})+'</td>' +
     '</tr>' +
     '<tr style="border-bottom:1px solid #f1f5f9;">' +
     '<td style="padding:7px 12px;font-weight:600;">HRA</td>' +
     '<td style="padding:7px 12px;text-align:center;"></td>' +
-    '<td style="padding:7px 12px;text-align:right;">&#8377; <input id="ps_hra_rate" type="number" value="'+hra+'" onchange="recalcPayslip()" style="width:80px;border:1px solid #e2e8f0;border-radius:4px;padding:2px 4px;text-align:right;font-size:12px;"></td>' +
-    '<td style="padding:7px 12px;text-align:right;font-weight:600;" id="ps_hra_amt">&#8377; '+hra.toLocaleString('en-IN', {minimumFractionDigits:2})+'</td>' +
+    '<td style="padding:7px 12px;text-align:right;">₹ <input id="ps_hra_rate" type="number" value="'+hra+'" onchange="recalcPayslip()" style="width:80px;border:1px solid #e2e8f0;border-radius:4px;padding:2px 4px;text-align:right;font-size:12px;"></td>' +
+    '<td style="padding:7px 12px;text-align:right;font-weight:600;" id="ps_hra_amt">₹ '+hra.toLocaleString('en-IN', {minimumFractionDigits:2})+'</td>' +
     '</tr>' +
     '<tr style="border-bottom:1px solid #f1f5f9;">' +
     '<td style="padding:7px 12px;font-weight:600;">Conveyance</td>' +
     '<td style="padding:7px 12px;text-align:center;"></td>' +
-    '<td style="padding:7px 12px;text-align:right;">&#8377; <input id="ps_conv_rate" type="number" value="'+conveyance+'" onchange="recalcPayslip()" style="width:80px;border:1px solid #e2e8f0;border-radius:4px;padding:2px 4px;text-align:right;font-size:12px;"></td>' +
-    '<td style="padding:7px 12px;text-align:right;font-weight:600;" id="ps_conv_amt">&#8377; '+conveyance.toLocaleString('en-IN', {minimumFractionDigits:2})+'</td>' +
+    '<td style="padding:7px 12px;text-align:right;">₹ <input id="ps_conv_rate" type="number" value="'+conveyance+'" onchange="recalcPayslip()" style="width:80px;border:1px solid #e2e8f0;border-radius:4px;padding:2px 4px;text-align:right;font-size:12px;"></td>' +
+    '<td style="padding:7px 12px;text-align:right;font-weight:600;" id="ps_conv_amt">₹ '+conveyance.toLocaleString('en-IN', {minimumFractionDigits:2})+'</td>' +
     '</tr>' +
     '<tr style="background:#f3e8ff;">' +
     '<td colspan="3" style="padding:8px 12px;font-weight:700;color:#6b21a8;">Total Payments</td>' +
-    '<td style="padding:8px 12px;text-align:right;font-weight:800;color:#6b21a8;" id="ps_total_earn">&#8377; '+totalEarnings.toLocaleString('en-IN', {minimumFractionDigits:2})+'</td>' +
+    '<td style="padding:8px 12px;text-align:right;font-weight:800;color:#6b21a8;" id="ps_total_earn">₹ '+totalEarnings.toLocaleString('en-IN', {minimumFractionDigits:2})+'</td>' +
     '</tr>' +
     '</tbody>' +
     '</table>' +
@@ -2900,7 +2906,7 @@ function showPayslipModal(staff, month) {
     '</tr>' +
     '<tr style="background:#fee2e2;">' +
     '<td colspan="3" style="padding:8px 12px;font-weight:700;color:#dc2626;">Total Deductions</td>' +
-    '<td style="padding:8px 12px;text-align:right;font-weight:800;color:#dc2626;" id="ps_total_ded">&#8377; '+totalDeductions.toLocaleString('en-IN', {minimumFractionDigits:2})+'</td>' +
+    '<td style="padding:8px 12px;text-align:right;font-weight:800;color:#dc2626;" id="ps_total_ded">₹ '+totalDeductions.toLocaleString('en-IN', {minimumFractionDigits:2})+'</td>' +
     '</tr>' +
     '</tbody>' +
     '</table>' +
@@ -2908,7 +2914,7 @@ function showPayslipModal(staff, month) {
     // Net Pay
     '<div style="background:linear-gradient(135deg,#1e1b4b,#6b21a8);border-radius:10px;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">' +
     '<span style="color:white;font-size:16px;font-weight:700;">NET PAY</span>' +
-    '<span style="color:white;font-size:24px;font-weight:800;" id="ps_net_pay">&#8377; '+netPay.toLocaleString('en-IN', {minimumFractionDigits:2})+'</span>' +
+    '<span style="color:white;font-size:24px;font-weight:800;" id="ps_net_pay">₹ '+netPay.toLocaleString('en-IN', {minimumFractionDigits:2})+'</span>' +
     '</div>' +
 
     // Signature
@@ -2946,7 +2952,7 @@ function recalcPayslip() {
   var totalDed = pf + pt + esi;
   var net = totalEarn - totalDed;
 
-  var fmt = function(n){ return '&#8377; ' + n.toLocaleString('en-IN', {minimumFractionDigits:2}); };
+  var fmt = function(n){ return '₹ ' + n.toLocaleString('en-IN', {minimumFractionDigits:2}); };
 
   document.getElementById('ps_basic_amt').innerHTML = fmt(basic);
   document.getElementById('ps_hra_amt').innerHTML = fmt(hra);
