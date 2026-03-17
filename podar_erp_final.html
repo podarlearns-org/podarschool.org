@@ -2262,26 +2262,7 @@ function updateDocStatus(inputId, statusId) {
   }
 }
 function calculateSalary() {
-  var basic = parseInt(ge('staffBasic').value) || 0;
-  var da = Math.round(basic * 0.40); // 40% DA
-  var hra = Math.round(basic * 0.20); // 20% HRA
-  var specialAllow = parseInt(ge('staffSpecialAllow').value) || 0;
-  var gross = basic + da + hra + specialAllow;
-  
-  var pf = Math.round(basic * 0.12); // 12% PF
-  var esi = gross <= 21000 ? Math.round(gross * 0.0075) : 0; // ESI only if gross <= 21000
-  var pt = parseInt(ge('staffPT').value) || 200;
-  var tds = parseInt(ge('staffTDS').value) || 0;
-  var totalDed = pf + esi + pt + tds;
-  var net = gross - totalDed;
-  
-  ge('staffDA').value = da;
-  ge('staffHRA').value = hra;
-  ge('staffGross').textContent = '₹' + gross.toLocaleString('en-IN');
-  ge('staffPF').value = pf;
-  ge('staffESI').value = esi;
-  ge('staffTotalDed').textContent = '₹' + totalDed.toLocaleString('en-IN');
-  ge('staffNetSalary').textContent = '₹' + net.toLocaleString('en-IN');
+  // Manual entry - no auto calculate
 }
 async function saveStaff() {
   var name = ge('staffName').value.trim();
