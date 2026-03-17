@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Podar Learn School ERP</title>
 <script>
-// Load CDN scripts dynamically - won't block page if offline
+// Load CDN scripts dynamically
 function loadScript(src, cb) {
   var s = document.createElement('script');
   s.src = src;
@@ -148,6 +148,10 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
     <div style="margin-bottom:24px;"><label class="label">Email</label><input type="email" id="loginEmail" class="login-input" placeholder="admin@podarschool.com"></div>
     <div style="margin-bottom:24px;"><label class="label">Password</label><input type="password" id="loginPassword" class="login-input" placeholder="••••••••"></div>
     <div id="loginError" style="color:var(--danger);font-size:14px;margin-bottom:16px;display:none;"></div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <input type="checkbox" id="rememberMe" style="width:16px;height:16px;cursor:pointer;accent-color:#ec4899;">
+      <label for="rememberMe" style="font-size:14px;color:#64748b;cursor:pointer;">Remember me</label>
+    </div>
     <button id="loginBtn" class="login-btn" onclick="handleLogin()">Login to ERP</button>
     <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--grey);">Academic Year 2026-27</p>
   </div>
@@ -1111,92 +1115,18 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
 // =====================
 var SUPABASE_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
-// Using direct Supabase REST API - no SDK needed!
-var SUPA_HEADERS = {
-  'apikey': SUPABASE_ANON_KEY,
-  'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-  'Content-Type': 'application/json'
-};
-
-async function supaSelect(table) {
-  try {
-    var url = SUPABASE_URL+'/rest/v1/'+table+'?select=*&apikey='+SUPABASE_ANON_KEY;
-    var response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer '+SUPABASE_ANON_KEY,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    });
-    if(!response.ok) {
-      console.error(table+' failed: '+response.status);
-      return [];
-    }
-    return await response.json();
-  } catch(e) {
-    console.error(table+' error:', e.message);
-    return [];
-  }
-}
-
-async function supaInsert(table, data) {
-  try {
-    var url = SUPABASE_URL+'/rest/v1/'+table+'?apikey='+SUPABASE_ANON_KEY;
-    var response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer '+SUPABASE_ANON_KEY,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(data)
-    });
-    if(!response.ok) {
-      var err = await response.text();
-      console.error(table+' insert failed:', err);
-      return false;
-    }
-    return true;
-  } catch(e) {
-    console.error(table+' insert error:', e.message);
-    return false;
-  }
-}
-
-async function supaUpdate(table, id, data) {
-  try {
-    var url = SUPABASE_URL+'/rest/v1/'+table+'?id=eq.'+encodeURIComponent(id)+'&apikey='+SUPABASE_ANON_KEY;
-    var response = await fetch(url, {
-      method: 'PATCH',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer '+SUPABASE_ANON_KEY,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify(data)
-    });
-    return response.ok;
-  } catch(e) {
-    console.error(table+' update error:', e.message);
-    return false;
-  }
-}
-
-var RECEIPT_VIEWER_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1/object/public/receipts/receipt_viewer.html';
 
 // =====================
-// DATABASE & STATE
+// LOGIN CREDENTIALS
 // =====================
 var LOCAL_CREDS = {
   'admin@podarschool.com': { password: 'Podar@Admin2026', name: 'Admin' },
   'accountant@podarschool.com': { password: 'Podar@Account2026', name: 'Accountant' }
 };
+
+// =====================
+// DATABASE & STATE
+// =====================
 var studentsDB = [];
 var enquiryDB = [];
 var admissionDB = [];
@@ -1209,10 +1139,63 @@ var counters = { student: 1, enquiry: 1001, admission: 1, staff: 1, fee: 27000 }
 var currentUser = null;
 var rptCharts = { bar: null, donut: null };
 var payrollCharts = { dept: null, trend: null };
+var dashCharts = { fee: null, pie: null, admission: null, status: null };
+// Simple Supabase REST API - works everywhere
+function supabaseRequest(method, table, data, filter) {
+  return new Promise(function(resolve) {
+    var url = SUPABASE_URL + '/rest/v1/' + table;
+    if(filter) url += '?' + filter;
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('apikey', SUPABASE_ANON_KEY);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_ANON_KEY);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Accept', 'application/json');
+    if(method === 'POST' || method === 'PATCH') {
+      xhr.setRequestHeader('Prefer', 'return=minimal');
+    }
+    
+    xhr.onload = function() {
+      if(xhr.status >= 200 && xhr.status < 300) {
+        if(xhr.responseText && xhr.responseText !== '') {
+          try { resolve(JSON.parse(xhr.responseText)); }
+          catch(e) { resolve(true); }
+        } else {
+          resolve(true);
+        }
+      } else {
+        console.error(table + ' ' + method + ' failed: ' + xhr.status + ' - ' + xhr.responseText);
+        resolve(method === 'GET' ? [] : false);
+      }
+    };
+    
+    xhr.onerror = function() {
+      console.error(table + ' XHR network error');
+      resolve(method === 'GET' ? [] : false);
+    };
+    
+    xhr.send(data ? JSON.stringify(data) : null);
+  });
+}
 
-// =====================
-// SUPABASE HELPERS
-// =====================
+function supaSelect(table) {
+  return supabaseRequest('GET', table, null, 'select=*');
+}
+
+function supaInsert(table, data) {
+  return supabaseRequest('POST', table, data, null);
+}
+
+function supaUpdate(table, id, data) {
+  return supabaseRequest('PATCH', table, data, 'id=eq.' + encodeURIComponent(id));
+}
+
+function supaDelete(table, id) {
+  return supabaseRequest('DELETE', table, null, 'id=eq.' + encodeURIComponent(id));
+}
+
+
 async function sbLoadAll() {
   try {
     notify('Loading data...', 'info');
@@ -1258,6 +1241,24 @@ function fillSchoolLogos() {
 
 window.onload = function() {
   fillSchoolLogos();
+  // Auto-fill saved credentials
+  try {
+    var savedEmail = localStorage.getItem('podar_erp_email');
+    var savedPass = localStorage.getItem('podar_erp_pass');
+    var remembered = localStorage.getItem('podar_erp_remember');
+    if(savedEmail && savedPass && remembered === '1') {
+      ge('loginEmail').value = savedEmail;
+      ge('loginPassword').value = savedPass;
+      ge('rememberMe').checked = true;
+      // Auto login
+      var user = LOCAL_CREDS[savedEmail];
+      if(user && user.password === savedPass) {
+        currentUser = { email: savedEmail, name: user.name };
+        onLoginSuccess();
+        return;
+      }
+    }
+  } catch(e) {}
   ge('loginBtn').onclick = handleLogin;
   ge('loginEmail').onkeypress = function(e) { if(e.key === 'Enter') handleLogin(); };
   ge('loginPassword').onkeypress = function(e) { if(e.key === 'Enter') handleLogin(); };
@@ -1311,6 +1312,20 @@ function handleLogin() {
   var user = LOCAL_CREDS[email];
   if (user && user.password === pass) {
     currentUser = { email: email, name: user.name };
+    // Save credentials if Remember Me is checked
+    if(ge('rememberMe') && ge('rememberMe').checked) {
+      try {
+        localStorage.setItem('podar_erp_email', email);
+        localStorage.setItem('podar_erp_pass', pass);
+        localStorage.setItem('podar_erp_remember', '1');
+      } catch(e) {}
+    } else {
+      try {
+        localStorage.removeItem('podar_erp_email');
+        localStorage.removeItem('podar_erp_pass');
+        localStorage.removeItem('podar_erp_remember');
+      } catch(e) {}
+    }
     onLoginSuccess();
     return;
   }
@@ -1805,10 +1820,51 @@ function editAdmission(i) {
 // =====================
 function renderStudentsTable() {
   var tbody = ge('studentsTableBody');
-  if (studentsDB.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No students</td></tr>'; return; }
-  tbody.innerHTML = studentsDB.map(function(s) {
-    return '<tr><td style="font-family:monospace;font-size:12px;">' + s.id + '</td><td style="font-weight:600;">' + s.name + '</td><td>' + s.class + '-' + (s.div||'A') + '</td><td>' + (s.father||'-') + '</td><td>' + (s.mobile||'-') + '</td><td><span class="badge ' + (s.status==='paid'?'badge-success':'badge-danger') + '">' + s.status + '</span></td><td><button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="showStudentProfile(\'' + s.id + '\')">View</button></td></tr>';
-  }).join('');
+  if (studentsDB.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--grey);">No students</td></tr>';
+    return;
+  }
+  var rows = '';
+  studentsDB.forEach(function(s) {
+    rows += '<tr>' +
+      '<td style="font-family:monospace;font-size:12px;">' + s.id + '</td>' +
+      '<td style="font-weight:600;">' + s.name + '</td>' +
+      '<td>' + s.class + '-' + (s.div||'A') + '</td>' +
+      '<td>' + (s.father||'-') + '</td>' +
+      '<td>' + (s.mobile||'-') + '</td>' +
+      '<td><span class="badge ' + (s.status==='paid'?'badge-success':'badge-danger') + '">' + s.status + '</span></td>' +
+      '<td style="display:flex;gap:4px;">' +
+        '<button class="btn btn-secondary" data-sid="' + s.id + '" onclick="viewStudentBtn(this)" style="padding:6px 10px;font-size:11px;">&#128065; View</button>' +
+        '<button class="btn btn-danger" data-sid="' + s.id + '" onclick="deleteStudentBtn(this)" style="padding:6px 10px;font-size:11px;">&#128465; Delete</button>' +
+      '</td>' +
+    '</tr>';
+  });
+  tbody.innerHTML = rows;
+}
+
+function viewStudentBtn(btn) {
+  showStudentProfile(btn.dataset.sid);
+}
+
+async function deleteStudentBtn(btn) {
+  var sid = btn.dataset.sid;
+  var s = studentsDB.find(function(x){ return x.id === sid; });
+  if(!s) return;
+  if(!confirm('Delete student: ' + s.name + '?\nYe Supabase se bhi delete ho jayega!')) return;
+  
+  // Remove from local DB
+  studentsDB = studentsDB.filter(function(x){ return x.id !== sid; });
+  admissionDB = admissionDB.filter(function(x){ return x.id !== sid; });
+  
+  // Delete from Supabase
+  try {
+    await supaDelete('students', sid);
+    await supaDelete('admissions', sid);
+  } catch(e) { console.error('Delete error:', e); }
+  
+  renderAllTables();
+  dashUpdateStats();
+  notify('Student deleted: ' + s.name, 'success');
 }
 
 // =====================
@@ -2427,13 +2483,7 @@ async function deleteStaff(staffId) {
   staffDB = staffDB.filter(function(s){ return s.id !== staffId; });
   // Delete from Supabase
   try {
-    await fetch(SUPABASE_URL+'/rest/v1/staff?id=eq.'+encodeURIComponent(staffId)+'&apikey='+SUPABASE_ANON_KEY, {
-      method: 'DELETE',
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': 'Bearer '+SUPABASE_ANON_KEY
-      }
-    });
+    await supaDelete('staff', staffId);
   } catch(e) { console.error('Delete error:', e); }
   renderStaffTable();
   notify('Staff deleted!', 'success');
