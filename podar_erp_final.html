@@ -1140,48 +1140,59 @@ var currentUser = null;
 var rptCharts = { bar: null, donut: null };
 var payrollCharts = { dept: null, trend: null };
 var dashCharts = { fee: null, pie: null, admission: null, status: null };
-// Supabase via Vercel Proxy (no CORS issues!)
-var PROXY = '/api/supabase';
-
-async function supaSelect(table) {
-  try {
-    var res = await fetch(PROXY + '?table=' + table + '&filter=select%3D*', {
-      method: 'GET'
-    });
-    if(!res.ok) { console.error(table + ' select failed: ' + res.status); return []; }
-    return await res.json();
-  } catch(e) { console.error(table + ' select error: ' + e); return []; }
+// Simple Supabase REST API - works everywhere
+function supabaseRequest(method, table, data, filter) {
+  return new Promise(function(resolve) {
+    var url = SUPABASE_URL + '/rest/v1/' + table;
+    if(filter) url += '?' + filter;
+    
+    var xhr = new XMLHttpRequest();
+    xhr.open(method, url, true);
+    xhr.setRequestHeader('apikey', SUPABASE_ANON_KEY);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + SUPABASE_ANON_KEY);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Accept', 'application/json');
+    if(method === 'POST' || method === 'PATCH') {
+      xhr.setRequestHeader('Prefer', 'return=minimal');
+    }
+    
+    xhr.onload = function() {
+      if(xhr.status >= 200 && xhr.status < 300) {
+        if(xhr.responseText && xhr.responseText !== '') {
+          try { resolve(JSON.parse(xhr.responseText)); }
+          catch(e) { resolve(true); }
+        } else {
+          resolve(true);
+        }
+      } else {
+        console.error(table + ' ' + method + ' failed: ' + xhr.status + ' - ' + xhr.responseText);
+        resolve(method === 'GET' ? [] : false);
+      }
+    };
+    
+    xhr.onerror = function() {
+      console.error(table + ' XHR network error');
+      resolve(method === 'GET' ? [] : false);
+    };
+    
+    xhr.send(data ? JSON.stringify(data) : null);
+  });
 }
 
-async function supaInsert(table, data) {
-  try {
-    var res = await fetch(PROXY + '?table=' + table, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data)
-    });
-    return res.ok;
-  } catch(e) { console.error(table + ' insert error: ' + e); return false; }
+function supaSelect(table) {
+  return supabaseRequest('GET', table, null, 'select=*');
 }
 
-async function supaUpdate(table, id, data) {
-  try {
-    var res = await fetch(PROXY + '?table=' + table + '&filter=id%3Deq.' + encodeURIComponent(id), {
-      method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data)
-    });
-    return res.ok;
-  } catch(e) { console.error(table + ' update error: ' + e); return false; }
+function supaInsert(table, data) {
+  return supabaseRequest('POST', table, data, null);
 }
 
-async function supaDelete(table, id) {
-  try {
-    var res = await fetch(PROXY + '?table=' + table + '&filter=id%3Deq.' + encodeURIComponent(id), {
-      method: 'DELETE'
-    });
-    return res.ok;
-  } catch(e) { console.error(table + ' delete error: ' + e); return false; }
+function supaUpdate(table, id, data) {
+  return supabaseRequest('PATCH', table, data, 'id=eq.' + encodeURIComponent(id));
+}
+
+function supaDelete(table, id) {
+  return supabaseRequest('DELETE', table, null, 'id=eq.' + encodeURIComponent(id));
 }
 
 
