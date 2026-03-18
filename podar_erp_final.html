@@ -2436,15 +2436,14 @@ async function deleteFeeBtn(btn) {
 function showReceipt(fee) { /* replaced by showReceiptNew */ }
 
 function showReceiptNew(r) {
-  var annualFee = r.annual_fee || 0;
-  var thisPay = r.this_payment || r.total_paid || 0;
-  var totalPaid = r.total_paid || thisPay;
-  var totalBal = r.balance !== undefined ? r.balance : Math.max(0, annualFee - totalPaid);
-  var t1bal = totalBal;
-  var t2bal = 0;
-  var qrData = RECEIPT_VIEWER_URL + '?id=' + encodeURIComponent(r.id) + '&token=' + encodeURIComponent(r.token);
-  var dt = new Date(r.date).toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
   var LOGO = document.getElementById('schoolLogoData').src;
+  var annualFee = r.annual_fee || 0;
+  var thisPay = r.this_payment || r.amount || r.term1_paid || 0;
+  var prevPaid = r.prev_paid || 0;
+  var totalPaid = r.total_paid || thisPay;
+  var balance = r.balance !== undefined ? r.balance : Math.max(0, annualFee - totalPaid);
+  var qrData = RECEIPT_VIEWER_URL + '?id=' + encodeURIComponent(r.id) + '&token=' + encodeURIComponent(r.token||'');
+  var dt = new Date(r.date).toLocaleDateString('en-IN',{day:'2-digit',month:'2-digit',year:'numeric'});
 
   function numW(n){
     var o=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
@@ -2462,18 +2461,14 @@ function showReceiptNew(r) {
   html += '<div style="display:flex;gap:8px;padding:10px 16px;background:#f8fafc;border-radius:10px 10px 0 0;border-bottom:1px solid #e2e8f0;flex-wrap:wrap;align-items:center;">';
   html += '<button onclick="window.print()" style="padding:8px 16px;background:linear-gradient(135deg,#6b21a8,#7c3aed);color:white;border:none;border-radius:7px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;">&#128424; Print</button>';
   html += '<button id="rcptWaBtn" style="padding:8px 16px;background:linear-gradient(135deg,#15803d,#22c55e);color:white;border:none;border-radius:7px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;">&#128154; WhatsApp</button>';
-  html += '<span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:600;border:1px solid #86efac;">&#10003; Saved</span>';
+  html += '<span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:10px;font-size:10px;font-weight:600;">&#10003; Saved</span>';
   html += '<button onclick="closeModal(&quot;receiptModal&quot;)" style="margin-left:auto;padding:8px 16px;background:#ef4444;color:white;border:none;border-radius:7px;font-weight:600;font-size:12px;cursor:pointer;font-family:inherit;">&#10005; Close</button>';
   html += '</div>';
 
-  // RECEIPT CARD - A5 Landscape style
+  // Receipt card
   html += '<div id="newRcptCard" style="background:white;position:relative;overflow:hidden;">';
-
-  // Security background pattern
   html += '<div style="position:absolute;inset:0;background-image:repeating-linear-gradient(45deg,rgba(107,33,168,.012) 0,rgba(107,33,168,.012) 1px,transparent 1px,transparent 10px),repeating-linear-gradient(-45deg,rgba(107,33,168,.012) 0,rgba(107,33,168,.012) 1px,transparent 1px,transparent 10px);pointer-events:none;z-index:0;"></div>';
-
-  // Watermark
-  html += '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:300px;height:300px;background-image:url('+LOGO+');background-size:contain;background-repeat:no-repeat;background-position:center;opacity:.04;pointer-events:none;z-index:0;"></div>';
+  html += '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:280px;height:280px;background-image:url('+LOGO+');background-size:contain;background-repeat:no-repeat;background-position:center;opacity:.04;pointer-events:none;z-index:0;"></div>';
 
   // HEADER
   html += '<div style="background:linear-gradient(135deg,#2e0650,#6b21a8 60%,#7c3aed);padding:16px 24px;position:relative;z-index:1;">';
@@ -2481,123 +2476,101 @@ function showReceiptNew(r) {
   html += '<div style="display:flex;align-items:center;gap:16px;">';
   html += '<img src="'+LOGO+'" style="width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.3));border-radius:50%;background:white;padding:4px;">';
   html += '<div style="flex:1;">';
-  html += '<h1 style="color:white;font-size:18px;font-weight:800;margin:0;line-height:1.2;">Matoshree Vitthai Podar Learn School</h1>';
-  html += '<p style="color:rgba(255,255,255,.8);font-size:11px;margin:3px 0 0;">Niphad, Nashik District, Maharashtra</p>';
-  html += '<p style="color:rgba(255,255,255,.75);font-size:10px;margin:2px 0 0;">&#128222; 9309042265 | 8767021833 &nbsp;|&nbsp; &#9993; Ide.matoshreevitthaiPls@podar.org</p>';
+  html += '<h1 style="color:white;font-size:18px;font-weight:800;margin:0;">Matoshree Vitthai Podar Learn School</h1>';
+  html += '<p style="color:rgba(255,255,255,.8);font-size:11px;margin:3px 0;">Niphad, Nashik District, Maharashtra</p>';
+  html += '<p style="color:rgba(255,255,255,.75);font-size:10px;margin:2px 0;">&#128222; 9309042265 | 8767021833 &nbsp;|&nbsp; &#9993; Ide.matoshreevitthaiPls@podar.org</p>';
   html += '</div>';
   html += '<div style="text-align:right;">';
-  html += '<div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:4px 12px;border-radius:12px;font-size:10px;font-weight:700;letter-spacing:.5px;margin-bottom:6px;">&#10022; OFFICIAL FEE RECEIPT &#10022;</div>';
+  html += '<div style="background:linear-gradient(135deg,#f59e0b,#d97706);color:white;padding:4px 12px;border-radius:12px;font-size:10px;font-weight:700;margin-bottom:6px;">&#10022; OFFICIAL FEE RECEIPT &#10022;</div>';
   html += '<div style="color:white;font-size:16px;font-weight:800;">'+r.id+'</div>';
   html += '<div style="color:rgba(255,255,255,.75);font-size:10px;margin-top:2px;">Date: '+dt+'</div>';
   html += '<div style="background:rgba(255,255,255,.15);color:white;padding:2px 8px;border-radius:6px;font-size:10px;margin-top:4px;display:inline-block;">AY: '+(r.academic_year||'2025-26')+'</div>';
-  html += '</div>';
-  html += '</div></div>';
+  html += '</div></div></div>';
 
   // BODY
   html += '<div style="padding:16px 24px;position:relative;z-index:1;">';
 
-  // Student Info Section
+  // Student Info
   html += '<div style="background:linear-gradient(135deg,#faf5ff,#f3e8ff);border-radius:10px;padding:12px 16px;margin-bottom:14px;border:1px solid #e9d5ff;">';
   html += '<div style="font-size:11px;font-weight:700;color:#6b21a8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid #e9d5ff;">&#128106; Student Information</div>';
   html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">';
   html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Student Name</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+r.student_name+'</div></div>';
   html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">GR Number</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+(r.gr_no||'N/A')+'</div></div>';
-  html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Student ID</div><div style="font-size:11px;font-weight:700;color:#1e293b;">'+r.student_id+'</div></div>';
-  html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Class & Division</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+r.student_class+' - '+(r.student_div||'A')+'</div></div>';
+  html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Class</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+r.student_class+'-'+(r.student_div||'A')+'</div></div>';
   html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Father Name</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+(r.father_name||'N/A')+'</div></div>';
   html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Mobile</div><div style="font-size:13px;font-weight:700;color:#1e293b;">'+(r.mobile||'N/A')+'</div></div>';
+  html += '<div><div style="font-size:9px;color:#94a3b8;font-weight:600;text-transform:uppercase;">Student ID</div><div style="font-size:11px;font-weight:700;color:#1e293b;">'+r.student_id+'</div></div>';
   html += '</div></div>';
 
-  // Fee Table
+  // Fee Details Table
   html += '<div style="margin-bottom:14px;">';
   html += '<div style="font-size:11px;font-weight:700;color:#6b21a8;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;padding-bottom:6px;border-bottom:1.5px solid #e9d5ff;">&#128179; Fee Details</div>';
   html += '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
   html += '<thead><tr style="background:linear-gradient(135deg,#6b21a8,#7c3aed);">';
-  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:left;border-radius:6px 0 0 0;">#</th>';
-  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:left;">Description</th>';
-  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:center;">Term</th>';
-  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:right;">Total Fee</th>';
-  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:right;">Amount Paid</th>';
-  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:right;">Balance</th>';
-  html += '<th style="padding:8px 10px;color:white;font-size:10px;font-weight:700;text-align:center;border-radius:0 6px 0 0;">Status</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;text-align:left;">Description</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;text-align:right;">Annual Fee</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;text-align:right;">Prev Paid</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;text-align:right;">This Payment</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;text-align:right;">Total Paid</th>';
+  html += '<th style="padding:8px 10px;color:white;font-size:10px;text-align:right;">Balance Due</th>';
   html += '</tr></thead><tbody>';
-
-  // Term 1
   html += '<tr style="border-bottom:1px solid #f1f5f9;">';
-  html += '<td style="padding:8px 10px;">1</td>';
-  html += '<td style="padding:8px 10px;font-weight:600;">Tuition Fee<br><span style="font-size:10px;color:#94a3b8;">Academic Year '+(r.academic_year||'2025-26')+'</span></td>';
-  html += '<td style="padding:8px 10px;text-align:center;"><span style="background:#dbeafe;color:#1d4ed8;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">Term 1</span></td>';
-  html += '<td style="padding:8px 10px;text-align:right;font-weight:700;">₹'+r.term1_amount.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;color:#15803d;font-weight:700;">₹'+r.term1_paid.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;color:'+(t1bal>0?'#dc2626':'#15803d')+';">₹'+t1bal.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:center;"><span style="background:'+(t1bal===0?'#dcfce7':'#fee2e2')+';color:'+(t1bal===0?'#15803d':'#dc2626')+';padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">'+(t1bal===0?'&#10003; PAID':'&#9203; DUE')+'</span></td>';
-  html += '</tr>';
+  html += '<td style="padding:10px;font-weight:600;">'+r.type+' <br><span style="font-size:10px;color:#94a3b8;">AY '+(r.academic_year||'2025-26')+'</span></td>';
+  html += '<td style="padding:10px;text-align:right;font-weight:700;">&#8377;'+annualFee.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:10px;text-align:right;color:#64748b;">&#8377;'+prevPaid.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:10px;text-align:right;color:#15803d;font-weight:800;font-size:14px;">&#8377;'+thisPay.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:10px;text-align:right;color:#6b21a8;font-weight:700;">&#8377;'+totalPaid.toLocaleString('en-IN')+'</td>';
+  html += '<td style="padding:10px;text-align:right;font-weight:800;font-size:14px;color:'+(balance<=0?'#15803d':'#dc2626')+';">&#8377;'+balance.toLocaleString('en-IN')+(balance<=0?' &#10003;':'')+'</td>';
+  html += '</tr></tbody></table></div>';
 
-  // Term 2
-  html += '<tr style="background:#faf5ff;border-bottom:1px solid #f1f5f9;">';
-  html += '<td style="padding:8px 10px;">2</td>';
-  html += '<td style="padding:8px 10px;font-weight:600;">Tuition Fee<br><span style="font-size:10px;color:#94a3b8;">Academic Year '+(r.academic_year||'2025-26')+'</span></td>';
-  html += '<td style="padding:8px 10px;text-align:center;"><span style="background:#fce7f3;color:#be185d;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">Term 2</span></td>';
-  html += '<td style="padding:8px 10px;text-align:right;font-weight:700;">₹'+r.term2_amount.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;color:'+(r.term2_paid>0?'#15803d':'#dc2626')+';font-weight:700;">₹'+r.term2_paid.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;color:'+(t2bal>0?'#dc2626':'#15803d')+';">₹'+t2bal.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:center;"><span style="background:'+(t2bal===0?'#dcfce7':'#fee2e2')+';color:'+(t2bal===0?'#15803d':'#dc2626')+';padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;">'+(t2bal===0?'&#10003; PAID':'&#9203; DUE')+'</span></td>';
-  html += '</tr>';
-
-  // Total row
-  html += '<tr style="background:#f3e8ff;border-top:2px solid #6b21a8;">';
-  html += '<td colspan="3" style="padding:8px 10px;font-weight:700;color:#3b0764;text-align:right;">TOTAL</td>';
-  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:#3b0764;">₹'+r.annual_fee.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:#15803d;">₹'+totalPaid.toLocaleString('en-IN')+'</td>';
-  html += '<td style="padding:8px 10px;text-align:right;font-weight:800;color:'+(totalBal>0?'#dc2626':'#15803d')+';">₹'+totalBal.toLocaleString('en-IN')+'</td>';
-  html += '<td></td></tr>';
-  html += '</tbody></table></div>';
-
-  // Amount boxes + QR + Sign
-  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr auto auto;gap:10px;align-items:start;">';
-
-  // Amount boxes
+  // Summary boxes
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:14px;">';
   html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,#6b21a8,#7c3aed);color:white;">';
-  html += '<div style="font-size:9px;opacity:.85;font-weight:600;text-transform:uppercase;">Annual Fee</div>';
-  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">₹'+r.annual_fee.toLocaleString('en-IN')+'</div></div>';
-
+  html += '<div style="font-size:9px;opacity:.85;font-weight:600;">ANNUAL FEE</div><div style="font-size:18px;font-weight:800;margin-top:2px;">&#8377;'+annualFee.toLocaleString('en-IN')+'</div></div>';
+  html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:white;">';
+  html += '<div style="font-size:9px;opacity:.85;font-weight:600;">THIS PAYMENT</div><div style="font-size:18px;font-weight:800;margin-top:2px;">&#8377;'+thisPay.toLocaleString('en-IN')+'</div></div>';
   html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,#15803d,#22c55e);color:white;">';
-  html += '<div style="font-size:9px;opacity:.85;font-weight:600;text-transform:uppercase;">Amount Paid</div>';
-  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">₹'+totalPaid.toLocaleString('en-IN')+'</div></div>';
+  html += '<div style="font-size:9px;opacity:.85;font-weight:600;">TOTAL PAID</div><div style="font-size:18px;font-weight:800;margin-top:2px;">&#8377;'+totalPaid.toLocaleString('en-IN')+'</div></div>';
+  html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,'+(balance<=0?'#15803d,#22c55e':'#c2410c,#ef4444')+');color:white;">';
+  html += '<div style="font-size:9px;opacity:.85;font-weight:600;">BALANCE DUE</div><div style="font-size:18px;font-weight:800;margin-top:2px;">&#8377;'+balance.toLocaleString('en-IN')+'</div></div>';
+  html += '</div>';
 
-  html += '<div style="padding:10px;border-radius:10px;text-align:center;background:linear-gradient(135deg,'+(totalBal>0?'#c2410c,#ef4444':'#15803d,#22c55e')+');color:white;">';
-  html += '<div style="font-size:9px;opacity:.85;font-weight:600;text-transform:uppercase;">Balance Due</div>';
-  html += '<div style="font-size:20px;font-weight:800;margin-top:2px;">₹'+totalBal.toLocaleString('en-IN')+'</div></div>';
+  // Amount in words + Mode + QR + Sign
+  html += '<div style="background:#f8f4ff;border:1px solid #e9d5ff;border-radius:8px;padding:8px 12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">';
+  html += '<div><span style="font-size:9px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Amount in Words: </span>';
+  html += '<span style="font-size:12px;font-weight:700;color:#1e293b;">'+numW(thisPay)+' Rupees Only</span></div>';
+  html += '<div style="font-size:10px;color:#64748b;">Mode: <strong>'+r.pay_mode+'</strong> &nbsp;|&nbsp; By: <strong>Admin</strong></div>';
+  html += '</div>';
 
-  // QR Code
-  html += '<div style="text-align:center;">';
-  html += '<div id="rcptQR" style="width:80px;height:80px;background:white;border-radius:8px;display:flex;align-items:center;justify-content:center;padding:4px;border:2px solid #e9d5ff;margin:0 auto;"></div>';
+  // Bottom - QR + Notice + Sign
+  html += '<div style="display:flex;gap:16px;align-items:flex-start;padding-top:12px;border-top:1px dashed #cbd5e1;">';
+  html += '<div style="text-align:center;flex-shrink:0;">';
+  html += '<div id="rcptQR" style="width:80px;height:80px;background:white;border-radius:8px;border:2px solid #e9d5ff;display:flex;align-items:center;justify-content:center;padding:3px;"></div>';
   html += '<div style="font-size:8px;color:#64748b;margin-top:3px;font-weight:600;">Scan to Verify</div></div>';
-
-  // Sign
-  html += '<div style="text-align:center;">';
+  html += '<div style="flex:1;font-size:10px;color:#78350f;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:8px 10px;line-height:1.7;">';
+  html += '<strong>&#128203; Important Notes:</strong><br>';
+  html += '&#8226; This is an official computer-generated receipt.<br>';
+  if(balance > 0) {
+    html += '&#8226; Balance due: <strong style="color:#dc2626;">&#8377;'+balance.toLocaleString('en-IN')+'</strong> — Please pay at earliest.<br>';
+  } else {
+    html += '&#8226; <strong style="color:#15803d;">&#10003; Annual fee fully paid! Thank you.</strong><br>';
+  }
+  html += '&#8226; Alteration of this receipt is illegal.';
+  html += '</div>';
+  html += '<div style="text-align:center;flex-shrink:0;">';
   html += '<img src="'+LOGO+'" style="width:50px;height:50px;object-fit:contain;opacity:.5;display:block;margin:0 auto;">';
   html += '<div style="border-top:1px solid #334155;padding-top:4px;font-size:9px;color:#64748b;font-weight:600;margin-top:16px;width:100px;">Authorized Signatory</div>';
-  html += '</div>';
-  html += '</div>';
-
-  // Amount in words
-  html += '<div style="background:#f8f4ff;border:1px solid #e9d5ff;border-radius:8px;padding:8px 12px;margin-top:10px;display:flex;justify-content:space-between;align-items:center;">';
-  html += '<div><span style="font-size:9px;color:#6b21a8;font-weight:700;text-transform:uppercase;">Amount in Words: </span>';
-  html += '<span style="font-size:12px;font-weight:700;color:#1e293b;">'+numW(totalPaid)+' Rupees Only</span></div>';
-  html += '<div style="font-size:10px;color:#64748b;">Mode: <strong>'+r.pay_mode+'</strong> &nbsp;|&nbsp; Received by: <strong>Admin</strong></div>';
-  html += '</div>';
-
+  html += '</div></div>';
   html += '</div>'; // end body
 
   // FOOTER
   html += '<div style="background:linear-gradient(135deg,#2e0650,#6b21a8);padding:8px 24px;display:flex;justify-content:space-between;align-items:center;position:relative;">';
   html += '<div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#f59e0b,#ec4899,#7c3aed,#ec4899,#f59e0b);"></div>';
-  html += '<div style="color:rgba(255,255,255,.65);font-size:9px;">Matoshree Vitthai Podar Learn School, Niphad | Computer generated receipt | Valid without signature</div>';
+  html += '<div style="color:rgba(255,255,255,.65);font-size:9px;">Matoshree Vitthai Podar Learn School, Niphad, Nashik | System generated | Valid without signature</div>';
   html += '<div style="background:rgba(255,255,255,.15);padding:3px 10px;border-radius:8px;color:white;font-size:9px;font-weight:600;">&#128274; QR Verified | Tamper-Proof</div>';
   html += '</div>';
-
   html += '</div>'; // end receipt card
+  html += '</div>'; // end wrapper
 
   ge('receiptContent').innerHTML = html;
 
@@ -2605,11 +2578,11 @@ function showReceiptNew(r) {
     var qrEl = document.getElementById('rcptQR');
     if(window.QRCode && qrEl){
       qrEl.innerHTML = '';
-      new window.QRCode(qrEl,{text:qrData,width:72,height:72,colorDark:'#3b0764',colorLight:'#ffffff',correctLevel:window.QRCode.CorrectLevel.L});
+      new window.QRCode(qrEl,{text:qrData,width:74,height:74,colorDark:'#3b0764',colorLight:'#ffffff',correctLevel:window.QRCode.CorrectLevel.L});
     }
     var wb = document.getElementById('rcptWaBtn');
     if(wb){ wb.onclick = function(){
-      var msg='Matoshree Vitthai Podar Learn School, Niphad\n9309042265 | 8767021833\n\nReceipt: '+r.id+'\nDate: '+dt+'\n\nStudent: '+r.student_name+' | GR: '+(r.gr_no||'N/A')+'\nClass: '+r.student_class+'-'+(r.student_div||'A')+'\nFather: '+(r.father_name||'N/A')+'\n\nTerm-1: Rs.'+r.term1_amount+' Paid: Rs.'+r.term1_paid+'\nTerm-2: Rs.'+r.term2_amount+' Paid: Rs.'+r.term2_paid+'\nTotal Paid: Rs.'+totalPaid+'\nBalance: Rs.'+totalBal+'\n\nView: '+qrData;
+      var msg='Matoshree Vitthai Podar Learn School, Niphad\n9309042265 | 8767021833\n\nReceipt: '+r.id+'\nDate: '+dt+'\n\nStudent: '+r.student_name+' | GR: '+(r.gr_no||'N/A')+'\nClass: '+r.student_class+'-'+(r.student_div||'A')+'\nFather: '+(r.father_name||'N/A')+'\n\nAnnual Fee: Rs.'+annualFee+'\nThis Payment: Rs.'+thisPay+'\nTotal Paid: Rs.'+totalPaid+'\nBalance Due: Rs.'+balance+'\n\nView Receipt: '+qrData;
       window.open('https://wa.me/91'+(r.mobile||'').replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
     };}
   },400);
