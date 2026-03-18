@@ -854,10 +854,38 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
         <div><label class="label">Student Name</label><input type="text" id="feeStudentName" class="input" readonly></div>
         <div><label class="label">Class</label><input type="text" id="feeStudentClass" class="input" readonly></div>
       </div>
+      <div class="card" style="margin-top:24px;">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">💰 Class-wise Fee Structure</h3>
+        <p style="color:var(--grey);font-size:13px;margin-bottom:16px;">Set fees for each class — these will auto-fill when collecting fee</p>
+        <div style="overflow-x:auto;">
+          <table class="table" id="feeStructureTable">
+            <thead>
+              <tr>
+                <th>Class</th>
+                <th>Term-1 Fee (₹)</th>
+                <th>Term-2 Fee (₹)</th>
+                <th>Annual Fee (₹)</th>
+              </tr>
+            </thead>
+            <tbody id="feeStructureBody"></tbody>
+          </table>
+        </div>
+        <div style="margin-top:16px;">
+          <button class="btn btn-primary" onclick="saveFeeStructure()">💾 Save Fee Structure</button>
+        </div>
+      </div>
       <input type="hidden" id="feeStudentID">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
         <div><label class="label">Fee Type *</label>
-          <select id="feeType" class="input"><option value="">-- Select --</option><option>Tuition Fee</option><option>Admission Fee</option><option>Exam Fee</option><option>Transport Fee</option><option>Other</option></select>
+          <select id="feeType" class="input" onchange="onFeeTypeChange()">
+  <option value="">-- Select --</option>
+  <option>Term-1 Fee</option>
+  <option>Term-2 Fee</option>
+  <option>Admission Fee</option>
+  <option>Exam Fee</option>
+  <option>Transport Fee</option>
+  <option>Other</option>
+</select>
         </div>
         <div><label class="label">Amount *</label><input type="number" id="feeAmount" class="input" placeholder="₹ 0"></div>
       </div>
@@ -1232,8 +1260,77 @@ function fillSchoolLogos() {
   });
 }
 
+// =====================
+// FEE STRUCTURE
+// =====================
+var CLASS_LIST = ['Nursery','Jr. KG','Sr. KG','1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th'];
+
+var feeStructureDB = {};
+
+function initFeeStructure() {
+  // Load from localStorage first
+  try {
+    var saved = localStorage.getItem('podar_fee_structure');
+    if(saved) feeStructureDB = JSON.parse(saved);
+  } catch(e) {}
+  // Set defaults if not set
+  CLASS_LIST.forEach(function(cls) {
+    if(!feeStructureDB[cls]) {
+      feeStructureDB[cls] = { term1: 0, term2: 0 };
+    }
+  });
+  renderFeeStructureTable();
+}
+
+function renderFeeStructureTable() {
+  var tbody = ge('feeStructureBody');
+  if(!tbody) return;
+  tbody.innerHTML = CLASS_LIST.map(function(cls) {
+    var fee = feeStructureDB[cls] || { term1: 0, term2: 0 };
+    var annual = (fee.term1 || 0) + (fee.term2 || 0);
+    return '<tr>' +
+      '<td style="font-weight:700;">' + cls + '</td>' +
+      '<td><input type="number" value="' + (fee.term1||0) + '" data-class="' + cls + '" data-term="term1" onchange="updateFeeStructure(this)" style="width:120px;padding:8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;"></td>' +
+      '<td><input type="number" value="' + (fee.term2||0) + '" data-class="' + cls + '" data-term="term2" onchange="updateFeeStructure(this)" style="width:120px;padding:8px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;"></td>' +
+      '<td style="font-weight:700;color:var(--primary);" id="annual_' + cls.replace(/ /g,'_') + '">₹' + annual.toLocaleString('en-IN') + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function updateFeeStructure(input) {
+  var cls = input.dataset.class;
+  var term = input.dataset.term;
+  var val = parseInt(input.value) || 0;
+  if(!feeStructureDB[cls]) feeStructureDB[cls] = { term1: 0, term2: 0 };
+  feeStructureDB[cls][term] = val;
+  // Update annual
+  var annual = (feeStructureDB[cls].term1 || 0) + (feeStructureDB[cls].term2 || 0);
+  var annualEl = ge('annual_' + cls.replace(/ /g,'_'));
+  if(annualEl) annualEl.textContent = '₹' + annual.toLocaleString('en-IN');
+}
+
+async function saveFeeStructure() {
+  try {
+    localStorage.setItem('podar_fee_structure', JSON.stringify(feeStructureDB));
+  } catch(e) {}
+  // Save to Supabase fee_structure table
+  await supaInsert('fee_structure', { id: 'default', structure: JSON.stringify(feeStructureDB) });
+  notify('✅ Fee structure saved!', 'success');
+}
+
+function getFeeForClass(className) {
+  // Match class name
+  var cls = CLASS_LIST.find(function(c) { 
+    return className && className.toLowerCase().indexOf(c.toLowerCase()) > -1;
+  });
+  if(cls && feeStructureDB[cls]) return feeStructureDB[cls];
+  return { term1: 0, term2: 0 };
+}
+
+
 window.onload = function() {
   fillSchoolLogos();
+  initFeeStructure();
   // Auto-fill saved credentials
   try {
     var savedEmail = localStorage.getItem('podar_erp_email');
@@ -1361,6 +1458,7 @@ function navigateTo(page) {
   ge('pageTitle').textContent = titles[page] || page;
   if (page === 'reports') { rptUpdatePreview(); rptRenderCollection(); rptRenderDefaulter(); rptRenderStudents(); rptRenderActive(); }
   if (page === 'dashboard') { dashUpdateStats(); }
+  if (page === 'settings') { renderFeeStructureTable(); }
 }
 
 // =====================
@@ -1891,6 +1989,17 @@ function searchStudentForFee(q) {
     return '<div style="padding:8px 12px;background:var(--grey-light);border-radius:6px;margin-top:4px;cursor:pointer;font-size:14px;" onclick="selectFeeStudent(\'' + s.id + '\')">' + s.name + ' — ' + s.class + '-' + (s.div||'A') + '</div>';
   }).join('');
 }
+
+function onFeeTypeChange() {
+  var feeType = ge('feeType').value;
+  var studentId = ge('feeStudentID').value;
+  if(!studentId) return;
+  var s = studentsDB.find(function(x){ return x.id===studentId; });
+  if(!s) return;
+  var fee = getFeeForClass(s.class);
+  if(feeType === 'Term-1 Fee' && fee.term1 > 0) ge('feeAmount').value = fee.term1;
+  else if(feeType === 'Term-2 Fee' && fee.term2 > 0) ge('feeAmount').value = fee.term2;
+}
 function selectFeeStudent(id) {
   var s = studentsDB.find(function(x){ return x.id===id; });
   if (!s) return;
@@ -1899,6 +2008,15 @@ function selectFeeStudent(id) {
   ge('feeStudentID').value = s.id;
   ge('feeStudentResults').innerHTML = '';
   ge('feeStudentSearch').value = '';
+  // Auto-fill fee based on class
+  var fee = getFeeForClass(s.class);
+  var feeType = ge('feeType').value;
+  if(fee && feeType === 'Term-1 Fee') ge('feeAmount').value = fee.term1 || '';
+  else if(fee && feeType === 'Term-2 Fee') ge('feeAmount').value = fee.term2 || '';
+  // Show fee info
+  if(fee && (fee.term1 > 0 || fee.term2 > 0)) {
+    notify('Class ' + s.class + ' — Term-1: ₹' + (fee.term1||0).toLocaleString('en-IN') + ' | Term-2: ₹' + (fee.term2||0).toLocaleString('en-IN'), 'info');
+  }
 }
 async function saveFee() {
   var studentId = ge('feeStudentID').value;
@@ -1958,14 +2076,47 @@ function buildReceiptRecord(fee, stu) {
 }
 function renderFeeTable() {
   var tbody = ge('feeTableBody');
-  if (feeDB.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:var(--grey);">No fee records</td></tr>'; return; }
-  tbody.innerHTML = feeDB.slice().reverse().map(function(f) {
-    return '<tr><td style="font-family:monospace;font-size:12px;">' + f.id + '</td><td style="font-weight:600;">' + f.student_name + '</td><td>' + f.student_class + '</td><td style="color:var(--success);font-weight:700;">' + formatMoney(f.amount) + '</td><td>' + f.date + '</td><td><span class="badge badge-success">' + f.status + '</span></td></tr>';
-  }).join('');
-  var collected = feeDB.reduce(function(s,f){ return s+f.amount; }, 0);
-  ge('feeCollected').textContent = formatMoney(collected);
-  ge('feeExpected').textContent = formatMoney(studentsDB.length * 25000);
-  ge('feePending').textContent = formatMoney(Math.max(0, studentsDB.length * 25000 - collected));
+  if (feeDB.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No fee records</td></tr>';
+    return;
+  }
+  var rows = '';
+  feeDB.slice().reverse().forEach(function(f) {
+    rows += '<tr>' +
+      '<td style="font-family:monospace;font-size:12px;">' + f.id + '</td>' +
+      '<td style="font-weight:600;">' + f.student_name + '</td>' +
+      '<td>' + f.student_class + '</td>' +
+      '<td style="color:var(--success);font-weight:700;">₹' + (f.amount||0).toLocaleString('en-IN') + '</td>' +
+      '<td>' + (f.type||'-') + '</td>' +
+      '<td>' + (f.date||'-') + '</td>' +
+      '<td>' +
+        '<button class="btn btn-danger" data-fid="' + f.id + '" data-sid="' + f.student_id + '" onclick="deleteFeeBtn(this)" style="padding:6px 10px;font-size:11px;">🗑️ Delete</button>' +
+      '</td>' +
+    '</tr>';
+  });
+  tbody.innerHTML = rows;
+  var collected = feeDB.reduce(function(s,f){ return s+(f.amount||0); }, 0);
+  ge('feeCollected').textContent = '₹' + collected.toLocaleString('en-IN');
+  ge('feeExpected').textContent = '₹' + (studentsDB.length * 25000).toLocaleString('en-IN');
+  ge('feePending').textContent = '₹' + Math.max(0, studentsDB.length * 25000 - collected).toLocaleString('en-IN');
+}
+
+async function deleteFeeBtn(btn) {
+  var fid = btn.dataset.fid;
+  var sid = btn.dataset.sid;
+  if(!confirm('Delete this fee record?')) return;
+  feeDB = feeDB.filter(function(f){ return f.id !== fid; });
+  await supaDelete('fees', fid);
+  // Check if student has any remaining fees - update status
+  var remaining = feeDB.filter(function(f){ return f.student_id === sid; });
+  if(remaining.length === 0) {
+    var stu = studentsDB.find(function(s){ return s.id === sid; });
+    if(stu) { stu.status = 'pending'; await supaUpdate('students', sid, {status:'pending'}); }
+  }
+  renderFeeTable();
+  renderStudentsTable();
+  dashUpdateStats();
+  notify('Fee record deleted!', 'success');
 }
 function showReceipt(fee) { /* replaced by showReceiptNew */ }
 
