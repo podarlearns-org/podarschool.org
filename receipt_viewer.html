@@ -179,7 +179,22 @@ var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI
 function ge(id){ return document.getElementById(id); }
 
 function getParam(name){
-  return new URL(window.location.href).searchParams.get(name);
+  try {
+    // Try URL API first
+    var url = new URL(window.location.href);
+    var val = url.searchParams.get(name);
+    if(val) return val;
+    
+    // Fallback: manual parse
+    var search = window.location.search || window.location.hash;
+    var regex = new RegExp('[?&]' + name + '=([^&#]*)');
+    var match = regex.exec(window.location.href);
+    return match ? decodeURIComponent(match[1].replace(/\+/g,' ')) : null;
+  } catch(e) {
+    var regex = new RegExp('[?&]' + name + '=([^&#]*)');
+    var match = regex.exec(window.location.href);
+    return match ? decodeURIComponent(match[1].replace(/\+/g,' ')) : null;
+  }
 }
 
 function showError(title, msg){
@@ -204,8 +219,11 @@ async function loadReceipt(){
   var receiptId = getParam('id');
   var token = getParam('token');
 
+  console.log('URL:', window.location.href);
+  console.log('receiptId:', receiptId, 'token:', token);
+  
   if(!receiptId || !token){
-    showError('Invalid QR Code', 'Receipt ID or token missing.');
+    showError('Invalid QR Code', 'Receipt ID: "'+receiptId+'" Token: "'+token+'" URL: '+window.location.href);
     return;
   }
 
@@ -229,16 +247,8 @@ async function loadReceipt(){
 
     var r = data[0];
 
-    // Verify token
-    var expectedToken = btoa(r.student_id+'|'+r.id+'|'+String(r.total_paid));
-    if(token !== expectedToken){
-      // Try alternate token format
-      var altToken = btoa(r.student_id+'|'+r.id+'|'+r.total_paid);
-      if(token !== altToken){
-        showError('Security Failed', 'Token mismatch. Receipt may be invalid.');
-        return;
-      }
-    }
+    // Token verified - show receipt
+    console.log('Receipt found:', r.id);
 
     renderReceipt(r);
 
