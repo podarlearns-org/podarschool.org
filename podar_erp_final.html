@@ -588,10 +588,22 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
         </div>
       </div>
 
+      <!-- Student Fee History -->
+      <div class="card" style="margin-bottom:24px;">
+        <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;">👨‍🎓 Student Fee History</h3>
+        <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+          <input type="text" id="stuFeeSearch" class="input" style="flex:1;min-width:200px;" placeholder="Student ka naam type karo..." oninput="searchStudentFeeHistory(this.value)">
+          <button class="btn btn-secondary" onclick="showAllStudentFees()">📋 All Students</button>
+        </div>
+        <div id="stuFeeHistoryContent">
+          <p style="color:var(--grey);text-align:center;padding:20px;">Student naam search karo ya "All Students" click karo</p>
+        </div>
+      </div>
+
       <!-- Fee Records -->
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-          <h3 style="font-size:18px;font-weight:700;">📜 Fee Records</h3>
+          <h3 style="font-size:18px;font-weight:700;">📜 All Fee Records</h3>
           <div style="display:flex;gap:8px;align-items:center;">
             <input type="text" id="feeSearchInput" class="input" style="width:200px;padding:8px 12px;" placeholder="Search student..." oninput="filterFeeRecords(this.value)">
           </div>
@@ -1309,6 +1321,19 @@ async function supaUpdate(table, id, data) {
   } catch(e) { return false; }
 }
 
+async function supaUpsert(table, data) {
+  try {
+    var res = await fetch(SUPA_URL + table, {
+      method: 'POST',
+      headers: Object.assign({}, SUPA_H, {
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      }),
+      body: JSON.stringify(data)
+    });
+    return res.ok;
+  } catch(e) { console.error(table + ' upsert error: ' + e); return false; }
+}
+
 async function supaDelete(table, id) {
   try {
     var r = await fetch(SUPA_URL + table + '?id=eq.' + encodeURIComponent(id), {
@@ -1430,6 +1455,188 @@ function getTotalPaidByStudent(studentId) {
     .reduce(function(sum, f){ return sum + (f.amount||0); }, 0);
 }
 
+
+// =====================
+// STUDENT FEE HISTORY
+// =====================
+function searchStudentFeeHistory(q) {
+  if(!q || q.length < 2) {
+    ge('stuFeeHistoryContent').innerHTML = '<p style="color:var(--grey);text-align:center;padding:20px;">Student naam search karo (min 2 letters)</p>';
+    return;
+  }
+  q = q.toLowerCase();
+  var found = studentsDB.filter(function(s) {
+    return s.name.toLowerCase().indexOf(q) > -1 ||
+           (s.gr && s.gr.toLowerCase().indexOf(q) > -1) ||
+           s.id.toLowerCase().indexOf(q) > -1;
+  });
+  if(found.length === 0) {
+    ge('stuFeeHistoryContent').innerHTML = '<p style="color:var(--grey);text-align:center;padding:20px;">No students found</p>';
+    return;
+  }
+  renderStudentFeeHistory(found);
+}
+
+function showAllStudentFees() {
+  ge('stuFeeSearch').value = '';
+  renderStudentFeeHistory(studentsDB);
+}
+
+function renderStudentFeeHistory(students) {
+  var html = '';
+  students.forEach(function(s) {
+    var stuFees = feeDB.filter(function(f){ return f.student_id === s.id; });
+    var totalPaid = stuFees.reduce(function(sum,f){ return sum+(f.amount||0); }, 0);
+    var annualFee = getAnnualFeeForClass(s.class) || 0;
+    var balance = Math.max(0, annualFee - totalPaid);
+    var statusColor = balance <= 0 ? '#15803d' : totalPaid > 0 ? '#f59e0b' : '#dc2626';
+    var statusText = balance <= 0 ? '✅ Fully Paid' : totalPaid > 0 ? '⏳ Partial' : '❌ Pending';
+
+    html += '<div style="border:1px solid #e2e8f0;border-radius:12px;margin-bottom:12px;overflow:hidden;">';
+    
+    // Student header
+    html += '<div style="background:linear-gradient(135deg,#f8f4ff,#f3e8ff);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">';
+    html += '<div style="display:flex;align-items:center;gap:12px;">';
+    html += '<div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#6b21a8,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px;">' + s.name.substring(0,2).toUpperCase() + '</div>';
+    html += '<div>';
+    html += '<p style="font-weight:700;font-size:15px;color:#1e293b;">' + s.name + '</p>';
+    html += '<p style="font-size:12px;color:#64748b;">GR: ' + (s.gr||'N/A') + ' | Class: ' + s.class + '-' + (s.div||'A') + ' | ' + s.id + '</p>';
+    html += '</div></div>';
+    html += '<div style="display:flex;gap:8px;align-items:center;">';
+    html += '<span style="color:'+statusColor+';font-weight:700;font-size:13px;">'+statusText+'</span>';
+    html += '</div></div>';
+
+    // Fee summary bar
+    html += '<div style="padding:12px 16px;background:white;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;border-bottom:1px solid #f1f5f9;">';
+    html += '<div style="text-align:center;"><p style="font-size:10px;color:#94a3b8;font-weight:600;">ANNUAL FEE</p><p style="font-size:16px;font-weight:800;color:#6b21a8;">₹'+annualFee.toLocaleString('en-IN')+'</p></div>';
+    html += '<div style="text-align:center;"><p style="font-size:10px;color:#94a3b8;font-weight:600;">TOTAL PAID</p><p style="font-size:16px;font-weight:800;color:#15803d;">₹'+totalPaid.toLocaleString('en-IN')+'</p></div>';
+    html += '<div style="text-align:center;"><p style="font-size:10px;color:#94a3b8;font-weight:600;">BALANCE</p><p style="font-size:16px;font-weight:800;color:'+statusColor+';">₹'+balance.toLocaleString('en-IN')+'</p></div>';
+    html += '<div style="text-align:center;"><p style="font-size:10px;color:#94a3b8;font-weight:600;">RECEIPTS</p><p style="font-size:16px;font-weight:800;color:#3b82f6;">'+stuFees.length+'</p></div>';
+    html += '</div>';
+
+    // Receipt list
+    if(stuFees.length > 0) {
+      html += '<div style="padding:8px 16px 12px;background:white;">';
+      html += '<p style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:8px;">Payment History</p>';
+      stuFees.slice().reverse().forEach(function(f, idx) {
+        var fBalance = f.balance !== undefined ? f.balance : 0;
+        html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:'+(idx%2===0?'#f8fafc':'white')+';border-radius:8px;margin-bottom:4px;">';
+        html += '<div>';
+        html += '<p style="font-weight:600;font-size:13px;color:#6b21a8;">'+f.id+'</p>';
+        html += '<p style="font-size:11px;color:#64748b;">'+f.date+' | '+f.mode+' | '+(f.type||'Fee')+'</p>';
+        html += '</div>';
+        html += '<div style="display:flex;align-items:center;gap:12px;">';
+        html += '<div style="text-align:right;">';
+        html += '<p style="font-weight:800;color:#15803d;font-size:14px;">₹'+f.amount.toLocaleString('en-IN')+'</p>';
+        if(fBalance > 0) html += '<p style="font-size:10px;color:#dc2626;">Bal: ₹'+fBalance.toLocaleString('en-IN')+'</p>';
+        html += '</div>';
+        html += '<button class="btn btn-secondary" data-fid="'+f.id+'" onclick="viewReceiptFromHistory(this.dataset.fid)" style="padding:5px 10px;font-size:11px;">&#128196; Receipt</button>';
+        html += '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    } else {
+      html += '<div style="padding:12px 16px;background:white;color:#94a3b8;font-size:13px;text-align:center;">No payments yet</div>';
+    }
+    html += '</div>';
+  });
+
+  ge('stuFeeHistoryContent').innerHTML = html || '<p style="color:var(--grey);text-align:center;padding:20px;">No students found</p>';
+}
+
+function openFeeModalForStudent(studentId) {
+  openFeeModal();
+  setTimeout(function() {
+    var s = studentsDB.find(function(x){ return x.id === studentId; });
+    if(s) selectFeeStudent(s.id);
+  }, 100);
+}
+
+function viewReceiptFromHistory(feeId) {
+  // Find fee record
+  var f = feeDB.find(function(x){ return x.id === feeId; });
+  if(!f) { notify('Receipt not found!', 'error'); return; }
+  
+  var stu = studentsDB.find(function(s){ return s.id === f.student_id; });
+  var annualFee = getAnnualFeeForClass(stu ? stu.class : '') || f.annual_fee || 0;
+  var prevPaid = f.prev_paid || 0;
+  var totalPaid = f.total_paid || f.amount || 0;
+  var balance = f.balance !== undefined ? f.balance : Math.max(0, annualFee - totalPaid);
+  var token = btoa((stu ? stu.id : f.student_id)+'|'+f.id+'|'+String(totalPaid));
+
+  var rr = {
+    id: f.id,
+    student_id: f.student_id,
+    student_name: f.student_name,
+    student_class: stu ? stu.class : f.student_class.split('-')[0],
+    student_div: stu ? (stu.div||'A') : 'A',
+    gr_no: stu ? (stu.gr||'') : '',
+    father_name: stu ? (stu.father||'') : '',
+    mobile: stu ? (stu.mobile||'') : '',
+    address: stu ? (stu.address||'Niphad, Nashik') : 'Niphad, Nashik',
+    annual_fee: annualFee,
+    this_payment: f.amount,
+    prev_paid: prevPaid,
+    total_paid: totalPaid,
+    balance: balance,
+    pay_mode: f.mode,
+    date: f.date,
+    type: f.type || 'Tuition Fee',
+    academic_year: '2025-26',
+    token: token,
+    receipt_url: RECEIPT_VIEWER_URL+'?id='+encodeURIComponent(f.id)+'&token='+encodeURIComponent(token)
+  };
+
+  showReceiptNew(rr);
+}
+
+function viewReceiptFromHistory(feeId) {
+  // Find fee in feeDB
+  var f = feeDB.find(function(x){ return x.id === feeId; });
+  if(!f) {
+    // Try fee_receipts from Supabase
+    notify('Loading receipt...', 'info');
+    supaSelect('fee_receipts').then(function(receipts) {
+      var r = receipts.find(function(x){ return x.id === feeId; });
+      if(r) {
+        showReceiptNew(r);
+      } else {
+        notify('Receipt not found!', 'error');
+      }
+    });
+    return;
+  }
+  // Build receipt from fee data
+  var stu = studentsDB.find(function(s){ return s.id === f.student_id; });
+  var annualFee = getAnnualFeeForClass(stu ? stu.class : '') || f.annual_fee || 0;
+  var totalPaid = f.total_paid || f.amount || 0;
+  var balance = f.balance !== undefined ? f.balance : Math.max(0, annualFee - totalPaid);
+  var token = btoa(f.student_id+'|'+f.id+'|'+String(totalPaid));
+
+  var rr = {
+    id: f.id,
+    student_id: f.student_id,
+    student_name: f.student_name,
+    student_class: stu ? stu.class : f.student_class,
+    student_div: stu ? (stu.div||'A') : 'A',
+    gr_no: stu ? (stu.gr||'') : '',
+    father_name: stu ? (stu.father||'') : '',
+    mobile: stu ? (stu.mobile||'') : '',
+    address: stu ? (stu.address||'Niphad, Nashik') : 'Niphad, Nashik',
+    annual_fee: annualFee,
+    this_payment: f.amount,
+    prev_paid: totalPaid - f.amount,
+    total_paid: totalPaid,
+    balance: balance,
+    pay_mode: f.mode,
+    type: f.type || 'Fee Payment',
+    date: f.date,
+    academic_year: '2025-26',
+    token: token,
+    receipt_url: RECEIPT_VIEWER_URL+'?id='+encodeURIComponent(f.id)+'&token='+encodeURIComponent(token)
+  };
+  showReceiptNew(rr);
+}
 
 window.onload = function() {
   fillSchoolLogos();
@@ -2314,7 +2521,7 @@ async function saveFee() {
     receipt_url: RECEIPT_VIEWER_URL+'?id='+encodeURIComponent(fee.id)+'&token='+encodeURIComponent(btoa(studentId+'|'+fee.id+'|'+totalPaid))
   };
 
-  await supaInsert('fee_receipts', rr);
+  await supaUpsert('fee_receipts', rr);
 
   // Clear info box
   var infoDiv = ge('feeInfoBox');
@@ -2325,6 +2532,11 @@ async function saveFee() {
   renderStudentsTable();
   dashUpdateStats();
   showReceiptNew(rr);
+  // Refresh fee history if visible
+  var histContent = ge('stuFeeHistoryContent');
+  if(histContent && histContent.children.length > 0 && ge('stuFeeSearch').value) {
+    searchStudentFeeHistory(ge('stuFeeSearch').value);
+  }
   notify('Fee collected! ' + fee.id, 'success');
 }
 
