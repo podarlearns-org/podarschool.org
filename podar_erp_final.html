@@ -1244,6 +1244,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
 // SUPABASE CONFIG
 // =====================
 var SUPABASE_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co';
+var RECEIPT_VIEWER_URL = 'https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1/object/public/receipts/receipt_viewer.html';
 var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM';
 
 // =====================
@@ -2266,13 +2267,16 @@ async function saveFee() {
     student_class: studentClass,
     type: type,
     amount: amount,
-    annual_fee: annualFee,
-    prev_paid: prevPaid,
-    total_paid: totalPaid,
-    balance: balance,
     mode: mode,
     date: todayStr(),
     status: 'paid'
+  };
+  // Extra data for receipt (not saved to fees table)
+  var feeExtra = {
+    annual_fee: annualFee,
+    prev_paid: prevPaid,
+    total_paid: totalPaid,
+    balance: balance
   };
 
   feeDB.push(fee);
@@ -2298,11 +2302,11 @@ async function saveFee() {
     father_name: stu ? (stu.father||'') : '',
     mobile: stu ? (stu.mobile||'') : '',
     address: stu ? (stu.address||'Niphad, Nashik') : 'Niphad, Nashik',
-    annual_fee: annualFee,
-    this_payment: amount,
-    prev_paid: prevPaid,
-    total_paid: totalPaid,
-    balance: balance,
+    annual_fee: feeExtra.annual_fee,
+    this_payment: fee.amount,
+    prev_paid: feeExtra.prev_paid,
+    total_paid: feeExtra.total_paid,
+    balance: feeExtra.balance,
     pay_mode: mode,
     date: fee.date,
     academic_year: '2025-26',
