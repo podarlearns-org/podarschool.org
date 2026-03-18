@@ -2254,8 +2254,8 @@ async function saveFee() {
 
   // Get student class for annual fee
   var stu = studentsDB.find(function(s){ return s.id===studentId; });
-  var annualFee = stu ? getFeeForClass(stu.class) : 0;
-  var prevPaid = getTotalPaidByStudent(studentId);
+  var annualFee = stu ? (getAnnualFeeForClass(stu.class) || 0) : 0;
+  var prevPaid = getStudentTotalPaid(studentId);
   var totalPaid = prevPaid + amount;
   var balance = Math.max(0, annualFee - totalPaid);
 
@@ -2267,6 +2267,7 @@ async function saveFee() {
     type: type,
     amount: amount,
     annual_fee: annualFee,
+    prev_paid: prevPaid,
     total_paid: totalPaid,
     balance: balance,
     mode: mode,
@@ -2299,6 +2300,7 @@ async function saveFee() {
     address: stu ? (stu.address||'Niphad, Nashik') : 'Niphad, Nashik',
     annual_fee: annualFee,
     this_payment: amount,
+    prev_paid: prevPaid,
     total_paid: totalPaid,
     balance: balance,
     pay_mode: mode,
