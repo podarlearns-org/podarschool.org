@@ -165,6 +165,9 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
     </div>
     <button id="loginBtn" class="login-btn" onclick="handleLogin()">Login to ERP</button>
     <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--grey);">Academic Year 2026-27</p>
+    <p style="text-align:center;margin-top:8px;">
+      <button onclick="clearLoginCache()" style="background:none;border:none;color:var(--grey);font-size:11px;cursor:pointer;text-decoration:underline;">🔄 Reset saved login</button>
+    </p>
   </div>
 </div>
 
@@ -2111,6 +2114,18 @@ async function deleteUser(userId) {
   loadUsers();
 }
 
+function clearLoginCache() {
+  try {
+    localStorage.removeItem('podar_erp_email');
+    localStorage.removeItem('podar_erp_pass');
+    localStorage.removeItem('podar_erp_remember');
+  } catch(e) {}
+  ge('loginEmail').value = '';
+  ge('loginPassword').value = '';
+  if(ge('rememberMe')) ge('rememberMe').checked = false;
+  notify('Login cache cleared! Enter new credentials.', 'success');
+}
+
 window.onload = function() {
   fillSchoolLogos();
   initFeeStructure();
@@ -2123,11 +2138,11 @@ window.onload = function() {
       ge('loginEmail').value = savedEmail;
       ge('loginPassword').value = savedPass;
       ge('rememberMe').checked = true;
-      // Auto login - use handleLogin for Supabase check
+      // Auto login - verify with Supabase first
       ge('loginEmail').value = savedEmail;
       ge('loginPassword').value = savedPass;
-      handleLogin();
-      return;
+      // Don't auto-login, just fill the form
+      // User must click login button to verify with Supabase
     }
   } catch(e) {}
   ge('loginBtn').onclick = handleLogin;
