@@ -165,6 +165,9 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
     </div>
     <button id="loginBtn" class="login-btn" onclick="handleLogin()">Login to ERP</button>
     <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--grey);">Academic Year 2026-27</p>
+    <p style="text-align:center;margin-top:8px;">
+      <button onclick="clearLoginCache()" style="background:none;border:none;color:var(--grey);font-size:11px;cursor:pointer;text-decoration:underline;">🔄 Reset saved login</button>
+    </p>
   </div>
 </div>
 
@@ -1995,6 +1998,165 @@ document.addEventListener('keydown', function(e) {
 });
 
 // =====================
+// USER MANAGEMENT
+// =====================
+var usersDB = [];
+
+async function loadUsers() {
+  try {
+    var res = await fetch('https://zaukdakfcsmckbzvknaf.supabase.co/rest/v1/school_users?select=*', {
+      headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM' }
+    });
+    usersDB = await res.json();
+    renderUsersTable();
+  } catch(e) { console.error('Load users error:', e); }
+}
+
+function renderUsersTable() {
+  var tbody = ge('usersTableBody');
+  if(!tbody) return;
+  if(usersDB.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--grey);">No users found</td></tr>';
+    return;
+  }
+  var roleLabels = { principal: '👑 Principal', accountant: '💰 Accountant', teacher: '👩‍🏫 Teacher' };
+  var roleColors = { principal: 'badge-primary', accountant: 'badge-success', teacher: 'badge-info' };
+  tbody.innerHTML = usersDB.map(function(u) {
+    return '<tr>' +
+      '<td style="font-weight:600;">' + u.name + '</td>' +
+      '<td>' + u.email + '</td>' +
+      '<td><span class="badge ' + (roleColors[u.role]||'badge-info') + '">' + (roleLabels[u.role]||u.role) + '</span></td>' +
+      '<td><span class="badge ' + (u.status==='active'?'badge-success':'badge-danger') + '">' + u.status + '</span></td>' +
+      '<td style="display:flex;gap:4px;">' +
+        '<button class="btn btn-secondary" onclick="editUser(\''+u.id+'\');" style="font-size:11px;padding:5px 10px;">✏️ Edit</button>' +
+        '<button class="btn btn-danger" onclick="deleteUser(\''+u.id+'\');" style="font-size:11px;padding:5px 10px;">🗑️</button>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function openAddUserModal() {
+  ge('userModalTitle').textContent = 'Add New User';
+  ge('userEditId').value = '';
+  ge('userName').value = '';
+  ge('userEmail').value = '';
+  ge('userPassword').value = '';
+  ge('userRole').value = 'teacher';
+  openModal('userModal');
+}
+
+function editUser(userId) {
+  var u = usersDB.find(function(x){ return x.id === userId; });
+  if(!u) return;
+  ge('userModalTitle').textContent = 'Edit User';
+  ge('userEditId').value = u.id;
+  ge('userName').value = u.name;
+  ge('userEmail').value = u.email;
+  ge('userPassword').value = u.password;
+  ge('userRole').value = u.role;
+  openModal('userModal');
+}
+
+async function saveUser() {
+  var id = ge('userEditId').value;
+  var name = ge('userName').value.trim();
+  var email = ge('userEmail').value.trim().toLowerCase();
+  var password = ge('userPassword').value;
+  var role = ge('userRole').value;
+
+  if(!name || !email || !password) { notify('Please fill all fields!', 'error'); return; }
+
+  var userData = { name: name, email: email, password: password, role: role, status: 'active' };
+  var SUPA = 'https://zaukdakfcsmckbzvknaf.supabase.co/rest/v1/school_users';
+  var HDRS = {
+    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
+    'Content-Type': 'application/json',
+    'Prefer': 'return=minimal'
+  };
+
+  try {
+    var res;
+    if(id) {
+      res = await fetch(SUPA + '?id=eq.' + encodeURIComponent(id), {
+        method: 'PATCH', headers: HDRS, body: JSON.stringify(userData)
+      });
+    } else {
+      userData.id = 'USR-' + Date.now();
+      res = await fetch(SUPA, {
+        method: 'POST', headers: HDRS, body: JSON.stringify(userData)
+      });
+    }
+
+    if(res.ok) {
+      LOCAL_CREDS[email] = { password: password, name: name, role: role };
+      try {
+        if(localStorage.getItem('podar_erp_email') === email) {
+          localStorage.setItem('podar_erp_pass', password);
+        }
+      } catch(e) {}
+      notify(id ? 'User updated!' : 'User added!', 'success');
+      closeModal('userModal');
+      loadUsers();
+    } else {
+      var err = await res.text();
+      notify('Failed: ' + err, 'error');
+    }
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
+  }
+}
+
+async function deleteUser(userId) {
+  if(!confirm('Delete this user?')) return;
+  await supaDelete('school_users', userId);
+  notify('User deleted!', 'success');
+  loadUsers();
+}
+
+function clearLoginCache() {
+  try {
+    localStorage.removeItem('podar_erp_email');
+    localStorage.removeItem('podar_erp_pass');
+    localStorage.removeItem('podar_erp_remember');
+  } catch(e) {}
+  ge('loginEmail').value = '';
+  ge('loginPassword').value = '';
+  if(ge('rememberMe')) ge('rememberMe').checked = false;
+  notify('Login cache cleared! Enter new credentials.', 'success');
+}
+
+window.onload = function() {
+  fillSchoolLogos();
+  initFeeStructure();
+  // Auto-fill saved credentials
+  try {
+    var savedEmail = localStorage.getItem('podar_erp_email');
+    var savedPass = localStorage.getItem('podar_erp_pass');
+    var remembered = localStorage.getItem('podar_erp_remember');
+    if(savedEmail && savedPass && remembered === '1') {
+      ge('loginEmail').value = savedEmail;
+      ge('loginPassword').value = savedPass;
+      ge('rememberMe').checked = true;
+      // Auto login - verify with Supabase first
+      ge('loginEmail').value = savedEmail;
+      ge('loginPassword').value = savedPass;
+      // Don't auto-login, just fill the form
+      // User must click login button to verify with Supabase
+    }
+  } catch(e) {}
+  ge('loginBtn').onclick = handleLogin;
+  ge('loginEmail').onkeypress = function(e) { if(e.key === 'Enter') handleLogin(); };
+  ge('loginPassword').onkeypress = function(e) { if(e.key === 'Enter') handleLogin(); };
+  document.querySelectorAll('.nav-item').forEach(function(item) {
+    item.onclick = function() { navigateTo(this.dataset.page); };
+  });
+  updateDashboardWidget();
+  setInterval(updateDashboardWidget, 1000);
+  ge('dashSearch').oninput = function() { handleDashboardSearch(this.value); };
+};
+
+// =====================
 // UTILS
 // =====================
 function ge(id) { return document.getElementById(id); }
@@ -2146,14 +2308,9 @@ function applyRoleAccess() {
     item.style.display = allowed.indexOf(page) > -1 ? '' : 'none';
   });
 
-  // Show Change Password only for Principal
-  var cpSection = ge('changePwdSection');
-  if(cpSection) cpSection.style.display = currentRole === 'principal' ? 'block' : 'none';
-
-
-  // Hide User Mgmt for non-principals
-  var uMgmt = ge('principalUserMgmt');
-  if(uMgmt) uMgmt.style.display = currentRole === 'principal' ? 'block' : 'none';
+  // Hide User Management for non-principals
+  var userMgmt = ge('userMgmtSection');
+  if(userMgmt) userMgmt.style.display = currentRole === 'principal' ? 'block' : 'none';
 
   // Show role badge color
   var roleColors = { principal: '#6b21a8', accountant: '#15803d', teacher: '#1d4ed8' };
@@ -2185,7 +2342,7 @@ function navigateTo(page) {
   ge('pageTitle').textContent = titles[page] || page;
   if (page === 'reports') { rptUpdatePreview(); rptRenderCollection(); rptRenderDefaulter(); rptRenderStudents(); rptRenderActive(); }
   if (page === 'dashboard') { dashUpdateStats(); }
-  if (page === 'settings') { renderFeeStructureTable(); if(currentRole==='principal') loadUserMgmt(); }
+  if (page === 'settings') { renderFeeStructureTable(); if(currentRole==='principal') loadUsers(); }
 }
 
 // =====================
@@ -4753,171 +4910,65 @@ function getAIResponse(question) {
 </script>
 </body>
 </html
-
-      <!-- Change Password - Principal Only -->
-      <div id="changePwdSection" style="display:none;">
-      <div class="card" style="margin-top:24px;">
-        <h3 style="font-size:18px;font-weight:700;margin-bottom:6px;">🔐 Change Password</h3>
-        <p style="color:var(--grey);font-size:13px;margin-bottom:16px;">Apna login password yahan se change karo</p>
-        <div style="max-width:400px;">
-          <div style="margin-bottom:12px;">
-            <label class="label">Current Password *</label>
-            <input type="password" id="cpOld" class="input" placeholder="Purana password">
-          </div>
-          <div style="margin-bottom:12px;">
-            <label class="label">New Password *</label>
-            <input type="password" id="cpNew" class="input" placeholder="Naya password">
-          </div>
-          <div style="margin-bottom:16px;">
-            <label class="label">Confirm New Password *</label>
-            <input type="password" id="cpConfirm" class="input" placeholder="Naya password dobara">
-          </div>
-          <button class="btn btn-primary" onclick="changePassword()" style="width:100%;">🔐 Change Password</button>
+      <!-- User Management -->
+      <div class="card" style="margin-top:24px;" id="userMgmtSection">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <h3 style="font-size:18px;font-weight:700;">👥 User Management</h3>
+          <button class="btn btn-primary" onclick="openAddUserModal()">+ Add User</button>
+        </div>
+        <p style="color:var(--grey);font-size:13px;margin-bottom:16px;">Manage login users and their roles</p>
+        <div style="overflow-x:auto;">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--grey);">Loading...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
+
+      <!-- Add/Edit User Modal -->
+      <div id="userModal" class="modal-overlay">
+        <div class="modal" style="max-width:420px;">
+          <div class="modal-header">
+            <h2 class="modal-title" id="userModalTitle">Add New User</h2>
+            <button class="modal-close" onclick="closeModal('userModal')">×</button>
+          </div>
+          <div class="modal-body" style="padding:20px;">
+            <input type="hidden" id="userEditId">
+            <div style="margin-bottom:12px;">
+              <label class="label">Full Name *</label>
+              <input type="text" id="userName" class="input" placeholder="Staff ka naam">
+            </div>
+            <div style="margin-bottom:12px;">
+              <label class="label">Email *</label>
+              <input type="email" id="userEmail" class="input" placeholder="email@podarschool.com">
+            </div>
+            <div style="margin-bottom:12px;">
+              <label class="label">Password *</label>
+              <input type="password" id="userPassword" class="input" placeholder="Strong password">
+            </div>
+            <div style="margin-bottom:16px;">
+              <label class="label">Role *</label>
+              <select id="userRole" class="input">
+                <option value="principal">👑 Principal</option>
+                <option value="accountant">💰 Accountant</option>
+                <option value="teacher">👩‍🏫 Teacher</option>
+              </select>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-secondary" style="flex:1;" onclick="closeModal('userModal')">Cancel</button>
+              <button class="btn btn-primary" style="flex:1;" onclick="saveUser()">💾 Save User</button>
+            </div>
+          </div>
+        </div>
       </div>
-
-
-// =====================
-// CHANGE PASSWORD
-// =====================
-async function changePassword() {
-  var oldPass = ge('cpOld').value;
-  var newPass = ge('cpNew').value;
-  var confirm = ge('cpConfirm').value;
-
-  if(!oldPass || !newPass || !confirm) {
-    notify('Please fill all fields!', 'error'); return;
-  }
-  if(newPass !== confirm) {
-    notify('New passwords do not match!', 'error'); return;
-  }
-  if(newPass.length < 6) {
-    notify('Password must be at least 6 characters!', 'error'); return;
-  }
-
-  // Verify old password with Supabase
-  try {
-    var res = await fetch('https://zaukdakfcsmckbzvknaf.supabase.co/rest/v1/school_users?email=eq.' + encodeURIComponent(currentUser.email) + '&select=*', {
-      headers: {
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM'
-      }
-    });
-    var users = await res.json();
-    if(!users || users.length === 0) {
-      notify('User not found!', 'error'); return;
-    }
-
-    var u = users[0];
-    if(u.password !== oldPass) {
-      notify('Current password is wrong!', 'error'); return;
-    }
-
-    // Update new password in Supabase
-    var updateRes = await fetch('https://zaukdakfcsmckbzvknaf.supabase.co/rest/v1/school_users?id=eq.' + encodeURIComponent(u.id), {
-      method: 'PATCH',
-      headers: {
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ password: newPass })
-    });
-
-    if(updateRes.ok) {
-      // Update localStorage if remembered
-      try {
-        if(localStorage.getItem('podar_erp_email') === currentUser.email) {
-          localStorage.setItem('podar_erp_pass', newPass);
-        }
-      } catch(e) {}
-      // Clear form
-      ge('cpOld').value = '';
-      ge('cpNew').value = '';
-      ge('cpConfirm').value = '';
-      notify('✅ Password changed successfully!', 'success');
-    } else {
-      notify('Failed to update password!', 'error');
-    }
-  } catch(e) {
-    notify('Error: ' + e.message, 'error');
-  }
-}
-
-// =====================
-// USER MANAGEMENT (Principal Only)
-// =====================
-async function loadUserMgmt() {
-  var list = ge('userMgmtList');
-  if(!list) return;
-  
-  try {
-    var res = await fetch('https://zaukdakfcsmckbzvknaf.supabase.co/rest/v1/school_users?select=*&order=role', {
-      headers: {
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM'
-      }
-    });
-    var users = await res.json();
-    
-    var roleLabels = { principal: '👑 Principal', accountant: '💰 Accountant', teacher: '👩‍🏫 Teacher' };
-    var roleColors = { principal: '#6b21a8', accountant: '#15803d', teacher: '#1d4ed8' };
-    
-    var html = '';
-    users.forEach(function(u) {
-      html += '<div style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:12px;">';
-      html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">';
-      html += '<div style="width:40px;height:40px;border-radius:10px;background:' + (roleColors[u.role]||'#64748b') + ';display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:800;">' + u.name.substring(0,2).toUpperCase() + '</div>';
-      html += '<div><p style="font-weight:700;font-size:15px;">' + u.name + '</p>';
-      html += '<p style="font-size:12px;color:var(--grey);">' + (roleLabels[u.role]||u.role) + '</p></div></div>';
-      html += '<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;">';
-      html += '<div><label class="label">Email</label><input type="email" id="ue_' + u.id + '" value="' + u.email + '" class="input" style="font-size:13px;"></div>';
-      html += '<div><label class="label">Password</label><input type="password" id="up_' + u.id + '" value="' + u.password + '" class="input" style="font-size:13px;"></div>';
-      html += '<button class="btn btn-primary" data-uid="' + u.id + '" onclick="updateUserCreds(this.dataset.uid)" style="padding:10px 16px;">💾 Save</button>';
-      html += '</div></div>';
-    });
-    
-    list.innerHTML = html;
-  } catch(e) {
-    list.innerHTML = '<p style="color:var(--grey);text-align:center;padding:20px;">Error loading users</p>';
-  }
-}
-
-async function updateUserCreds(userId) {
-  var email = ge('ue_' + userId).value.trim().toLowerCase();
-  var password = ge('up_' + userId).value;
-  
-  if(!email || !password) { notify('Email aur password required!', 'error'); return; }
-  if(password.length < 6) { notify('Password min 6 characters!', 'error'); return; }
-  
-  try {
-    var res = await fetch('https://zaukdakfcsmckbzvknaf.supabase.co/rest/v1/school_users?id=eq.' + encodeURIComponent(userId), {
-      method: 'PATCH',
-      headers: {
-        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ email: email, password: password })
-    });
-    
-    if(res.ok) {
-      // Update localStorage if this is current user
-      try {
-        if(localStorage.getItem('podar_erp_email') === currentUser.email) {
-          localStorage.setItem('podar_erp_email', email);
-          localStorage.setItem('podar_erp_pass', password);
-        }
-      } catch(e) {}
-      notify('✅ Updated successfully!', 'success');
-    } else {
-      notify('Update failed!', 'error');
-    }
-  } catch(e) {
-    notify('Error: ' + e.message, 'error');
-  }
-}
 >
