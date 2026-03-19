@@ -2090,7 +2090,6 @@ async function deleteUser(userId) {
 window.onload = function() {
   fillSchoolLogos();
   initFeeStructure();
-  initFeeStructure();
   // Auto-fill saved credentials
   try {
     var savedEmail = localStorage.getItem('podar_erp_email');
@@ -2103,7 +2102,8 @@ window.onload = function() {
       // Auto login
       var user = LOCAL_CREDS[savedEmail];
       if(user && user.password === savedPass) {
-        currentUser = { email: savedEmail, name: user.name };
+        currentUser = { email: savedEmail, name: user.name, role: user.role || 'principal' };
+        currentRole = user.role || 'principal';
         onLoginSuccess();
         return;
       }
@@ -2244,8 +2244,8 @@ function onLoginSuccess() {
 
 function applyRoleAccess() {
   var access = {
-    principal:  ['dashboard','enquiry','admission','students','classlist','fees','payroll','qrlookup','settings'],
-    accountant: ['dashboard','enquiry','admission','students','classlist','fees','qrlookup'],
+    principal:  ['dashboard','enquiry','admission','students','classlist','fees','payroll','qr','settings'],
+    accountant: ['dashboard','enquiry','admission','students','classlist','fees','qr'],
     teacher:    ['dashboard','students','classlist']
   };
 
