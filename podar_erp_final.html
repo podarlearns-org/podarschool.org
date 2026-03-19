@@ -648,12 +648,12 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
       <div style="margin-bottom:24px;"><h1 style="font-size:24px;font-weight:800;">💼 Payroll Management</h1><p style="color:var(--grey);">Staff salary and attendance</p></div>
       <div style="display:flex;gap:8px;margin-bottom:24px;overflow-x:auto;padding-bottom:8px;">
         <button class="payroll-tab active" onclick="showPayrollTab('staff',this)">👤 Staff Master</button>
-        <button class="payroll-tab" onclick="showPayrollTab('profile',this)">🔍 Staff Profile</button>
         <button class="payroll-tab" onclick="showPayrollTab('attendance',this)">📅 Attendance</button>
         <button class="payroll-tab" onclick="showPayrollTab('salary',this)">💰 Salary</button>
         <button class="payroll-tab" onclick="showPayrollTab('history',this)">📜 Salary History</button>
         <button class="payroll-tab" onclick="showPayrollTab('analytics',this)">📊 Analytics</button>
         <button class="payroll-tab" onclick="showPayrollTab('leaves',this)">🌴 Leaves</button>
+        <button class="payroll-tab" onclick="showPayrollTab('profile',this)">🔍 Staff Profile</button>
       </div>
       <div id="payroll-staff" class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;"><h3 style="font-size:18px;font-weight:700;">Staff List</h3><button class="btn btn-primary" onclick="newStaff()">+ Add Staff</button></div>
@@ -3243,6 +3243,45 @@ function updateDocStatus(inputId, statusId) {
 function calculateSalary() {
   // Manual entry - no auto calculate
 }
+
+async function saveStaffWithDocs() {
+  await saveStaff();
+  var staffId = ge('staffID').value;
+  if(!staffId) return;
+  var docFiles = [
+    { id: 'newStaffPhoto', type: 'Photo' },
+    { id: 'newStaffAadhar', type: 'Aadhar_Card' },
+    { id: 'newStaffPAN', type: 'PAN_Card' },
+    { id: 'newStaffQual', type: 'Qualification' },
+    { id: 'newStaffExp', type: 'Experience_Letter' },
+    { id: 'newStaffBank', type: 'Bank_Passbook' }
+  ];
+  var uploaded = 0;
+  for(var i=0; i<docFiles.length; i++) {
+    var d = docFiles[i];
+    var input = ge(d.id);
+    if(input && input.files[0]) {
+      var file = input.files[0];
+      var ext = file.name.split('.').pop();
+      var fileName = staffId + '_' + d.type + '_' + Date.now() + '.' + ext;
+      try {
+        var uploadUrl = 'https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1/object/staff-documents/' + fileName;
+        var res = await fetch(uploadUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
+            'Content-Type': file.type,
+            'x-upsert': 'true'
+          },
+          body: file
+        });
+        if(res.ok) uploaded++;
+      } catch(e) { console.error('Doc upload error:', e); }
+    }
+  }
+  if(uploaded > 0) notify(uploaded + ' documents uploaded!', 'success');
+}
+
 async function saveStaff() {
   var name = ge('staffName').value.trim();
   var type = ge('staffType').value;
