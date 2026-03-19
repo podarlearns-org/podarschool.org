@@ -2064,20 +2064,44 @@ async function saveUser() {
   if(!name || !email || !password) { notify('Please fill all fields!', 'error'); return; }
 
   var userData = { name: name, email: email, password: password, role: role, status: 'active' };
+  var SUPA = 'https://zaukdakfcsmckbzvknaf.supabase.co/rest/v1/school_users';
+  var HDRS = {
+    'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
+    'Content-Type': 'application/json',
+    'Prefer': 'return=minimal'
+  };
 
-  if(id) {
-    // Update existing
-    await supaUpdate('school_users', id, userData);
-    notify('User updated!', 'success');
-  } else {
-    // Add new
-    userData.id = 'USR-' + Date.now();
-    await supaInsert('school_users', userData);
-    notify('User added!', 'success');
+  try {
+    var res;
+    if(id) {
+      res = await fetch(SUPA + '?id=eq.' + encodeURIComponent(id), {
+        method: 'PATCH', headers: HDRS, body: JSON.stringify(userData)
+      });
+    } else {
+      userData.id = 'USR-' + Date.now();
+      res = await fetch(SUPA, {
+        method: 'POST', headers: HDRS, body: JSON.stringify(userData)
+      });
+    }
+
+    if(res.ok) {
+      LOCAL_CREDS[email] = { password: password, name: name, role: role };
+      try {
+        if(localStorage.getItem('podar_erp_email') === email) {
+          localStorage.setItem('podar_erp_pass', password);
+        }
+      } catch(e) {}
+      notify(id ? 'User updated!' : 'User added!', 'success');
+      closeModal('userModal');
+      loadUsers();
+    } else {
+      var err = await res.text();
+      notify('Failed: ' + err, 'error');
+    }
+  } catch(e) {
+    notify('Error: ' + e.message, 'error');
   }
-
-  closeModal('userModal');
-  loadUsers();
 }
 
 async function deleteUser(userId) {
