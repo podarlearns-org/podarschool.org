@@ -1958,16 +1958,16 @@ document.addEventListener('keydown', function(e) {
   // Ctrl/Cmd shortcuts
   if(e.ctrlKey || e.metaKey) {
     switch(e.key) {
-      case '1': e.preventDefault(); showPage('dashboard'); break;
-      case '2': e.preventDefault(); showPage('enquiry'); break;
-      case '3': e.preventDefault(); showPage('admission'); break;
-      case '4': e.preventDefault(); showPage('students'); break;
-      case '5': e.preventDefault(); showPage('fees'); break;
-      case '6': e.preventDefault(); showPage('payroll'); break;
-      case '7': e.preventDefault(); showPage('settings'); break;
+      case '1': e.preventDefault(); navigateTo('dashboard'); break;
+      case '2': e.preventDefault(); navigateTo('enquiry'); break;
+      case '3': e.preventDefault(); navigateTo('admission'); break;
+      case '4': e.preventDefault(); navigateTo('students'); break;
+      case '5': e.preventDefault(); navigateTo('fees'); break;
+      case '6': e.preventDefault(); navigateTo('payroll'); break;
+      case '7': e.preventDefault(); navigateTo('settings'); break;
       case 'n': e.preventDefault(); openAdmissionModal(); break;  // New Student
       case 'f': e.preventDefault(); openFeeModal(); break;        // Collect Fee
-      case 'q': e.preventDefault(); showPage('qrlookup'); break;  // QR Lookup
+      case 'q': e.preventDefault(); navigateTo('qrlookup'); break;  // QR Lookup
     }
   }
   
@@ -2267,7 +2267,7 @@ function applyRoleAccess() {
   var badge = ge('uRoleBadge');
   if(badge) badge.style.background = roleColors[currentRole] || '#64748b';
 
-  showPage(allowed[0] || 'dashboard');
+  navigateTo(allowed[0] || 'dashboard');
 }
 function doLogout() {
   currentUser = null;
