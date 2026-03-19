@@ -2025,8 +2025,8 @@ function renderUsersTable() {
       '<td><span class="badge ' + (roleColors[u.role]||'badge-info') + '">' + (roleLabels[u.role]||u.role) + '</span></td>' +
       '<td><span class="badge ' + (u.status==='active'?'badge-success':'badge-danger') + '">' + u.status + '</span></td>' +
       '<td style="display:flex;gap:4px;">' +
-        '<button class="btn btn-secondary" data-uid="' + u.id + '" onclick="editUser(this.dataset.uid)" style="font-size:11px;padding:5px 10px;">✏️ Edit</button>' +
-        '<button class="btn btn-danger" data-uid="' + u.id + '" onclick="deleteUser(this.dataset.uid)" style="font-size:11px;padding:5px 10px;">🗑️</button>' +
+        '<button class="btn btn-secondary" onclick="editUser(\''+u.id+'\');" style="font-size:11px;padding:5px 10px;">✏️ Edit</button>' +
+        '<button class="btn btn-danger" onclick="deleteUser(\''+u.id+'\');" style="font-size:11px;padding:5px 10px;">🗑️</button>' +
       '</td>' +
     '</tr>';
   }).join('');
@@ -2090,7 +2090,6 @@ async function deleteUser(userId) {
 window.onload = function() {
   fillSchoolLogos();
   initFeeStructure();
-  initFeeStructure();
   // Auto-fill saved credentials
   try {
     var savedEmail = localStorage.getItem('podar_erp_email');
@@ -2103,7 +2102,8 @@ window.onload = function() {
       // Auto login
       var user = LOCAL_CREDS[savedEmail];
       if(user && user.password === savedPass) {
-        currentUser = { email: savedEmail, name: user.name };
+        currentUser = { email: savedEmail, name: user.name, role: user.role || 'principal' };
+        currentRole = user.role || 'principal';
         onLoginSuccess();
         return;
       }
@@ -4886,7 +4886,7 @@ function getAIResponse(question) {
       </div>
 
       <!-- Add/Edit User Modal -->
-      <div id="userModal" class="modal-overlay" style="display:none;">
+      <div id="userModal" class="modal-overlay">
         <div class="modal" style="max-width:420px;">
           <div class="modal-header">
             <h2 class="modal-title" id="userModalTitle">Add New User</h2>
