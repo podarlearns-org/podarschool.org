@@ -648,6 +648,7 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
       <div style="margin-bottom:24px;"><h1 style="font-size:24px;font-weight:800;">💼 Payroll Management</h1><p style="color:var(--grey);">Staff salary and attendance</p></div>
       <div style="display:flex;gap:8px;margin-bottom:24px;overflow-x:auto;padding-bottom:8px;">
         <button class="payroll-tab active" onclick="showPayrollTab('staff',this)">👤 Staff Master</button>
+        <button class="payroll-tab" onclick="showPayrollTab('profile',this)">🔍 Staff Profile</button>
         <button class="payroll-tab" onclick="showPayrollTab('attendance',this)">📅 Attendance</button>
         <button class="payroll-tab" onclick="showPayrollTab('salary',this)">💰 Salary</button>
         <button class="payroll-tab" onclick="showPayrollTab('history',this)">📜 Salary History</button>
@@ -658,6 +659,23 @@ body { font-family: 'DM Sans', sans-serif; background: linear-gradient(135deg, #
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;"><h3 style="font-size:18px;font-weight:700;">Staff List</h3><button class="btn btn-primary" onclick="newStaff()">+ Add Staff</button></div>
         <div style="overflow-x:auto;width:100%;"><table class="table" style="min-width:700px;"><thead><tr><th>ID</th><th>Name</th><th>Designation</th><th>Department</th><th>Mobile</th><th>Status</th><th>Action</th></tr></thead><tbody id="staffTableBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--grey);">No staff added</td></tr></tbody></table></div>
       </div>
+      <!-- STAFF PROFILE PANEL -->
+      <div id="payroll-profile" class="card" style="display:none;">
+        <!-- Search Bar -->
+        <div style="margin-bottom:20px;">
+          <h3 style="font-size:18px;font-weight:700;margin-bottom:12px;">🔍 Staff Profile Search</h3>
+          <div style="display:flex;gap:12px;">
+            <input type="text" id="staffProfileSearch" class="input" placeholder="Staff naam type karo..." oninput="searchStaffProfile(this.value)" style="flex:1;">
+            <button class="btn btn-secondary" onclick="showAllStaffProfiles()">👥 All Staff</button>
+          </div>
+          <div id="staffProfileResults" style="margin-top:8px;"></div>
+        </div>
+        <!-- Profile Content -->
+        <div id="staffProfileContent">
+          <p style="text-align:center;color:var(--grey);padding:40px;">Staff naam search karo ya "All Staff" click karo</p>
+        </div>
+      </div>
+
       <div id="payroll-attendance" class="card" style="display:none;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
           <h3 style="font-size:18px;font-weight:700;">📅 Attendance Management</h3>
@@ -1656,6 +1674,281 @@ function viewReceiptFromHistory(feeId) {
     receipt_url: RECEIPT_VIEWER_URL+'?id='+encodeURIComponent(f.id)+'&token='+encodeURIComponent(token)
   };
   showReceiptNew(rr);
+}
+
+
+// =====================
+// STAFF PROFILE SYSTEM
+// =====================
+var STAFF_STORAGE = 'https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1/object/public/staff-documents';
+var STAFF_BUCKET_API = 'https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1';
+
+function searchStaffProfile(q) {
+  ge('staffProfileResults').innerHTML = '';
+  if(!q || q.length < 2) {
+    ge('staffProfileContent').innerHTML = '<p style="text-align:center;color:var(--grey);padding:40px;">Staff naam search karo (min 2 letters)</p>';
+    return;
+  }
+  q = q.toLowerCase();
+  var found = staffDB.filter(function(s) {
+    return s.name.toLowerCase().indexOf(q) > -1 || s.id.toLowerCase().indexOf(q) > -1;
+  });
+  if(found.length === 0) {
+    ge('staffProfileContent').innerHTML = '<p style="text-align:center;color:var(--grey);padding:40px;">No staff found</p>';
+    return;
+  }
+  if(found.length === 1) { renderStaffProfile(found[0]); return; }
+  var html = '<div style="display:flex;flex-direction:column;gap:8px;">';
+  found.forEach(function(s) {
+    html += '<div style="padding:12px 16px;border:1px solid #e2e8f0;border-radius:10px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="renderStaffProfile(getStaffById(\''+s.id+'\'))">';
+    html += '<div><p style="font-weight:700;">'+s.name+'</p><p style="font-size:12px;color:var(--grey);">'+s.designation+' | '+s.department+'</p></div>';
+    html += '<button class="btn btn-primary" style="font-size:12px;padding:6px 12px;">View Profile</button></div>';
+  });
+  html += '</div>';
+  ge('staffProfileContent').innerHTML = html;
+}
+
+function getStaffById(id) {
+  return staffDB.find(function(s){ return s.id === id; });
+}
+
+function showAllStaffProfiles() {
+  ge('staffProfileSearch').value = '';
+  if(staffDB.length === 0) {
+    ge('staffProfileContent').innerHTML = '<p style="text-align:center;color:var(--grey);padding:40px;">No staff added yet</p>';
+    return;
+  }
+  var html = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;">';
+  staffDB.forEach(function(s) {
+    html += '<div onclick="renderStaffProfile(getStaffById(\''+s.id+'\'))" style="border:1px solid #e2e8f0;border-radius:12px;padding:16px;cursor:pointer;">';
+    html += '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">';
+    html += '<div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#6b21a8,#ec4899);display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:16px;">'+s.name.substring(0,2).toUpperCase()+'</div>';
+    html += '<div><p style="font-weight:700;">'+s.name+'</p><p style="font-size:11px;color:var(--grey);">'+s.designation+'</p></div></div>';
+    html += '<div style="display:flex;justify-content:space-between;font-size:12px;">';
+    html += '<span style="color:var(--grey);">'+s.department+'</span>';
+    html += '<span style="color:var(--success);font-weight:700;">&#8377;'+(s.net||0).toLocaleString('en-IN')+'</span></div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  ge('staffProfileContent').innerHTML = html;
+}
+
+function renderStaffProfile(s) {
+  if(!s) return;
+  var salHistory = salaryHistoryDB.filter(function(h){ return (h.staffid||h.staffId)===s.id; });
+  var totalEarned = salHistory.filter(function(h){ return h.status==='paid'; }).reduce(function(sum,h){ return sum+(h.net||0); },0);
+  var pendingMonths = salHistory.filter(function(h){ return h.status==='pending'; }).length;
+
+  var html = '';
+  html += '<button onclick="showAllStaffProfiles()" class="btn btn-secondary" style="margin-bottom:16px;">← Back</button>';
+
+  // Header
+  html += '<div style="background:linear-gradient(135deg,#2e0650,#6b21a8);border-radius:16px;padding:20px;margin-bottom:20px;color:white;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">';
+  html += '<div style="width:72px;height:72px;border-radius:14px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;">'+s.name.substring(0,2).toUpperCase()+'</div>';
+  html += '<div style="flex:1;"><h2 style="font-size:20px;font-weight:800;margin:0;">'+s.name+'</h2>';
+  html += '<p style="opacity:.8;margin:3px 0;font-size:13px;">'+s.designation+' | '+s.department+'</p>';
+  html += '<p style="opacity:.65;font-size:11px;">'+s.id+' | Joined: '+(s.joindate||'N/A')+'</p></div>';
+  html += '<div style="display:flex;gap:10px;">';
+  html += '<div style="background:rgba(255,255,255,.15);padding:10px 16px;border-radius:10px;text-align:center;"><p style="font-size:9px;opacity:.8;font-weight:600;">NET SALARY</p><p style="font-size:18px;font-weight:800;">&#8377;'+(s.net||0).toLocaleString('en-IN')+'</p></div>';
+  html += '<div style="background:rgba(255,255,255,.15);padding:10px 16px;border-radius:10px;text-align:center;"><p style="font-size:9px;opacity:.8;font-weight:600;">TOTAL EARNED</p><p style="font-size:18px;font-weight:800;">&#8377;'+totalEarned.toLocaleString('en-IN')+'</p></div>';
+  html += '</div></div>';
+
+  // Profile Tabs
+  html += '<div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;" id="profileTabBtns">';
+  html += '<button class="btn btn-primary" onclick="showProfileTab(\'personal\',this)">&#128100; Personal</button>';
+  html += '<button class="btn btn-secondary" onclick="showProfileTab(\'bank\',this)">&#127970; Bank</button>';
+  html += '<button class="btn btn-secondary" onclick="showProfileTab(\'docs\',this)">&#128196; Documents</button>';
+  html += '<button class="btn btn-secondary" onclick="showProfileTab(\'salary\',this)">&#128176; Salary</button>';
+  html += '<button class="btn btn-secondary" onclick="showProfileTab(\'history\',this)">&#128220; History</button>';
+  html += '<button class="btn btn-secondary" onclick="showProfileTab(\'analytics\',this)">&#128202; Analytics</button>';
+  html += '</div>';
+
+  // PERSONAL TAB
+  html += '<div id="pTab_personal">';
+  var pFields = [
+    ['Full Name',s.name],['Employee ID',s.id],['Type',s.type||'N/A'],['Designation',s.designation||'N/A'],
+    ['Department',s.department||'N/A'],['Mobile',s.mobile||'N/A'],['Email',s.email||'N/A'],
+    ['Date of Joining',s.joindate||'N/A'],['Gender',s.gender||'N/A'],['DOB',s.dob||'N/A'],
+    ['Father',s.father||'N/A'],['Mother',s.mother||'N/A'],['Blood Group',s.blood||'N/A'],
+    ['Emergency',s.emergency||'N/A'],['Aadhar',s.aadhar||'N/A'],['PAN',s.pan||'N/A'],
+    ['Qualification',s.qualification||'N/A'],['Experience',s.experience||'N/A'],['Address',s.address||'N/A']
+  ];
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">';
+  pFields.forEach(function(f){
+    html += '<div style="padding:10px 14px;background:#f8fafc;border-radius:8px;border-left:3px solid #6b21a8;">';
+    html += '<p style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;">'+f[0]+'</p>';
+    html += '<p style="font-weight:700;font-size:13px;">'+f[1]+'</p></div>';
+  });
+  html += '</div>';
+  html += '<button class="btn btn-primary" onclick="editStaff(\''+s.id+'\')">&#9998; Edit Profile</button>';
+  html += '</div>';
+
+  // BANK TAB
+  html += '<div id="pTab_bank" style="display:none;">';
+  var bFields = [['Account Name',s.accname||'N/A'],['Account No',s.accno||'N/A'],['IFSC',s.ifsc||'N/A'],['Bank',s.bankname||'N/A'],['Branch',s.branch||'N/A']];
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+  bFields.forEach(function(f){
+    html += '<div style="padding:10px 14px;background:#f0fdf4;border-radius:8px;border-left:3px solid #22c55e;">';
+    html += '<p style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;">'+f[0]+'</p>';
+    html += '<p style="font-weight:700;font-size:13px;">'+f[1]+'</p></div>';
+  });
+  html += '</div></div>';
+
+  // DOCUMENTS TAB
+  html += '<div id="pTab_docs" style="display:none;">';
+  html += '<div id="docsGrid_'+s.id+'" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:16px;">';
+  html += '<p style="color:var(--grey);text-align:center;grid-column:1/-1;padding:20px;">Loading...</p></div>';
+  html += '<div style="background:#f8fafc;border-radius:12px;padding:16px;border:1px dashed #e2e8f0;">';
+  html += '<h5 style="font-weight:700;margin-bottom:12px;">&#128228; Upload New Document</h5>';
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;">';
+  html += '<div><label class="label">Type</label><select id="docType_'+s.id+'" class="input"><option>Aadhar Card</option><option>PAN Card</option><option>Qualification</option><option>Experience Letter</option><option>Bank Passbook</option><option>Photo</option><option>Other</option></select></div>';
+  html += '<div><label class="label">File (Max 5MB)</label><input type="file" id="docFile_'+s.id+'" class="input" accept=".pdf,.jpg,.jpeg,.png" style="padding:6px;"></div>';
+  html += '<button class="btn btn-primary" data-sid="'+s.id+'" onclick="uploadStaffDoc(this.dataset.sid)">&#128228; Upload</button>';
+  html += '</div></div></div>';
+
+  // SALARY TAB
+  html += '<div id="pTab_salary" style="display:none;">';
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;">';
+  [['Basic',s.basic||0,'#6b21a8'],['DA',s.da||0,'#6b21a8'],['HRA',s.hra||0,'#6b21a8'],
+   ['Spl Allow',s.specialallow||0,'#6b21a8'],['Gross',s.gross||0,'#15803d'],
+   ['PF',s.pf||0,'#dc2626'],['ESI',s.esi||0,'#dc2626'],['PT',s.pt||0,'#dc2626'],['TDS',s.tds||0,'#dc2626']
+  ].forEach(function(f){
+    html += '<div style="padding:10px;background:#faf5ff;border-radius:8px;border-left:3px solid '+f[2]+';text-align:center;">';
+    html += '<p style="font-size:10px;color:#94a3b8;font-weight:600;">'+f[0]+'</p>';
+    html += '<p style="font-weight:800;color:'+f[2]+';font-size:15px;">&#8377;'+f[1].toLocaleString('en-IN')+'</p></div>';
+  });
+  html += '</div>';
+  html += '<div style="background:linear-gradient(135deg,#6b21a8,#7c3aed);padding:16px 20px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">';
+  html += '<span style="color:white;font-size:16px;font-weight:700;">NET SALARY</span>';
+  html += '<span style="color:white;font-size:24px;font-weight:800;">&#8377;'+(s.net||0).toLocaleString('en-IN')+'</span></div>';
+  html += '<button class="btn btn-primary" onclick="editStaff(\''+s.id+'\')">&#9998; Edit Salary</button>';
+  html += '</div>';
+
+  // HISTORY TAB
+  html += '<div id="pTab_history" style="display:none;">';
+  if(salHistory.length === 0) {
+    html += '<p style="text-align:center;color:var(--grey);padding:30px;">No salary history</p>';
+  } else {
+    html += '<div style="overflow-x:auto;"><table class="table"><thead><tr><th>Month</th><th>Net</th><th>Status</th><th>Paid On</th><th>Action</th></tr></thead><tbody>';
+    salHistory.slice().reverse().forEach(function(h){
+      html += '<tr><td style="font-weight:600;">'+h.month+'</td>';
+      html += '<td style="color:var(--success);font-weight:700;">&#8377;'+(h.net||0).toLocaleString('en-IN')+'</td>';
+      html += '<td><span class="badge '+(h.status==='paid'?'badge-success':'badge-warning')+'">'+h.status+'</span></td>';
+      html += '<td>'+(h.paidon||h.paidOn||'—')+'</td>';
+      html += '<td><button class="btn btn-secondary" data-sid="'+s.id+'" data-month="'+h.month+'" data-net="'+(h.net||0)+'" onclick="markSalaryPaidBtn(this)" style="font-size:11px;padding:5px 10px;">&#128176; Pay</button></td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+  }
+  html += '</div>';
+
+  // ANALYTICS TAB
+  html += '<div id="pTab_analytics" style="display:none;">';
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;">';
+  html += '<div style="padding:16px;background:linear-gradient(135deg,#15803d,#22c55e);border-radius:12px;text-align:center;color:white;"><p style="font-size:10px;opacity:.8;font-weight:600;">TOTAL EARNED</p><p style="font-size:20px;font-weight:800;">&#8377;'+totalEarned.toLocaleString('en-IN')+'</p></div>';
+  html += '<div style="padding:16px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);border-radius:12px;text-align:center;color:white;"><p style="font-size:10px;opacity:.8;font-weight:600;">MONTHS PAID</p><p style="font-size:20px;font-weight:800;">'+salHistory.filter(function(h){return h.status==='paid';}).length+'</p></div>';
+  html += '<div style="padding:16px;background:linear-gradient(135deg,#c2410c,#ef4444);border-radius:12px;text-align:center;color:white;"><p style="font-size:10px;opacity:.8;font-weight:600;">PENDING</p><p style="font-size:20px;font-weight:800;">'+pendingMonths+'</p></div>';
+  html += '</div>';
+  if(salHistory.length > 0) {
+    html += '<div style="overflow-x:auto;"><table class="table"><thead><tr><th>Month</th><th>Gross</th><th>Deductions</th><th>Net</th><th>Status</th></tr></thead><tbody>';
+    salHistory.slice().reverse().forEach(function(h){
+      html += '<tr><td>'+h.month+'</td><td>&#8377;'+((h.basic||0)+(h.allowances||0)).toLocaleString('en-IN')+'</td>';
+      html += '<td style="color:#dc2626;">&#8377;'+(h.deductions||0).toLocaleString('en-IN')+'</td>';
+      html += '<td style="color:#15803d;font-weight:700;">&#8377;'+(h.net||0).toLocaleString('en-IN')+'</td>';
+      html += '<td><span class="badge '+(h.status==='paid'?'badge-success':'badge-warning')+'">'+h.status+'</span></td></tr>';
+    });
+    html += '</tbody></table></div>';
+  }
+  html += '</div>';
+
+  ge('staffProfileContent').innerHTML = html;
+  loadStaffDocuments(s.id);
+}
+
+function showProfileTab(tab, btn) {
+  var tabs = ['personal','bank','docs','salary','history','analytics'];
+  tabs.forEach(function(t){
+    var el = document.getElementById('pTab_'+t);
+    if(el) el.style.display = t===tab ? 'block' : 'none';
+  });
+  var btns = document.getElementById('profileTabBtns');
+  if(btns) {
+    btns.querySelectorAll('button').forEach(function(b){ b.className = 'btn btn-secondary'; });
+    if(btn) btn.className = 'btn btn-primary';
+  }
+}
+
+async function uploadStaffDoc(staffId) {
+  var fileInput = document.getElementById('docFile_'+staffId);
+  var docType = document.getElementById('docType_'+staffId).value;
+  var file = fileInput ? fileInput.files[0] : null;
+  if(!file) { notify('Please select a file!', 'error'); return; }
+  if(file.size > 5*1024*1024) { notify('File too large! Max 5MB', 'error'); return; }
+  notify('Uploading...', 'info');
+  var ext = file.name.split('.').pop();
+  var fileName = staffId+'_'+docType.replace(/ /g,'_')+'_'+Date.now()+'.'+ext;
+  try {
+    var res = await fetch('https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1/object/staff-documents/'+fileName, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
+        'Content-Type': file.type,
+        'x-upsert': 'true'
+      },
+      body: file
+    });
+    if(res.ok) {
+      notify('Document uploaded!', 'success');
+      fileInput.value = '';
+      loadStaffDocuments(staffId);
+    } else {
+      var err = await res.text();
+      notify('Upload failed: '+err, 'error');
+    }
+  } catch(e) { notify('Upload error: '+e.message, 'error'); }
+}
+
+async function loadStaffDocuments(staffId) {
+  var grid = document.getElementById('docsGrid_'+staffId);
+  if(!grid) return;
+  try {
+    var res = await fetch('https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1/object/list/staff-documents', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prefix: staffId+'_', limit: 100 })
+    });
+    var files = await res.json();
+    if(!files || files.length === 0 || files.error) {
+      grid.innerHTML = '<p style="color:var(--grey);text-align:center;grid-column:1/-1;padding:20px;">No documents uploaded yet</p>';
+      return;
+    }
+    var html = '';
+    files.forEach(function(f){
+      var url = 'https://zaukdakfcsmckbzvknaf.supabase.co/storage/v1/object/public/staff-documents/' + f.name;
+      var nameParts = f.name.replace(staffId+'_','').split('_');
+      nameParts.pop(); // remove timestamp
+      var docName = nameParts.join(' ');
+      var isImage = /\.(jpg|jpeg|png)$/i.test(f.name);
+      html += '<div style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;">';
+      if(isImage) {
+        html += '<img src="'+url+'" style="width:100%;height:100px;object-fit:cover;">';
+      } else {
+        html += '<div style="height:70px;background:linear-gradient(135deg,#6b21a8,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:28px;">&#128196;</div>';
+      }
+      html += '<div style="padding:8px 10px;">';
+      html += '<p style="font-weight:600;font-size:11px;margin-bottom:6px;">'+docName+'</p>';
+      html += '<div style="display:flex;gap:4px;">';
+      html += '<a href="'+url+'" target="_blank" class="btn btn-secondary" style="font-size:10px;padding:4px 8px;text-decoration:none;">&#128065; View</a>';
+      html += '<a href="'+url+'" download="'+docName+'" class="btn btn-primary" style="font-size:10px;padding:4px 8px;text-decoration:none;">&#8659; Download</a>';
+      html += '</div></div></div>';
+    });
+    grid.innerHTML = html;
+  } catch(e) {
+    grid.innerHTML = '<p style="color:var(--grey);text-align:center;grid-column:1/-1;padding:20px;">Error loading docs</p>';
+  }
 }
 
 window.onload = function() {
