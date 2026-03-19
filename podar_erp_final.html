@@ -2123,14 +2123,11 @@ window.onload = function() {
       ge('loginEmail').value = savedEmail;
       ge('loginPassword').value = savedPass;
       ge('rememberMe').checked = true;
-      // Auto login
-      var user = LOCAL_CREDS[savedEmail];
-      if(user && user.password === savedPass) {
-        currentUser = { email: savedEmail, name: user.name, role: user.role || 'principal' };
-        currentRole = user.role || 'principal';
-        onLoginSuccess();
-        return;
-      }
+      // Auto login - use handleLogin for Supabase check
+      ge('loginEmail').value = savedEmail;
+      ge('loginPassword').value = savedPass;
+      handleLogin();
+      return;
     }
   } catch(e) {}
   ge('loginBtn').onclick = handleLogin;
@@ -2180,37 +2177,51 @@ async function handleLogin() {
   var pass = ge('loginPassword').value;
   var errEl = ge('loginError');
   var btn = ge('loginBtn');
-  if (!email || !pass) { errEl.textContent = 'Please enter email and password'; errEl.style.display = 'block'; return; }
-  btn.innerHTML = '<span class="spinner"></span> Logging in...';
-  btn.disabled = true;
 
-  // Try Supabase first
-  try {
-    var res = await fetch('https://zaukdakfcsmckbzvknaf.supabase.co/rest/v1/school_users?email=eq.' + encodeURIComponent(email) + '&select=*', {
-      headers: { 'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM', 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM' }
-    });
-    var users = await res.json();
-    if(users && users.length > 0 && users[0].password === pass && users[0].status === 'active') {
-      var u = users[0];
-      currentUser = { email: u.email, name: u.name, role: u.role, id: u.id };
-      currentRole = u.role;
-      saveRememberMe(email, pass);
-      onLoginSuccess();
-      return;
-    }
-  } catch(e) {
-    // Fallback to LOCAL_CREDS
-    var user = LOCAL_CREDS[email];
-    if(user && user.password === pass) {
-      currentUser = { email: email, name: user.name, role: user.role || 'principal' };
-      currentRole = user.role || 'principal';
-      saveRememberMe(email, pass);
-      onLoginSuccess();
-      return;
-    }
+  if(!email || !pass) {
+    errEl.textContent = 'Please enter email and password';
+    errEl.style.display = 'block';
+    return;
   }
 
-  // Check LOCAL_CREDS as fallback
+  btn.innerHTML = '<span class="spinner"></span> Logging in...';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+
+  try {
+    // ALWAYS check Supabase first - this has latest passwords
+    var res = await fetch('https://zaukdakfcsmckbzvknaf.supabase.co/rest/v1/school_users?email=eq.' + encodeURIComponent(email) + '&select=*', {
+      headers: {
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InphdWtkYWtmY3NtY2tienZrbmFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE2NjI0NDIsImV4cCI6MjA4NzIzODQ0Mn0.zgZhm5sSVTl9mz-IOc-sYQvTaPveuA90_VPpqRGKuxM',
+        'Accept': 'application/json'
+      }
+    });
+
+    if(res.ok) {
+      var users = await res.json();
+      if(users && users.length > 0) {
+        var u = users[0];
+        if(u.password === pass && u.status === 'active') {
+          currentUser = { email: u.email, name: u.name, role: u.role, id: u.id };
+          currentRole = u.role || 'teacher';
+          saveRememberMe(email, pass);
+          onLoginSuccess();
+          return;
+        } else {
+          errEl.textContent = 'Invalid password!';
+          errEl.style.display = 'block';
+          btn.innerHTML = 'Login to ERP';
+          btn.disabled = false;
+          return;
+        }
+      }
+    }
+  } catch(e) {
+    console.error('Supabase login error:', e);
+  }
+
+  // Fallback to LOCAL_CREDS only if Supabase fails
   var localUser = LOCAL_CREDS[email];
   if(localUser && localUser.password === pass) {
     currentUser = { email: email, name: localUser.name, role: localUser.role || 'principal' };
@@ -2220,7 +2231,7 @@ async function handleLogin() {
     return;
   }
 
-  errEl.textContent = 'Invalid email or password';
+  errEl.textContent = 'Invalid email or password!';
   errEl.style.display = 'block';
   btn.innerHTML = 'Login to ERP';
   btn.disabled = false;
